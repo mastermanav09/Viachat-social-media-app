@@ -4,8 +4,8 @@ const passport = require("passport");
 const User = require("../models/user");
 const jwtSecret = require("../config/jwt.config");
 const jwt = require("jsonwebtoken");
-const loginValidationArray = require("../utils/validation/auth/loginValidation");
-const signupValidationArray = require("../utils/validation/auth/signupValidation");
+const loginValidationArray = require("../utils/validators/auth/loginValidation");
+const signupValidationArray = require("../utils/validators/auth/signupValidation");
 
 router.get(
   "/google",
@@ -17,11 +17,19 @@ router.get(
   passport.authenticate("google"),
   async function (req, res, next) {
     let user = {
-      photo: req.user.photo || "/assets/profileImages/no-img.png",
-      username: req.user.name,
-      email: req.user.email,
-      password: "null",
+      credentials: {
+        imageUrl: req.user.photo || "/assets/profileImages/no-img.png",
+        username: req.user.email.split("@")[0],
+        name: req.user.name,
+        email: req.user.email,
+        password: "null",
+        age: undefined,
+        bio: undefined,
+        address: undefined,
+        website: undefined,
+      },
       provider: req.user.provider,
+      likes: [],
     };
 
     try {
@@ -48,10 +56,11 @@ router.get(
       const token = jwt.sign(
         {
           userId: result._id.toString(),
-          email: result.email,
+          email: result.credentials.email,
+          imageUrl: result.credentials.imageUrl,
         },
         jwtSecret.secret,
-        { expiresIn: "1h" }
+        { expiresIn: "3h" }
       );
 
       res.cookie("token", token);

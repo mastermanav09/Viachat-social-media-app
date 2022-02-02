@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const screamSchema = new Schema(
+const commentSchema = new Schema(
   {
     userImageUrl: {
       type: String,
@@ -12,22 +12,17 @@ const screamSchema = new Schema(
       ref: "User",
     },
 
+    screamId: {
+      type: Schema.Types.ObjectId,
+      ref: "Schema",
+    },
+
     body: {
       type: String,
-      required: true,
-    },
-
-    likeCount: {
-      type: Number,
-      required: true,
-    },
-
-    commentCount: {
-      type: Number,
       required: true,
     },
   },
   { timestamps: true }
 );
 
-module.exports = mongoose.model("Scream", screamSchema);
+module.exports = mongoose.model("Comment", commentSchema);

@@ -8,6 +8,7 @@ exports.signup = async (req, res, next) => {
   const errors = validationResult(req);
 
   const username = req.body.username;
+  const name = req.body.name;
   const email = req.body.email;
   const password = req.body.password;
   const confirmPassword = req.body.confirmPassword;
@@ -37,13 +38,36 @@ exports.signup = async (req, res, next) => {
     const hashedPassword = await bcrypt.hash(password, 12);
 
     const newUser = new User({
-      imageUrl: "assets/profileImages/no-img.png",
-      username: username,
-      email: email,
-      password: hashedPassword,
+      credentials: {
+        imageUrl: "assets/profileImages/no-img.png",
+        username: username,
+        name: name,
+        email: email,
+        password: hashedPassword,
+        age: undefined,
+        bio: undefined,
+        address: undefined,
+        website: undefined,
+      },
+      likes: [],
     });
 
     const result = await newUser.save();
+
+    const token = jwt.sign(
+      {
+        email: result.credentials.email,
+        imageUrl: result.credentials.imageUrl,
+        userId: result._id.toString(),
+      },
+      jwtSecret.secret,
+      {
+        expiresIn: "3h",
+      }
+    );
+
+    res.cookie("token", token);
+
     res.status(201).json({ message: "Signed up successfully!" });
   } catch (error) {
     if (!error.statusCode) {
@@ -91,7 +115,7 @@ exports.login = async (req, res, next) => {
     }
 
     loadedUser = user;
-    const isEqual = await bcrypt.compare(password, user.password);
+    const isEqual = await bcrypt.compare(password, user.credentials.password);
     if (!isEqual) {
       const error = new Error("Password is incorrect.");
       error.statusCode = 422;
@@ -100,12 +124,13 @@ exports.login = async (req, res, next) => {
 
     const token = jwt.sign(
       {
-        email: loadedUser.email,
+        email: loadedUser.credentials.email,
+        imageUrl: loadedUser.credentials.imageUrl,
         userId: loadedUser._id.toString(),
       },
       jwtSecret.secret,
       {
-        expiresIn: "1h",
+        expiresIn: "3h",
       }
     );
 
