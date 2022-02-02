@@ -1,10 +1,7 @@
 const { body } = require("express-validator");
 
 const loginValidationArray = [
-  body("email")
-    .notEmpty()
-    .isEmail()
-    .withMessage("Please enter your valid email."),
+  body("email", "Please enter your email.").notEmpty().isEmail(),
 
   body("password")
     .trim()

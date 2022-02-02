@@ -1,15 +1,16 @@
 require("dotenv").config();
 const express = require("express");
 const app = express();
+const path = require("path");
 const passport = require("passport");
 const mongoose = require("mongoose");
+const passportSetup = require("./config/passport");
+const { v4: uuidv4 } = require("uuid");
+const multer = require("multer");
+
 const screamRoutes = require("./routes/screams");
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/user");
-const passportSetup = require("./config/passport");
-const path = require("path");
-const multer = require("multer");
-const { v4: uuidv4 } = require("uuid");
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -64,7 +65,7 @@ app.use(
 );
 
 app.use("/api/auth", authRoutes);
-app.use("/api/users", userRoutes);
+app.use("/api/user", userRoutes);
 app.use("/api/scream", screamRoutes);
 
 app.use((error, req, res, next) => {

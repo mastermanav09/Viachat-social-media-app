@@ -5,8 +5,15 @@ const signupValidationArray = [
     .trim()
     .isLength({ min: 3 })
     .withMessage("Username should be of at least 3 characters.")
-    .isAlphanumeric()
-    .withMessage("Username can contain only alphabets & numbers."),
+    .matches(/^[A-Za-z0-9.]+$/)
+    .withMessage(
+      "Sorry, only letters (a-z/A-Z), numbers (0-9), and periods (.) are allowed."
+    ),
+
+  body("name")
+    .trim()
+    .isLength({ min: 3 })
+    .withMessage("Are you sure you entered your name correctly?"),
 
   body("email")
     .notEmpty()
