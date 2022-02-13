@@ -3,15 +3,15 @@ const screamsController = require("../controllers/screams");
 const bodyValidationArray = require("../utils/validators/others/bodyValidation");
 const isAuth = require("../middleware/is-auth");
 
-router.get("/getAllScreams", screamsController.getAllScreams);
+router.get("/screams", screamsController.getAllScreams);
 router.post(
-  "/createScream",
+  "/create",
   isAuth,
   bodyValidationArray,
   screamsController.createScream
 );
 router.get("/:screamId", screamsController.getScream);
-// router.delete()
+router.delete("/:screamId/delete", screamsController.deleteScream);
 
 router.post(
   "/:screamId/addComment",
