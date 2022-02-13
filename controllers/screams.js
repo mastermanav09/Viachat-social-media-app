@@ -154,7 +154,7 @@ exports.deleteComment = async (req, res, next) => {
 
     if (!result) {
       const error = new Error("Something went wrong!");
-      error.statusCode = 404;
+      error.statusCode = 400;
       throw error;
     }
 
@@ -239,6 +239,31 @@ exports.unlikeScream = async (req, res, next) => {
     await scream.save();
 
     res.status(200).json({ message: "Scream unliked!" });
+  } catch (error) {
+    if (!error.statusCode) {
+      error.statusCode = 500;
+    }
+
+    next(error);
+  }
+};
+
+exports.deleteScream = async (req, res, next) => {
+  const screamId = req.params.screamId;
+
+  try {
+    const scream = await Scream.findByIdAndDelete({
+      userHandle: req.user.userId,
+      _id: mongoose.Types.ObjectId(screamId),
+    });
+
+    if (!scream) {
+      const error = new Error("Something went wrong!");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    res.status(200).json({ message: "Scream deleted successfully!" });
   } catch (error) {
     if (!error.statusCode) {
       error.statusCode = 500;
