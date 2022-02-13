@@ -1,8 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { io } from "socket.io-client";
 
 function App() {
   const [image, setImage] = useState(null);
+
+  useEffect(() => {
+    const socket = io("http://localhost:8080");
+  }, []);
+
   const googleAuthHandler = () => {
     window.open("http://localhost:8080/api/auth/google", "_self");
   };
