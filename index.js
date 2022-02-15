@@ -7,10 +7,18 @@ const mongoose = require("mongoose");
 const passportSetup = require("./config/passport");
 const { v4: uuidv4 } = require("uuid");
 const multer = require("multer");
-
 const screamRoutes = require("./routes/screams");
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/user");
+
+const {
+  userJoin,
+  getCurrentUser,
+  userLeave,
+  // getRoomUsers,
+} = require("./utils/users/connectedUsers");
+const Notification = require("./models/notification");
+const User = require("./models/user");
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -89,7 +97,76 @@ mongoose
     const io = require("./config/socket").init(server);
 
     io.on("connection", (socket) => {
-      socket.on("disconnect", () => {});
+      socket.on("newUser", (userId) => {
+        userJoin(userId.toString(), socket.id);
+      });
+
+      socket.on("sendLikeNotification", async ({ senderId, receiverId }) => {
+        const receiver = getCurrentUser(receiverId);
+
+        let notification;
+        try {
+          const user = await User.findOne({
+            _id: mongoose.Types.ObjectId(senderId),
+          });
+
+          notification = new Notification({
+            userImageUrl: user.credentials.imageUrl,
+            type: "Like",
+            screamId: null,
+            read: false,
+            senderUsername: user.credentials.username,
+            sender: senderId,
+            recipient: receiverId,
+          });
+
+          await notification.save();
+        } catch (error) {
+          console.log(error);
+        }
+
+        io.to(receiver.socketId).emit("getNotification", {
+          message: "Liked your post!",
+          notification: notification,
+        });
+      });
+
+      socket.on(
+        "sendCommentNotification",
+        async ({ senderId, receiverId, message }) => {
+          const receiver = getCurrentUser(receiverId);
+
+          let notification;
+          try {
+            const user = await User.findOne({
+              _id: mongoose.Types.ObjectId(senderId),
+            });
+
+            notification = new Notification({
+              userImageUrl: user.credentials.imageUrl,
+              type: "Comment",
+              message: message,
+              screamId: null,
+              read: false,
+              senderUsername: user.credentials.username,
+              sender: senderId,
+              recipient: receiverId,
+            });
+
+            await notification.save();
+          } catch (error) {
+            console.log(error);
+          }
+
+          io.to(receiver.socketId).emit("getNotification", {
+            notification: notification,
+          });
+        }
+      );
+
+      socket.on("disconnect", () => {
+        userLeave(socket.id);
+      });
     });
   })
   .catch((err) => {

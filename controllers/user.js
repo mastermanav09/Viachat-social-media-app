@@ -2,6 +2,8 @@ const User = require("../models/user");
 const { clearImage } = require("../utils/file/clearImage");
 const linkValidation = require("../utils/validators/others/linkValidation");
 const { validationResult } = require("express-validator");
+const mongoose = require("mongoose");
+const Notification = require("../models/notification");
 
 exports.updateProfilePhoto = async (req, res, next) => {
   if (!req.file) {
@@ -89,6 +91,73 @@ exports.updateProfile = async (req, res, next) => {
     await user.save();
 
     res.status(200).json({ message: "Profile updated!" });
+  } catch (error) {
+    if (!error.statusCode) {
+      error.statusCode = 500;
+    }
+
+    next(error);
+  }
+};
+
+exports.getNotifications = async (req, res, next) => {
+  try {
+    const user = await User.findById({
+      _id: req.user.userId,
+    });
+
+    if (!user) {
+      const error = new Error("User not found.");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    const notifications = await Notification.find({
+      recipient: req.user.userId,
+    });
+
+    res.status(200).json({ notifications: notifications });
+  } catch (error) {
+    if (!error.statusCode) {
+      error.statusCode = 500;
+    }
+
+    next(error);
+  }
+};
+
+exports.showNotifications = async (req, res, next) => {
+  try {
+    const user = await User.findById({
+      _id: req.user.userId,
+    });
+
+    if (!user) {
+      const error = new Error("User not found.");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    const notifications = await Notification.find();
+
+    notifications.forEach((notification) => {
+      if (
+        notification.recipient === req.user.userId &&
+        notification.read == false
+      ) {
+        notification.read = true;
+      }
+
+      return notification;
+    });
+
+    const userNotifications = notifications.filter(
+      (notification) => notification.recipient === req.user.userId
+    );
+
+    await notifications.save();
+
+    res.status(200).json({ notifications: userNotifications });
   } catch (error) {
     if (!error.statusCode) {
       error.statusCode = 500;

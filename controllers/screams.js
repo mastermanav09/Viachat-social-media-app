@@ -4,6 +4,8 @@ const Comment = require("../models/comment");
 const User = require("../models/user");
 const mongoose = require("mongoose");
 const Like = require("../models/like");
+const { Socket } = require("socket.io");
+const io = require("../config/socket");
 
 exports.getAllScreams = async (req, res, next) => {
   try {
@@ -173,6 +175,7 @@ exports.deleteComment = async (req, res, next) => {
 
 exports.likeScream = async (req, res, next) => {
   const screamId = req.params.screamId;
+  const recipientId = req.params.recipientId;
 
   try {
     const scream = await Scream.findById({ _id: screamId });

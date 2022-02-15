@@ -41,7 +41,9 @@ router.get(
         throw error;
       }
 
-      const existingUser = await User.findOne({ email: user.email });
+      const existingUser = await User.findOne({
+        "credentials.email": user.email,
+      });
 
       if (!existingUser) {
         const newUser = new User({
@@ -55,6 +57,7 @@ router.get(
 
       const token = jwt.sign(
         {
+          username: result.credentials.username,
           userId: result._id.toString(),
           email: result.credentials.email,
           imageUrl: result.credentials.imageUrl,
@@ -63,7 +66,8 @@ router.get(
         { expiresIn: "3h" }
       );
 
-      res.cookie("token", token);
+      res.cookie("upid", token);
+      res.cookie("_id", result._id.toString());
       res.redirect("http://localhost:3000/");
     } catch (error) {
       if (!error.statusCode) {

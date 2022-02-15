@@ -5,29 +5,47 @@ const notificationSchema = new Schema(
   {
     userImageUrl: {
       type: String,
+      required: true,
     },
 
     type: {
+      type: String,
+      required: true,
+    },
+
+    message: {
       type: String,
     },
 
     screamId: {
       type: Schema.Types.ObjectId,
       ref: "Schema",
+      required: true,
     },
 
     read: {
       type: Boolean,
+      required: true,
+    },
+
+    senderUsername: {
+      type: String,
+      required: true,
     },
 
     sender: {
-      type: String,
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
 
     recipient: {
-      type: String,
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
   },
+
   { timestamps: true }
 );
 

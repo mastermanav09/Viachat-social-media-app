@@ -27,7 +27,7 @@ exports.signup = async (req, res, next) => {
       throw error;
     }
 
-    const user = await User.findOne({ email: email });
+    const user = await User.findOne({ "credentials.email": email });
 
     if (user) {
       const error = new Error("User already exists.");
@@ -56,6 +56,7 @@ exports.signup = async (req, res, next) => {
 
     const token = jwt.sign(
       {
+        username: result.credentials.username,
         email: result.credentials.email,
         imageUrl: result.credentials.imageUrl,
         userId: result._id.toString(),
@@ -66,9 +67,11 @@ exports.signup = async (req, res, next) => {
       }
     );
 
-    res.cookie("token", token);
-
-    res.status(201).json({ message: "Signed up successfully!" });
+    res.status(201).json({
+      message: "Signed up successfully!",
+      token: token,
+      id: result._id.toString(),
+    });
   } catch (error) {
     if (!error.statusCode) {
       error.statusCode = 500;
@@ -107,7 +110,7 @@ exports.login = async (req, res, next) => {
       throw error;
     }
 
-    const user = await User.findOne({ email: email });
+    const user = await User.findOne({ "credentials.email": email });
     if (!user) {
       const error = new Error("User not found.");
       error.statusCode = 422;
@@ -124,6 +127,7 @@ exports.login = async (req, res, next) => {
 
     const token = jwt.sign(
       {
+        username: loadedUser.credentials.username,
         email: loadedUser.credentials.email,
         imageUrl: loadedUser.credentials.imageUrl,
         userId: loadedUser._id.toString(),
@@ -134,9 +138,10 @@ exports.login = async (req, res, next) => {
       }
     );
 
-    res.cookie("token", token);
     res.status(200).json({
       message: "Logged in successfully!",
+      token: token,
+      id: loadedUser._id.toString(),
     });
   } catch (err) {
     if (!err.statusCode) {

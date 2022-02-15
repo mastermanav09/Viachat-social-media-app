@@ -11,4 +11,7 @@ router.put(
   userControllers.updateProfile
 );
 
+router.get("/getNotifications", userControllers.getNotifications);
 module.exports = router;
+
+router.get("/showNotifications", userControllers.showNotifications);
