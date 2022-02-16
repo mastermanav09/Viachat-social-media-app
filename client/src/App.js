@@ -28,13 +28,22 @@ function App() {
         console.log(data);
         // setNotifications((prev) => {
         //   return { ...prev, data };
-        // });
+        // })
       });
     }
   }, [socket]);
 
   const likeHandler = () => {
     socket.emit("sendLikeNotification", {
+      senderId: userId,
+      receiverId: "620a4b6c63d49ec329e8c95c", // present in post
+      screamId: screamId,
+    });
+  };
+
+  const unLikeHandler = () => {
+    socket.emit("sendRemoveLikeNotification", {
+      screamId: null,
       senderId: userId,
       receiverId: "620a4b6c63d49ec329e8c95c", // present in post
     });
@@ -75,6 +84,18 @@ function App() {
       senderId: userId,
       receiverId: "620a4b6c63d49ec329e8c95c", // present in post
       message: inputCommentRef.current.value,
+      screamId: screamId,
+      commentId: commentId,
+    });
+  };
+
+  const deleteCommentHandler = (event) => {
+    event.preventDefault();
+    socket.emit("sendRemoveCommentNotification", {
+      commentId: commentId,
+      senderId: userId,
+      receiverId: "620a4b6c63d49ec329e8c95c", // present in post
+      screamId: screamId,
     });
   };
 
