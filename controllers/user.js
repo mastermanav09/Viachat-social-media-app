@@ -4,6 +4,8 @@ const linkValidation = require("../utils/validators/others/linkValidation");
 const { validationResult } = require("express-validator");
 const mongoose = require("mongoose");
 const Notification = require("../models/notification");
+const Scream = require("../models/scream");
+const Comment = require("../models/comment");
 
 exports.updateProfilePhoto = async (req, res, next) => {
   if (!req.file) {
@@ -38,6 +40,27 @@ exports.updateProfilePhoto = async (req, res, next) => {
     user.credentials.imageUrl = req.file.path.replaceAll("\\", "/");
     await user.save();
 
+    await Notification.updateMany(
+      {
+        sender: req.user.userId,
+      },
+      { userImageUrl: req.file.path.replaceAll("\\", "/") }
+    );
+
+    await Comment.updateMany(
+      {
+        userHandle: req.user.userId,
+      },
+      { userImageUrl: req.file.path.replaceAll("\\", "/") }
+    );
+
+    await Scream.updateMany(
+      {
+        userHandle: req.user.userId,
+      },
+      { userImageUrl: req.file.path.replaceAll("\\", "/") }
+    );
+
     res.status(200).json({
       message: "Photo uploaded successfully.",
     });
@@ -59,6 +82,8 @@ exports.updateProfilePhoto = async (req, res, next) => {
 };
 
 exports.updateProfile = async (req, res, next) => {
+  const username = req.body.username;
+  const name = req.body.name;
   const age = req.body.age || undefined;
   const bio = req.body.bio || undefined;
   const address = req.body.address || undefined;
@@ -82,13 +107,21 @@ exports.updateProfile = async (req, res, next) => {
       throw error;
     }
 
-    user.credentials.username = req.body.username || user.credentials.username;
+    user.credentials.username = username;
+    user.credentials.name = name;
     user.credentials.age = age;
     user.credentials.address = address;
     user.credentials.bio = bio;
     user.credentials.website = website;
 
     await user.save();
+
+    await Notification.updateMany(
+      {
+        sender: req.user.userId,
+      },
+      { senderUsername: username }
+    );
 
     res.status(200).json({ message: "Profile updated!" });
   } catch (error) {
