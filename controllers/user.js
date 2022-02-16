@@ -16,7 +16,14 @@ exports.updateProfilePhoto = async (req, res, next) => {
 
   let user,
     isLink = false;
+
   try {
+    if (!req.body.oldPath) {
+      const error = new Error("Something went wrong.");
+      error.statusCode = 404;
+      throw error;
+    }
+
     user = await User.findById({ _id: req.user.userId });
     if (!user) {
       const error = new Error("User not found.");
