@@ -128,9 +128,7 @@ exports.getNotifications = async (req, res, next) => {
 
 exports.showNotifications = async (req, res, next) => {
   try {
-    const user = await User.findById({
-      _id: req.user.userId,
-    });
+    const user = await User.findById({ _id: req.user.userId });
 
     if (!user) {
       const error = new Error("User not found.");
@@ -138,26 +136,15 @@ exports.showNotifications = async (req, res, next) => {
       throw error;
     }
 
-    const notifications = await Notification.find();
-
-    notifications.forEach((notification) => {
-      if (
-        notification.recipient === req.user.userId &&
-        notification.read == false
-      ) {
-        notification.read = true;
-      }
-
-      return notification;
-    });
-
-    const userNotifications = notifications.filter(
-      (notification) => notification.recipient === req.user.userId
+    const notifications = await Notification.updateMany(
+      {
+        recipient: req.user.userId,
+        read: false,
+      },
+      { read: true }
     );
 
-    await notifications.save();
-
-    res.status(200).json({ notifications: userNotifications });
+    res.status(200).json({});
   } catch (error) {
     if (!error.statusCode) {
       error.statusCode = 500;
