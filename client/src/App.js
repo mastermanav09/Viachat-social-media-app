@@ -37,7 +37,7 @@ function App() {
     socket.emit("sendLikeNotification", {
       senderId: userId,
       receiverId: "620a4b6c63d49ec329e8c95c", // present in post
-      screamId: screamId,
+      // screamId: screamId,
     });
   };
 
@@ -84,18 +84,18 @@ function App() {
       senderId: userId,
       receiverId: "620a4b6c63d49ec329e8c95c", // present in post
       message: inputCommentRef.current.value,
-      screamId: screamId,
-      commentId: commentId,
+      // screamId: screamId,
+      // commentId: commentId,
     });
   };
 
   const deleteCommentHandler = (event) => {
     event.preventDefault();
     socket.emit("sendRemoveCommentNotification", {
-      commentId: commentId,
+      // commentId: commentId,
       senderId: userId,
       receiverId: "620a4b6c63d49ec329e8c95c", // present in post
-      screamId: screamId,
+      // screamId: screamId,
     });
   };
 

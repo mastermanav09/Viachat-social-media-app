@@ -54,19 +54,19 @@ const userSchema = new Schema(
       },
     },
 
-    likes: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "Scream",
-      },
-    ],
+    // likes: [
+    //   {
+    //     type: Schema.Types.ObjectId,
+    //     ref: "Scream",
+    //   },
+    // ],
 
-    notifications: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "Notification",
-      },
-    ],
+    // notifications: [
+    //   {
+    //     type: Schema.Types.ObjectId,
+    //     ref: "Notification",
+    //   },
+    // ],
 
     provider: {
       type: String,
