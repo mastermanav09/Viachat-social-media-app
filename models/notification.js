@@ -19,7 +19,7 @@ const notificationSchema = new Schema(
 
     screamId: {
       type: Schema.Types.ObjectId,
-      ref: "Schema",
+      ref: "Scream",
       required: true,
     },
 

@@ -99,6 +99,14 @@ function App() {
     });
   };
 
+  const deleteScreamHandler = (event) => {
+    event.preventDefault();
+    socket.emit("sendDeleteScreamNotification", {
+      // screamId: screamId,
+      receiverId: "620a4b6c63d49ec329e8c95c", // present in post
+    });
+  };
+
   return (
     <>
       <Login />

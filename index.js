@@ -14,13 +14,9 @@ const initializeNotifications = require("./utils/notifications/notifications");
 
 const {
   userJoin,
-  getCurrentUser,
   userLeave,
   // getRoomUsers,
 } = require("./utils/users/connectedUsers");
-const Notification = require("./models/notification");
-const User = require("./models/user");
-const Comment = require("./models/comment");
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
