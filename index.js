@@ -11,6 +11,9 @@ const screamRoutes = require("./routes/screams");
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/user");
 const initializeNotifications = require("./utils/notifications/notifications");
+const jwt = require("jsonwebtoken");
+const jwtSecret = require("./config/jwt.config");
+const socketioJwt = require("socketio-jwt");
 
 const {
   userJoin,
@@ -99,6 +102,7 @@ mongoose
         userJoin(userId.toString(), socket.id);
       });
 
+      console.log("dsdadsdaddadadds");
       initializeNotifications(socket);
 
       socket.on("disconnect", () => {

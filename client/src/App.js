@@ -13,7 +13,12 @@ function App() {
   const inputCommentRef = useRef();
 
   useEffect(() => {
-    setSocket(io("http://localhost:8080"));
+    const token = cookies.get("upid");
+    const socket = io.connect("http://localhost:8080", {
+      query: { token },
+    });
+
+    setSocket(socket);
   }, []);
 
   useEffect(() => {
