@@ -266,6 +266,9 @@ exports.deleteScream = async (req, res, next) => {
       throw error;
     }
 
+    await Like.deleteMany({ screamId: screamId });
+    await Comment.deleteMany({ screamId: screamId });
+
     res.status(200).json({ message: "Scream deleted successfully!" });
   } catch (error) {
     if (!error.statusCode) {
