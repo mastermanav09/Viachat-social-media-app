@@ -275,8 +275,8 @@ exports.deleteScream = async (req, res, next) => {
     });
 
     if (!scream) {
-      const error = new Error("Something went wrong!");
-      error.statusCode = 400;
+      const error = new Error("Unauthorized!");
+      error.statusCode = 403;
       throw error;
     }
 
