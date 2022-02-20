@@ -41,8 +41,8 @@ module.exports = function (socket) {
       }
 
       if (scream.userHandle.toString() !== receiverId.toString()) {
-        const error = new Error("User not found!");
-        error.statusCode = 404;
+        const error = new Error("Not authorized!");
+        error.statusCode = 401;
         throw error;
       }
 
@@ -53,7 +53,7 @@ module.exports = function (socket) {
 
       if (!isLiked) {
         const error = new Error("The scream is not liked!");
-        error.statusCode = 422;
+        error.statusCode = 409;
         throw error;
       }
 
@@ -105,7 +105,7 @@ module.exports = function (socket) {
       });
 
       if (like) {
-        const error = new Error("State conflict!");
+        const error = new Error("The like still exists!");
         error.statusCode = 409;
         throw error;
       }
@@ -155,7 +155,7 @@ module.exports = function (socket) {
         });
 
         if (!user) {
-          const error = new Error("Something went wrong!");
+          const error = new Error("User not found!");
           error.statusCode = 404;
           throw error;
         }
@@ -182,8 +182,8 @@ module.exports = function (socket) {
         }
 
         if (scream.userHandle.toString() !== receiverId.toString()) {
-          const error = new Error("User not found!");
-          error.statusCode = 404;
+          const error = new Error("Not authorized!");
+          error.statusCode = 401;
           throw error;
         }
 
@@ -192,8 +192,8 @@ module.exports = function (socket) {
         });
 
         if (sameComment) {
-          const error = new Error("Something went wrong!");
-          error.statusCode = 409;
+          const error = new Error("Comment already exists!");
+          error.statusCode = 422;
           throw error;
         }
 
@@ -241,14 +241,14 @@ module.exports = function (socket) {
         });
 
         if (!user) {
-          const error = new Error("Something went wrong!");
+          const error = new Error("User not found!");
           error.statusCode = 404;
           throw error;
         }
 
         const comment = await Comment.findById({ _id: commentId });
         if (comment) {
-          const error = new Error("State conflict!");
+          const error = new Error("Comment still exists!");
           error.statusCode = 409;
           throw error;
         }
