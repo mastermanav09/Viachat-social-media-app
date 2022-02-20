@@ -11,9 +11,11 @@ const screamRoutes = require("./routes/screams");
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/user");
 const initializeNotifications = require("./utils/notifications/notifications");
+const fs = require("fs");
 const jwt = require("jsonwebtoken");
 const jwtSecret = require("./config/jwt.config");
 const { authorize } = require("@thream/socketio-jwt");
+const morgan = require("morgan");
 
 const {
   userJoin,
@@ -37,6 +39,15 @@ app.use((req, res, next) => {
   }
   next();
 });
+
+const accessLogStream = fs.createWriteStream(
+  path.join(__dirname, "access.log"),
+  {
+    flags: "a",
+  }
+);
+
+app.use(morgan("dev", { stream: accessLogStream }));
 
 app.use(express.json());
 app.use(passport.initialize());
