@@ -3,7 +3,6 @@ import axios from "axios";
 import { io } from "socket.io-client";
 import Login from "./pages/Login";
 import Cookies from "universal-cookie";
-// import { isUnauthorizedError } from "@thream/socketio-jwt";
 
 function App() {
   const cookies = new Cookies();
@@ -18,6 +17,10 @@ function App() {
     const token = cookies.get("upid");
     const socket = io.connect("http://localhost:8080", {
       auth: { token: `Bearer ${token}` },
+    });
+
+    socket.on("connect_error", (error) => {
+      console.log(error);
     });
 
     setSocket(socket);
