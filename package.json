@@ -20,6 +20,7 @@
     "url": "https://github.com/mastermanav09/viachat/issues"
   },
   "dependencies": {
+    "@thream/socketio-jwt": "^2.2.1",
     "bcryptjs": "^2.4.3",
     "dotenv": "^10.0.0",
     "express": "^4.17.2",
@@ -34,7 +35,6 @@
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
     "socket.io": "^4.4.1",
-    "socketio-jwt": "^4.6.2",
     "uuid": "^8.3.2"
   }
 }

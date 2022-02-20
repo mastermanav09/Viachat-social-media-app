@@ -13,7 +13,7 @@ const userRoutes = require("./routes/user");
 const initializeNotifications = require("./utils/notifications/notifications");
 const jwt = require("jsonwebtoken");
 const jwtSecret = require("./config/jwt.config");
-const socketioJwt = require("socketio-jwt");
+const { authorize } = require("@thream/socketio-jwt");
 
 const {
   userJoin,
@@ -97,12 +97,18 @@ mongoose
     const server = app.listen(process.env.PORT || 8080);
     const io = require("./config/socket").init(server);
 
-    io.on("connection", (socket) => {
-      socket.on("newUser", (userId) => {
-        userJoin(userId.toString(), socket.id);
+    io.use(
+      authorize({
+        secret: jwtSecret.secret,
+      })
+    );
+
+    io.on("connection", async (socket) => {
+      socket.on("newUser", () => {
+        userJoin(socket.decodedToken.userId, socket.id);
       });
 
-      console.log("dsdadsdaddadadds");
+      console.log("kamal hsgsggsggsgsg", socket.decodedToken);
       initializeNotifications(socket);
 
       socket.on("disconnect", () => {

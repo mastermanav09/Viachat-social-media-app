@@ -23,7 +23,7 @@ const Login = () => {
         data: loginData,
       });
 
-      if (res.status !== 200 || res.statusText != "OK") {
+      if (res.status !== 200 || res.statusText !== "OK") {
         console.log("Cannot authenticate, Please try again!");
       }
 

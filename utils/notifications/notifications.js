@@ -3,108 +3,155 @@ const { getCurrentUser } = require("../users/connectedUsers");
 const User = require("../../models/user");
 const Comment = require("../../models/comment");
 const Scream = require("../../models/scream");
+const Like = require("../../models/like");
+const mongoose = require("mongoose");
 
 module.exports = function (socket) {
-  socket.on(
-    "sendLikeNotification",
-    async ({ senderId, receiverId, screamId }) => {
-      const receiver = getCurrentUser(receiverId);
+  let io = require("../../config/socket").getIO();
 
-      try {
-        if (!receiver) {
-          const error = new Error("Something went wrong!");
-          error.statusCode = 404;
-          throw error;
-        }
+  socket.on("sendLikeNotification", async ({ receiverId, screamId }) => {
+    const receiver = getCurrentUser(receiverId);
+    const sender = getCurrentUser(socket.decodedToken.userId);
 
-        const user = await User.findOne({
-          _id: mongoose.Types.ObjectId(senderId),
-        });
+    try {
+      if (!sender) {
+        const error = new Error("Something went wrong!");
+        error.statusCode = 404;
+        throw error;
+      }
 
-        if (!user) {
-          const error = new Error("Something went wrong!");
-          error.statusCode = 404;
-          throw error;
-        }
+      const user = await User.findOne({
+        _id: socket.decodedToken.userId,
+      });
 
-        const notification = new Notification({
-          userImageUrl: user.credentials.imageUrl,
+      if (!user) {
+        const error = new Error("User not found!");
+        error.statusCode = 404;
+        throw error;
+      }
+
+      const scream = await Scream.findById({
+        _id: screamId,
+      });
+
+      if (!scream) {
+        const error = new Error("Scream not found!");
+        error.statusCode = 404;
+        throw error;
+      }
+
+      if (scream.userHandle.toString() !== receiverId.toString()) {
+        const error = new Error("User not found!");
+        error.statusCode = 404;
+        throw error;
+      }
+
+      const isLiked = await Like.findOne({
+        screamId: screamId,
+        userHandle: socket.decodedToken.userId,
+      });
+
+      if (!isLiked) {
+        const error = new Error("The scream is not liked!");
+        error.statusCode = 422;
+        throw error;
+      }
+
+      if (socket.decodedToken.userId !== receiverId.toString()) {
+        const notification = await Notification.findOne({
           type: "Like",
           screamId: screamId,
-          read: false,
-          senderUsername: user.credentials.username,
-          senderId: senderId,
-          recipientId: receiverId,
+          sender: socket.decodedToken.userId,
         });
 
-        await notification.save();
+        if (!notification) {
+          const notification = new Notification({
+            userImageUrl: user.credentials.imageUrl,
+            type: "Like",
+            screamId: screamId,
+            read: false,
+            senderUsername: user.credentials.username,
+            sender: socket.decodedToken.userId,
+            recipient: receiverId,
+          });
 
-        io.to(receiver.socketId).emit("getNotification", {
-          message: "Liked your scream.",
-          notification: notification,
-        });
-      } catch (error) {
-        console.log(error);
-      }
-    }
-  );
+          await notification.save();
 
-  socket.on(
-    "sendRemoveLikeNotification",
-    async ({ screamId, senderId, receiverId }) => {
-      const receiver = getCurrentUser(receiverId);
-      const sender = getCurrentUser(senderId);
-
-      try {
-        if (!receiver || !sender) {
-          const error = new Error("Something went wrong!");
-          error.statusCode = 404;
-          throw error;
+          io.to(receiver.socketId).emit("getNotification", {
+            message: "Liked your scream.",
+            notification: notification,
+          });
         }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  });
 
-        const notifications = await Notification.find({
+  socket.on("sendRemoveLikeNotification", async ({ screamId, receiverId }) => {
+    const receiver = getCurrentUser(receiverId);
+    const sender = getCurrentUser(socket.decodedToken.userId);
+
+    try {
+      if (!sender) {
+        const error = new Error("Something went wrong!");
+        error.statusCode = 404;
+        throw error;
+      }
+
+      const like = await Like.findOne({
+        screamId: screamId,
+        userHandle: socket.decodedToken.userId,
+      });
+
+      if (like) {
+        const error = new Error("State conflict!");
+        error.statusCode = 409;
+        throw error;
+      }
+
+      if (socket.decodedToken.userId !== receiverId.toString()) {
+        const notification = await Notification.findOneAndDelete({
+          screamId: screamId,
+          sender: socket.decodedToken.userId,
+          type: "Like",
           recipient: receiverId,
         });
 
-        const notificationIndex = notifications.findIndex(
-          (notification) =>
-            notification.screamId === screamId &&
-            notification.sender === senderId &&
-            notification.type === "Like"
-        );
-
-        if (notificationIndex === -1) {
+        if (!notification) {
           const error = new Error("Something went wrong!");
           error.statusCode = 404;
           throw error;
         }
 
-        notifications.splice(notificationIndex, 1);
-        await notifications.save();
+        const userNotifications = await Notification.find({
+          recipient: receiverId,
+        });
 
         io.to(receiver.socketId).emit("getNotification", {
-          notifications: notifications,
+          notifications: userNotifications,
         });
-      } catch (error) {
-        console.log(error);
       }
+    } catch (error) {
+      console.log(error);
     }
-  );
+  });
 
   socket.on(
     "sendCommentNotification",
-    async ({ commentId, senderId, receiverId, message, screamId }) => {
+    async ({ commentId, receiverId, message, screamId }) => {
       const receiver = getCurrentUser(receiverId);
+      const sender = getCurrentUser(socket.decodedToken.userId);
 
       try {
-        if (!receiver) {
+        if (!sender) {
           const error = new Error("Something went wrong!");
           error.statusCode = 404;
           throw error;
         }
 
         const user = await User.findOne({
-          _id: mongoose.Types.ObjectId(senderId),
+          _id: mongoose.Types.ObjectId(socket.decodedToken.userId),
         });
 
         if (!user) {
@@ -115,29 +162,61 @@ module.exports = function (socket) {
 
         const comment = await Comment.findById({ _id: commentId });
         if (!comment) {
-          const error = new Error("Something went wrong!");
+          const error = new Error("Comment not found!");
           error.statusCode = 404;
           throw error;
         }
 
-        const notification = new Notification({
-          userImageUrl: user.credentials.imageUrl,
-          type: "Comment",
-          message: message,
-          screamId: screamId,
-          commentId: commentId,
-          read: false,
-          senderUsername: user.credentials.username,
-          senderId: senderId,
-          recipientId: receiverId,
+        if (message !== comment.body) {
+          const error = new Error("Comment contains different body!");
+          error.statusCode = 422;
+          throw error;
+        }
+
+        const scream = await Scream.findById({ _id: screamId });
+
+        if (!scream) {
+          const error = new Error("Scream not found!");
+          error.statusCode = 404;
+          throw error;
+        }
+
+        if (scream.userHandle.toString() !== receiverId.toString()) {
+          const error = new Error("User not found!");
+          error.statusCode = 404;
+          throw error;
+        }
+
+        const sameComment = await Notification.findOne({
+          commentId: mongoose.Types.ObjectId(commentId),
         });
 
-        await notification.save();
+        if (sameComment) {
+          const error = new Error("Something went wrong!");
+          error.statusCode = 409;
+          throw error;
+        }
 
-        io.to(receiver.socketId).emit("getNotification", {
-          message: "Commented on your scream.",
-          notification: notification,
-        });
+        if (socket.decodedToken.userId !== receiverId.toString()) {
+          const notification = new Notification({
+            userImageUrl: user.credentials.imageUrl,
+            type: "Comment",
+            message: message,
+            screamId: screamId,
+            commentId: commentId,
+            read: false,
+            senderUsername: user.credentials.username,
+            sender: socket.decodedToken.userId,
+            recipient: receiverId,
+          });
+
+          await notification.save();
+
+          io.to(receiver.socketId).emit("getNotification", {
+            message: "Commented on your scream.",
+            notification: notification,
+          });
+        }
       } catch (error) {
         console.log(error);
       }
@@ -146,68 +225,88 @@ module.exports = function (socket) {
 
   socket.on(
     "sendRemoveCommentNotification",
-    async ({ commentId, screamId, senderId, receiverId }) => {
+    async ({ commentId, screamId, receiverId }) => {
       const receiver = getCurrentUser(receiverId);
-      const sender = getCurrentUser(senderId);
+      const sender = getCurrentUser(socket.decodedToken.userId);
 
       try {
-        if (!receiver || !sender) {
+        if (!sender) {
           const error = new Error("Something went wrong!");
           error.statusCode = 404;
           throw error;
         }
 
-        const notifications = await Notification.find({
-          recipient: receiverId,
+        const user = await User.findOne({
+          _id: mongoose.Types.ObjectId(socket.decodedToken.userId),
         });
 
-        const notificationIndex = notifications.findIndex(
-          (notification) =>
-            notification.screamId === screamId &&
-            notification.sender === senderId &&
-            notification.type === "Comment" &&
-            notification.commentId === commentId
-        );
-
-        if (notificationIndex === -1) {
+        if (!user) {
           const error = new Error("Something went wrong!");
           error.statusCode = 404;
           throw error;
         }
 
-        notifications.splice(notificationIndex, 1);
-        await notifications.save();
+        const comment = await Comment.findById({ _id: commentId });
+        if (comment) {
+          const error = new Error("State conflict!");
+          error.statusCode = 409;
+          throw error;
+        }
 
-        io.to(receiver.socketId).emit("getNotification", {
-          notifications: notifications,
-        });
+        if (socket.decodedToken.userId !== receiverId.toString()) {
+          const notification = await Notification.findOneAndDelete({
+            screamId: screamId,
+            sender: socket.decodedToken.userId,
+            type: "Comment",
+            commentId: commentId,
+            recipient: receiverId,
+          });
+
+          if (!notification) {
+            const error = new Error("Something went wrong!");
+            error.statusCode = 404;
+            throw error;
+          }
+
+          const userNotifications = await Notification.find({
+            recipient: receiverId,
+          });
+
+          io.to(receiver.socketId).emit("getNotification", {
+            notifications: userNotifications,
+          });
+        }
       } catch (error) {
         console.log(error);
       }
     }
   );
 
-  socket.on(
-    "sendDeleteScreamNotification",
-    async ({ screamId, receiverId }) => {
-      const receiver = getCurrentUser(receiverId);
+  socket.on("sendDeleteScreamNotification", async ({ screamId }) => {
+    const receiver = getCurrentUser(socket.decodedToken.userId);
 
-      try {
-        await Notification.deleteMany({
-          recipient: receiverId,
-          screamId: screamId,
-        });
-
-        const notifications = await Notification.find({
-          recipient: receiverId,
-        });
-
-        io.to(receiver.socketId).emit("getNotification", {
-          notifications: notifications,
-        });
-      } catch (error) {
-        console.log(error);
+    try {
+      const scream = await Scream.findById({ _id: screamId });
+      if (scream) {
+        const error = new Error("Scream still exists!");
+        error.statusCode = 404;
+        throw error;
       }
+
+      await Notification.deleteMany({
+        recipient: socket.decodedToken.userId,
+        screamId: screamId,
+      });
+
+      const notifications = await Notification.find({
+        recipient: socket.decodedToken.userId,
+      });
+
+      io.to(receiver.socketId).emit("getNotification", {
+        notifications: notifications,
+      });
+    } catch (error) {
+      console.log(error);
     }
-  );
+  });
 };
