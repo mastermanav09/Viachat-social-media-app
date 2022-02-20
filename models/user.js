@@ -20,10 +20,10 @@ const userSchema = new Schema(
         min: 3,
       },
 
-      handle: {
-        type: String,
-        default: "user",
-      },
+      // handle: {
+      //   type: String,
+      //   default: "user",
+      // },
 
       email: {
         type: String,

@@ -14,7 +14,7 @@ const commentSchema = new Schema(
 
     screamId: {
       type: Schema.Types.ObjectId,
-      ref: "Schema",
+      ref: "Scream",
     },
 
     body: {

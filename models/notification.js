@@ -13,6 +13,11 @@ const notificationSchema = new Schema(
       required: true,
     },
 
+    commentId: {
+      type: Schema.Types.ObjectId,
+      ref: "Comment",
+    },
+
     message: {
       type: String,
     },
