@@ -58,7 +58,6 @@ exports.signup = async (req, res, next) => {
       {
         username: result.credentials.username,
         email: result.credentials.email,
-        imageUrl: result.credentials.imageUrl,
         userId: result._id.toString(),
       },
       jwtSecret.secret,
@@ -129,7 +128,6 @@ exports.login = async (req, res, next) => {
       {
         username: loadedUser.credentials.username,
         email: loadedUser.credentials.email,
-        imageUrl: loadedUser.credentials.imageUrl,
         userId: loadedUser._id.toString(),
       },
       jwtSecret.secret,

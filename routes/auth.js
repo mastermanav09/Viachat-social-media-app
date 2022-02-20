@@ -60,7 +60,6 @@ router.get(
           username: result.credentials.username,
           userId: result._id.toString(),
           email: result.credentials.email,
-          imageUrl: result.credentials.imageUrl,
         },
         jwtSecret.secret,
         { expiresIn: "3h" }

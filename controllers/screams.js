@@ -39,8 +39,15 @@ exports.createScream = async (req, res, next) => {
       throw error;
     }
 
+    const user = await User.findById({ _id: req.user.userId });
+    if (!user) {
+      const error = new Error("User not found.");
+      error.statusCode = 404;
+      throw error;
+    }
+
     const scream = new Scream({
-      userImageUrl: req.user.imageUrl,
+      userImageUrl: user.credentials.imageUrl,
       userHandle: req.user.userId,
       body: body,
       likeCount: 0,
@@ -115,8 +122,15 @@ exports.addComment = async (req, res, next) => {
       throw error;
     }
 
+    const user = await User.findById({ _id: req.user.userId });
+    if (!user) {
+      const error = new Error("User not found.");
+      error.statusCode = 404;
+      throw error;
+    }
+
     const comment = new Comment({
-      userImageUrl: req.user.imageUrl,
+      userImageUrl: user.credentials.imageUrl,
       userHandle: req.user.userId,
       body: body,
       screamId: mongoose.Types.ObjectId(screamId),
