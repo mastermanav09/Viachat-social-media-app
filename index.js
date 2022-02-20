@@ -16,6 +16,7 @@ const jwt = require("jsonwebtoken");
 const jwtSecret = require("./config/jwt.config");
 const { authorize } = require("@thream/socketio-jwt");
 const morgan = require("morgan");
+const notificationDeletionJob = require("./utils/schedulers/notificationDelete");
 
 const {
   userJoin,
@@ -83,6 +84,8 @@ app.use(
     fileFilter: fileFilter,
   }).single("image")
 );
+
+notificationDeletionJob();
 
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);

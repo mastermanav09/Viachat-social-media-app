@@ -141,10 +141,6 @@ exports.updateProfile = async (req, res, next) => {
 };
 
 exports.getNotifications = async (req, res, next) => {
-  var date = new Date();
-  var daysToDeletion = 14;
-  var deletionDate = new Date(date.setDate(date.getDate() - daysToDeletion));
-
   try {
     const user = await User.findById({
       _id: req.user.userId,
@@ -155,8 +151,6 @@ exports.getNotifications = async (req, res, next) => {
       error.statusCode = 404;
       throw error;
     }
-
-    await Notification.deleteMany({ createdAt: { $lt: deletionDate } });
 
     const notifications = await Notification.find({
       recipient: req.user.userId,
