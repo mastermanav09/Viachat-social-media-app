@@ -1,0 +1,167 @@
+$navy-light-blue: rgb(34, 34, 240);
+$blue: #2666cf;
+$white: #ffffff;
+$light-grey: rgb(73, 80, 85);
+$nav-hover-white: rgba(255, 255, 255, 0.4);
+$nav-hover-blue: #95b3e4;
+$light-sky-blue: #5e91e2;
+
+@mixin add-icon-stoke-prop($stroke-width, $fill-color) {
+  stroke: none;
+  stroke-dasharray: none;
+  stroke-linecap: butt;
+  stroke-miterlimit: 10;
+  fill-rule: nonzero;
+  opacity: 1;
+  stroke-linejoin: miter;
+  stroke-width: $stroke-width;
+  fill: $fill-color;
+}
+
+@mixin display-flex-prop {
+  display: flex;
+  align-items: center;
+  @content;
+}
+
+.pre-heading {
+  color: orange !important;
+  font-family: "Roboto", sans-serif;
+}
+
+.logo {
+  width: 45px;
+  height: 45px;
+}
+
+.main-head {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.auth {
+  a {
+    text-decoration: none;
+    margin: 0 2rem;
+  }
+}
+
+.add-scream-icon {
+  g {
+    g {
+      @include add-icon-stoke-prop(0, none);
+
+      path {
+        @include add-icon-stoke-prop(1, rgb(0, 0, 0));
+      }
+    }
+  }
+}
+
+.bg-blue {
+  background-color: $blue;
+}
+
+.navbar {
+  padding: 0rem 30px 0rem 20px;
+  height: 65px;
+  @include display-flex-prop();
+
+  svg {
+    stroke: $white;
+    fill: $white;
+  }
+
+  &.navbar-dark {
+    * {
+      color: $white;
+    }
+  }
+
+  .navbar-nav {
+    .nav-list {
+      list-style: none;
+      padding-left: 0;
+      font-size: 1.1rem;
+      @include display-flex-prop();
+
+      li {
+        margin: 0 0.4rem;
+      }
+    }
+  }
+}
+
+.navbar-mid-nav {
+  @include display-flex-prop();
+  margin: auto;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.nav-mid-list {
+  list-style: none;
+  display: flex;
+  padding-left: 0;
+  height: 100%;
+
+  li {
+    margin: auto 0.5rem;
+    padding: 0.48rem 2rem 0.38rem 2rem;
+    cursor: pointer;
+
+    &:hover {
+      background: $nav-hover-white;
+      border-radius: 10px;
+    }
+  }
+}
+
+.content {
+  width: 100%;
+  height: 100vh;
+  background-color: #eee;
+  font-weight: bolder;
+  font-size: 2rem;
+  @include display-flex-prop() {
+    justify-content: center;
+  }
+}
+
+.navbar-actions-icon {
+  border-radius: 80%;
+  padding: 0.38rem 0.55rem 0.3rem 0.55rem;
+  background-color: $light-sky-blue;
+  cursor: pointer;
+
+  &:hover {
+    background-color: $nav-hover-blue;
+  }
+}
+
+.profile-icon {
+  display: none;
+  position: absolute;
+  right: 170px;
+  top: 10px;
+  cursor: pointer;
+  padding: 0.25rem 0.55rem 0.25rem 0.35rem;
+  gap: 0.6rem;
+
+  &:hover {
+    background-color: $nav-hover-white;
+    border-radius: 25px;
+    touch-action: manipulation;
+  }
+
+  @media (min-width: 1024px) {
+    display: flex;
+  }
+
+  img {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+}
