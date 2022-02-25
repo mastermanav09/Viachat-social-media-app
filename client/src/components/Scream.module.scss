@@ -1,0 +1,100 @@
+$blue: #2666cf;
+
+.main {
+  display: flex;
+}
+
+.scream-profile-image {
+  display: block;
+  width: 18vw;
+  max-width: 170px;
+  height: 100%;
+  border-radius: 5px;
+
+  img {
+    width: 18vw;
+    max-width: 170px;
+    height: 100%;
+    border-radius: 5px;
+    object-fit: cover;
+  }
+}
+
+.scream-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0.8rem 1.5rem 0.8rem 0.8rem;
+  width: 100%;
+
+  .name {
+    color: $blue;
+    font-size: clamp(14px, 1.5vw, 20px);
+  }
+
+  .timeago {
+    color: rgba($color: #000000, $alpha: 0.5);
+    font-size: clamp(12px, 1.1vw, 15px);
+  }
+
+  .body {
+    color: black;
+    font-size: clamp(12.5px, 1.1vw, 15px);
+    margin: 0.4rem 0;
+
+    @media screen and (max-width: 800px) {
+      margin: 0.2rem 0;
+    }
+  }
+
+  .actions {
+    display: flex;
+    justify-content: space-between;
+    font-size: clamp(14px, 1.3vw, 16px);
+    margin-top: 0.1rem;
+    @media screen and (max-width: 800px) {
+      margin-top: 0rem;
+    }
+  }
+}
+
+.actions_one {
+  display: flex;
+  justify-content: center;
+
+  > span {
+    display: flex;
+    align-items: center;
+    margin: 0 0.5rem;
+
+    &:nth-child(2) {
+      svg {
+        margin-top: 0.4rem;
+      }
+    }
+  }
+
+  .actions_text {
+    font-size: clamp(12px, 1.1vw, 15px);
+  }
+}
+
+.actions_one span .like {
+  width: 1rem;
+  margin: 0 0.6rem;
+  cursor: pointer;
+
+  @media screen and (max-width: 800px) {
+    width: 0.8rem;
+  }
+}
+
+.actions_one span .comment {
+  margin: 0 0.6rem;
+  cursor: pointer;
+
+  @media screen and (max-width: 800px) {
+    width: 1.1rem;
+    height: max-content;
+  }
+}

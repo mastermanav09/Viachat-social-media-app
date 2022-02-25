@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import classes from "./Screams.module.scss";
+import classes from "./ScreamsList.module.scss";
 import axios from "axios";
 import Cookies from "universal-cookie";
-import LoadingSpinner from "../components/UI/LoadingSpinner";
+import SkeletonScream from "./UI/skeletons/SkeletonScream";
+import Scream from "./Scream";
 
-const Screams = () => {
+const ScreamsList = () => {
   const [screams, setScreams] = useState(null);
   const [error, setError] = useState(null);
   const cookies = new Cookies();
@@ -33,23 +34,29 @@ const Screams = () => {
       });
   }, []);
 
-  if (error) {
-    // return <p className={classes.center}>{error}</p>;
-  }
+  // if (error) {
+  //   return <p className={classes.center}>{error}</p>;
+  // }
 
   if (!screams) {
-    return (
-      <div className={`${classes.center} ${classes.middle}`}>
-        <LoadingSpinner />
-      </div>
-    );
+    let content;
+    content = [1, 2, 3, 4].map((n) => <SkeletonScream key={n} />);
+    return content;
   }
 
-  let content = screams.map((scream) => <p>{scream.body}</p>);
-
   return (
-    <div>{screams.length == 0 ? <p>No screams found.</p> : <>{content}</>}</div>
+    <>
+      {screams.length === 0 ? (
+        <p className={classes.no_screams}>No screams found.</p>
+      ) : (
+        <>
+          {screams.map((scream) => (
+            <Scream key={scream._id} scream={scream} />
+          ))}
+        </>
+      )}
+    </>
   );
 };
 
-export default Screams;
+export default ScreamsList;

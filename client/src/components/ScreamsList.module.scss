@@ -1,0 +1,16 @@
+.center {
+  margin: auto;
+  text-align: center;
+}
+
+.middle {
+  // display: flex;
+  // align-items: center;
+  // justify-content: center;
+  height: 100%;
+}
+
+.no_screams {
+  font-size: clamp(15px, 2vw, 25px);
+  text-align: center;
+}

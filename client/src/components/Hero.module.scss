@@ -1,0 +1,53 @@
+.hero-skeleton {
+  margin: auto;
+  text-align: center;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  width: max-content;
+  background-color: rgba(0, 0, 0, 0.01);
+
+  .box {
+    width: 210;
+    height: 210;
+
+    @media screen and (max-width: 1280px) {
+      width: 210;
+      height: 210;
+    }
+
+    @media screen and (max-width: 480px) {
+      width: 210;
+      height: 210;
+    }
+  }
+
+  .head {
+    width: 300;
+    height: 60;
+
+    @media screen and (max-width: 1280px) {
+      width: 210;
+      height: 210;
+    }
+
+    @media screen and (max-width: 480px) {
+      width: 210;
+      height: 210;
+    }
+  }
+
+  .para {
+    width: 300;
+    height: 20;
+
+    @media screen and (max-width: 1280px) {
+      width: 210;
+      height: 210;
+    }
+
+    @media screen and (max-width: 480px) {
+      width: 210;
+      height: 210;
+    }
+  }
+}
