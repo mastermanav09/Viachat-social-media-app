@@ -13,7 +13,7 @@ exports.getAllScreams = async (req, res, next) => {
       .select(["-__v", "-updatedAt"])
       .sort({ createdAt: -1 });
 
-    console.log(screams);
+    console.log("ddadad");
     res.status(200).json({
       screams: screams,
     });
@@ -47,6 +47,7 @@ exports.createScream = async (req, res, next) => {
     }
 
     const scream = new Scream({
+      username: user.credentials.username,
       userImageUrl: user.credentials.imageUrl,
       userHandle: req.user.userId,
       body: body,
