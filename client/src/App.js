@@ -4,7 +4,7 @@ import { io } from "socket.io-client";
 import Cookies from "universal-cookie";
 import { Route, Routes } from "react-router-dom";
 import Layout from "./components/layout/Layout";
-import Login from "./pages/Login";
+import Auth from "./pages/Auth";
 import Signup from "./pages/Signup";
 import Home from "./pages/Home";
 
@@ -125,8 +125,8 @@ function App() {
     <Layout>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Auth />} />
+        <Route path="/login" element={<Auth />} />
       </Routes>
 
       {/* <Login />
