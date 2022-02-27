@@ -86,9 +86,19 @@ img {
   }
 }
 
+.validate {
+  font-size: clamp(12px, 2.5vw, 17px);
+  margin: 0.8rem 0 0.5rem 0;
+  color: red;
+
+  @media screen and (max-width: 640px) {
+    margin: 0.5rem 0 0.5rem 0;
+  }
+}
+
 // Main
 .main {
-  background-image: url("../../public//images/login-background.jpg");
+  background-image: url("../../public//images/login-background.webp");
   @media screen and (max-width: 768px) {
     background-image: none;
   }
@@ -106,7 +116,7 @@ img {
     box-shadow: $shadow-large;
 
     @media screen and (max-width: 640px) {
-      padding: 2rem 1rem;
+      padding: 0.5rem 1rem;
     }
 
     @media screen and (max-width: 640px) {
@@ -116,7 +126,7 @@ img {
     .form {
       width: 100%;
       height: auto;
-      margin-top: 2rem;
+      margin-top: 0rem;
 
       .input-control {
         display: flex;
@@ -244,4 +254,31 @@ img {
 
 .signup {
   margin: auto;
+}
+
+.dual-ring {
+  width: inherit;
+  height: inherit;
+}
+
+.dual-ring:after {
+  content: " ";
+  text-align: center;
+  margin: auto;
+  display: block;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 3.5px solid #fff;
+  border-color: #fff transparent #fff transparent;
+  animation: lds-dual-ring 1s linear infinite;
+}
+
+@keyframes lds-dual-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }

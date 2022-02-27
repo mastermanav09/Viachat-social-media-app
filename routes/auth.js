@@ -66,7 +66,6 @@ router.get(
       );
 
       res.cookie("upid", token);
-      res.cookie("_id", result._id.toString());
       res.redirect("http://localhost:3000/");
     } catch (error) {
       if (!error.statusCode) {

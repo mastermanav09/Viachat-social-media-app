@@ -1,10 +1,14 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useRef } from "react";
-import Cookies from "universal-cookie";
 import classes from "./Auth.module.scss";
 import Google from "../components/svg/Google";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { auth } from "../store/reducers/user";
+// import { userActions } from "../store/reducers/user";
+import { uiActions } from "../store/reducers/ui";
+import { useNavigate } from "react-router-dom";
 
 const Auth = () => {
   const emailInputRef = useRef();
@@ -12,13 +16,22 @@ const Auth = () => {
   const confirmPasswordInputRef = useRef();
   const usernameInputRef = useRef();
   const nameInputRef = useRef();
-  const cookies = new Cookies();
+  const dispatch = useDispatch();
+  // const userState = useSelector((state) => state.user);
+  const uiState = useSelector((state) => state.ui);
+  const navigate = useNavigate();
   const [switchAuthLogIn, setSwitchAuthLogIn] = useState(true);
 
-  const switchAuthHandler = () => {
-    setSwitchAuthLogIn((prev) => !prev);
+  const googleAuthHandler = () => {
+    window.open("http://localhost:8080/api/auth/google", "_self");
   };
 
+  const switchAuthHandler = () => {
+    dispatch(uiActions.errorsNullify());
+    dispatch(uiActions.switchAuth());
+  };
+
+  let validationData = null;
   const loginHandler = async (e) => {
     e.preventDefault();
 
@@ -39,34 +52,23 @@ const Auth = () => {
       };
     }
 
-    try {
-      let authUrl;
-      if (switchAuthLogIn) {
-        authUrl = "/api/auth/login";
-      } else {
-        authUrl = "/api/auth/signup";
-      }
-
-      const res = await axios({
-        method: "POST",
-        url: authUrl,
-        data: authData,
-      });
-
-      cookies.set("upid", res.data.token);
-      cookies.set("_id", res.data.id);
-    } catch (error) {
-      if (error.response) {
-        console.log(error.response.data);
-        console.log(error.response.status);
-        console.log(error.response.headers);
-      } else if (error.request) {
-        console.log(error.request);
-      } else {
-        console.log("Error", error.message);
-      }
+    let authUrl;
+    if (switchAuthLogIn) {
+      authUrl = "/api/auth/login";
+    } else {
+      authUrl = "/api/auth/signup";
     }
+
+    dispatch(auth({ authData, authUrl, navigate }));
   };
+
+  if (uiState.errors) {
+    if (uiState.errors.errorData) {
+      validationData = uiState.errors.errorData[0].msg;
+    } else {
+      validationData = uiState.errors.message;
+    }
+  }
 
   return (
     <main className={classes.main}>
@@ -74,16 +76,16 @@ const Auth = () => {
         <section className={classes.wrapper}>
           <div className={classes.heading}>
             <h1 className={`${classes.text} ${classes["text-large"]}`}>
-              {switchAuthLogIn ? <>Log In</> : <>Sign up</>}
+              {uiState.isAuthLogin ? <>Log In</> : <>Sign up</>}
             </h1>
             <p className={`${classes.text} ${classes["text-normal"]}`}>
-              {switchAuthLogIn ? (
+              {uiState.isAuthLogin ? (
                 <span>New user?</span>
               ) : (
                 <span>Already a user? </span>
               )}
               <span>
-                {switchAuthLogIn ? (
+                {uiState.isAuthLogin ? (
                   <Link
                     to="/signup"
                     className={`${classes.text} ${classes["text-links"]}`}
@@ -103,13 +105,17 @@ const Auth = () => {
               </span>
             </p>
           </div>
+
+          {validationData && (
+            <p className={classes.validate}>{validationData}</p>
+          )}
           <form
             name="login"
             className={classes.form}
             noValidate
             onSubmit={loginHandler}
           >
-            {!switchAuthLogIn && (
+            {!uiState.isAuthLogin && (
               <>
                 <div className={`${classes["input-control"]}`}>
                   <label
@@ -179,7 +185,7 @@ const Auth = () => {
               />
             </div>
 
-            {!switchAuthLogIn && (
+            {!uiState.isAuthLogin && (
               <div className={`${classes["input-control"]}`}>
                 <label
                   htmlFor="confirm-password"
@@ -199,7 +205,7 @@ const Auth = () => {
             )}
 
             <div className={`${classes["input-control"]}`}>
-              {switchAuthLogIn && (
+              {uiState.isAuthLogin && (
                 <a
                   href="#"
                   className={`${classes.text} ${classes["text-links"]}`}
@@ -208,13 +214,17 @@ const Auth = () => {
                 </a>
               )}
 
-              {switchAuthLogIn ? (
+              {uiState.isAuthLogin ? (
                 <button
                   type="submit"
                   name="submit"
                   className={`${classes["input-submit"]}`}
                 >
-                  Login
+                  {uiState.loader ? (
+                    <div className={`${classes["dual-ring"]}`}></div>
+                  ) : (
+                    <span> Login</span>
+                  )}
                 </button>
               ) : (
                 <button
@@ -222,7 +232,11 @@ const Auth = () => {
                   name="submit"
                   className={`${classes["input-submit"]} ${classes.signup}`}
                 >
-                  Signup
+                  {uiState.loader ? (
+                    <div className={`${classes["dual-ring"]}`}></div>
+                  ) : (
+                    <span> Signup</span>
+                  )}
                 </button>
               )}
             </div>
@@ -234,10 +248,13 @@ const Auth = () => {
           </div>
           <div className={classes.method}>
             <div className={`${classes["method-control"]}`}>
-              <a href="#" className={`${classes["method-action"]}`}>
+              <button
+                onClick={googleAuthHandler}
+                className={`${classes["method-action"]}`}
+              >
                 <Google />
                 <span>Sign in with Google</span>
-              </a>
+              </button>
             </div>
           </div>
         </section>

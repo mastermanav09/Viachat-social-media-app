@@ -25,7 +25,6 @@ const ScreamsList = () => {
           throw error;
         }
 
-        console.log(res.data.screams);
         setScreams(res.data.screams);
       })
       .catch((error) => {

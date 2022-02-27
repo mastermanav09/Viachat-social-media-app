@@ -69,7 +69,6 @@ exports.signup = async (req, res, next) => {
     res.status(201).json({
       message: "Signed up successfully!",
       token: token,
-      id: result._id.toString(),
     });
   } catch (error) {
     if (!error.statusCode) {
@@ -139,7 +138,6 @@ exports.login = async (req, res, next) => {
     res.status(200).json({
       message: "Logged in successfully!",
       token: token,
-      id: loadedUser._id.toString(),
     });
   } catch (err) {
     if (!err.statusCode) {

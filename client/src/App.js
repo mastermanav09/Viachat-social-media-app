@@ -2,23 +2,28 @@ import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { io } from "socket.io-client";
 import Cookies from "universal-cookie";
-import { Route, Routes } from "react-router-dom";
+import { useNavigate, Route, Routes, Navigate } from "react-router-dom";
 import Layout from "./components/layout/Layout";
 import Auth from "./pages/Auth";
-import Signup from "./pages/Signup";
 import Home from "./pages/Home";
+import jwtDecode from "jwt-decode";
+import { useSelector, useDispatch } from "react-redux";
+import { userActions } from "./store/reducers/user";
 
 function App() {
-  // const cookies = new Cookies();
+  const cookies = new Cookies();
+  const token = cookies.get("upid");
+  const navigate = useNavigate();
+  const userState = useSelector((state) => state.user);
+  const dispatch = useDispatch();
   // const [image, setImage] = useState(null);
   // const [socket, setSocket] = useState(null);
   // const [notifications, setNotifications] = useState([]);
-  // const userId = cookies.get("_id");
   // const inputCommentRef = useRef();
   // const [stateChange, setStateChange] = useState(true);
 
   // useEffect(() => {
-  //   const token = cookies.get("upid");
+
   //   const socket = io.connect("http://localhost:8080", {
   //     auth: { token: `Bearer ${token}` },
   //   });
@@ -121,12 +126,35 @@ function App() {
   //   });
   // };
 
+  if (token) {
+    const decodedToken = jwtDecode(token);
+    if (!decodedToken || decodedToken.exp * 1000 < Date.now()) {
+      navigate("/login", { replace: true });
+      dispatch(userActions.logout());
+    } else {
+      dispatch(userActions.authenticated());
+    }
+  }
+
   return (
     <Layout>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/signup" element={<Auth />} />
-        <Route path="/login" element={<Auth />} />
+        <Route
+          path="/"
+          element={userState.authenticated ? <Home /> : <Auth />}
+        />
+        <Route
+          path="/signup"
+          element={
+            userState.authenticated ? <Navigate replace to="/" /> : <Auth />
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            userState.authenticated ? <Navigate replace to="/" /> : <Auth />
+          }
+        />
       </Routes>
 
       {/* <Login />
