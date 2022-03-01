@@ -8,6 +8,7 @@ export const auth = createAsyncThunk(
   async (userData, { dispatch }) => {
     const cookies = new Cookies();
 
+    dispatch(uiActions.errorsNullify());
     dispatch(uiActions.setLoader());
     try {
       const res = await axios({
@@ -18,20 +19,49 @@ export const auth = createAsyncThunk(
 
       cookies.set("upid", res.data.token);
       dispatch(userSlice.actions.authenticated());
-      dispatch(userSlice.actions.setUserData(res.data));
-
-      console.log(res.data);
+      dispatch(getUser());
 
       userData.navigate("/", { replace: true });
     } catch (error) {
       if (!error.response) {
-        throw new Error("Authentication failed!");
+        dispatch(uiActions.errors(error.message));
+      } else {
+        dispatch(uiActions.errors(error.response.data));
       }
-
-      dispatch(uiActions.errors(error.response.data));
     }
 
     dispatch(uiActions.setLoader());
+  }
+);
+
+export const getUser = createAsyncThunk(
+  "user/getUser",
+  async (data, { dispatch }) => {
+    const cookies = new Cookies();
+    const token = cookies.get("upid");
+
+    try {
+      const res = await axios({
+        method: "GET",
+        url: "/api/user/getUserDetails",
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      });
+
+      if (res.status !== 200 || res.statusText !== "OK") {
+        const error = new Error("Can't load screams!");
+        throw error;
+      }
+
+      dispatch(userSlice.actions.setUserData(res.data));
+    } catch (error) {
+      if (!error.response) {
+        dispatch(uiActions.errors(error.message));
+      } else {
+        dispatch(uiActions.errors(error.response.data));
+      }
+    }
   }
 );
 
@@ -40,8 +70,9 @@ const userSlice = createSlice({
   initialState: {
     authenticated: false,
     credentials: {},
-    likes: [],
-    notifications: [],
+    interactions: null,
+    notifications: null,
+    screams: null,
   },
 
   reducers: {
@@ -55,11 +86,24 @@ const userSlice = createSlice({
 
       state.authenticated = false;
       state.credentials = {};
-      state.likes = [];
-      state.notifications = [];
+      state.interactions = null;
+      state.notifications = null;
+      state.screams = null;
     },
 
-    setUserData(state, action) {},
+    setUserData(state, action) {
+      state.credentials = {
+        ...action.payload.user.credentials,
+        joined: action.payload.user.createdAt,
+      };
+      state.notifications = action.payload.notifications;
+      state.interactions = {
+        likes: action.payload.likes,
+        comments: action.payload.comments,
+      };
+
+      state.screams = action.payload.screams;
+    },
   },
 
   extraReducers: {},

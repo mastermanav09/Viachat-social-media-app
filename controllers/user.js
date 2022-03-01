@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const Notification = require("../models/notification");
 const Scream = require("../models/scream");
 const Comment = require("../models/comment");
+const Like = require("../models/like");
 
 exports.updateProfilePhoto = async (req, res, next) => {
   if (!req.file) {
@@ -106,22 +107,23 @@ exports.updateProfile = async (req, res, next) => {
       throw error;
     }
 
-    const user = await User.findById({ _id: req.user.userId });
+    const user = await User.findByIdAndUpdate(
+      { _id: req.user.userId },
+      {
+        "credentials.username": username,
+        "credentials.name": name,
+        "credentials.age": age,
+        "credentials.address": address,
+        "credentials.bio": bio,
+        "credentials.website": website,
+      }
+    );
 
     if (!user) {
       const error = new Error("User not found.");
       error.statusCode = 404;
       throw error;
     }
-
-    user.credentials.username = username;
-    user.credentials.name = name;
-    user.credentials.age = age;
-    user.credentials.address = address;
-    user.credentials.bio = bio;
-    user.credentials.website = website;
-
-    await user.save();
 
     await Notification.updateMany(
       {
@@ -131,6 +133,44 @@ exports.updateProfile = async (req, res, next) => {
     );
 
     res.status(200).json({ message: "Profile updated!" });
+  } catch (error) {
+    if (!error.statusCode) {
+      error.statusCode = 500;
+    }
+
+    next(error);
+  }
+};
+
+exports.getUserDetails = async (req, res, next) => {
+  try {
+    const user = await User.findById({
+      _id: req.user.userId,
+    }).select("-credentials.password");
+
+    if (!user) {
+      const error = new Error("User not found.");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    const userNotifications = await Notification.find({
+      recipient: req.user.userId,
+    });
+
+    const userLikes = await Like.find({ userHandle: req.user.userId });
+    const userComments = await Comment.find({ userHandle: req.user.userId });
+    const userScreams = await Scream.find({ userHandle: req.user.userId });
+
+    const updatedUser = {
+      user,
+      notifications: userNotifications,
+      likes: userLikes,
+      comments: userComments,
+      screams: userScreams,
+    };
+
+    res.status(200).json(updatedUser);
   } catch (error) {
     if (!error.statusCode) {
       error.statusCode = 500;
@@ -166,7 +206,7 @@ exports.getNotifications = async (req, res, next) => {
   }
 };
 
-exports.showNotifications = async (req, res, next) => {
+exports.markNotificationsRead = async (req, res, next) => {
   try {
     const user = await User.findById({ _id: req.user.userId });
 

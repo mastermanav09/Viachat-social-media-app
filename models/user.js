@@ -20,11 +20,6 @@ const userSchema = new Schema(
         min: 3,
       },
 
-      // handle: {
-      //   type: String,
-      //   default: "user",
-      // },
-
       email: {
         type: String,
         required: true,
@@ -53,20 +48,6 @@ const userSchema = new Schema(
         type: String,
       },
     },
-
-    // likes: [
-    //   {
-    //     type: Schema.Types.ObjectId,
-    //     ref: "Scream",
-    //   },
-    // ],
-
-    // notifications: [
-    //   {
-    //     type: Schema.Types.ObjectId,
-    //     ref: "Notification",
-    //   },
-    // ],
 
     provider: {
       type: String,

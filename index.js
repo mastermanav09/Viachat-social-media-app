@@ -76,7 +76,10 @@ const fileStorage = multer.diskStorage({
   },
 });
 
-app.use("assets", express.static(path.join(__dirname, "assets")));
+app.use(
+  "/assets/profileImages",
+  express.static(path.join(__dirname, "assets/profileImages"))
+);
 
 app.use(
   multer({
@@ -122,7 +125,6 @@ mongoose
         userJoin(socket.decodedToken.userId, socket.id);
       });
 
-      console.log("kamal hsgsggsggsgsg", socket.decodedToken);
       initializeNotifications(socket);
 
       socket.on("disconnect", () => {

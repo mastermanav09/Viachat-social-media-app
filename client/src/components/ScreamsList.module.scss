@@ -4,13 +4,21 @@
 }
 
 .middle {
-  // display: flex;
-  // align-items: center;
-  // justify-content: center;
   height: 100%;
 }
 
 .no_screams {
   font-size: clamp(15px, 2vw, 25px);
   text-align: center;
+}
+
+.validate {
+  font-size: clamp(12px, 2.5vw, 20px);
+  margin: 0.8rem 0 0.5rem 0;
+  color: red;
+  text-align: center;
+
+  @media screen and (max-width: 640px) {
+    margin: 0.5rem 0 0.5rem 0;
+  }
 }

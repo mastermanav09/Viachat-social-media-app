@@ -1,53 +1,119 @@
-.hero-skeleton {
-  margin: auto;
-  text-align: center;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  padding: 30px;
-  width: max-content;
-  background-color: rgba(0, 0, 0, 0.01);
+$blue: #2666cf;
 
-  .box {
-    width: 210;
-    height: 210;
+.profile {
+  height: 100%;
+}
 
-    @media screen and (max-width: 1280px) {
-      width: 210;
-      height: 210;
+.upper-container {
+  .image-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+    background: hsla(154, 100%, 76%, 1);
+    background: hsla(239, 100%, 67%, 1);
+    border-radius: 5px 5px 0 0;
+
+    background: linear-gradient(
+      90deg,
+      hsla(239, 100%, 67%, 1) 0%,
+      hsla(187, 100%, 89%, 1) 100%
+    );
+
+    background: -moz-linear-gradient(
+      90deg,
+      hsla(239, 100%, 67%, 1) 0%,
+      hsla(187, 100%, 89%, 1) 100%
+    );
+
+    background: -webkit-linear-gradient(
+      90deg,
+      hsla(239, 100%, 67%, 1) 0%,
+      hsla(187, 100%, 89%, 1) 100%
+    );
+
+    img {
+      width: 12vw;
+      max-width: 150px;
+      text-align: center;
+      object-fit: cover;
+      border-radius: 50%;
+      margin: 0.5rem 0;
     }
+  }
+}
 
-    @media screen and (max-width: 480px) {
-      width: 210;
-      height: 210;
+.lower-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 0.2rem;
+  height: 100%;
+
+  * {
+    margin: 0.3rem 0;
+
+    @media screen and (max-width: 1050px) {
+      margin: 0.25rem 0;
     }
   }
 
-  .head {
-    width: 300;
-    height: 60;
-
-    @media screen and (max-width: 1280px) {
-      width: 210;
-      height: 210;
-    }
-
-    @media screen and (max-width: 480px) {
-      width: 210;
-      height: 210;
+  .profile-link {
+    a {
+      color: $blue;
+      cursor: pointer;
+      font-size: clamp(14px, 1.7vw, 20px);
     }
   }
 
-  .para {
-    width: 300;
-    height: 20;
+  .name {
+    font-size: clamp(17px, 1.4vw, 20px);
+    color: rgba($color: #000000, $alpha: 0.6);
+  }
 
-    @media screen and (max-width: 1280px) {
-      width: 210;
-      height: 210;
+  .website {
+    font-size: clamp(15px, 1.4vw, 17px);
+    color: $blue;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+
+    svg {
+      width: 18px;
+      height: 18px;
+      fill: #2666cf;
+      margin: 0 0.35rem;
     }
+  }
 
-    @media screen and (max-width: 480px) {
-      width: 210;
-      height: 210;
+  .location {
+    display: flex;
+    align-items: center;
+    svg {
+      width: 18px;
+      height: 18px;
+      fill: #2666cf;
+      margin: 0 0.2rem;
+    }
+  }
+
+  .intro,
+  .location,
+  .joined {
+    color: black;
+    font-size: clamp(15px, 1.4vw, 17px);
+  }
+
+  .joined {
+    display: flex;
+    align-items: center;
+    svg {
+      width: 18px;
+      height: 18px;
+      fill: #2666cf;
+      margin: 0 0.45rem;
+    }
+    span {
+      margin: 0 0.3rem;
     }
   }
 }

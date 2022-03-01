@@ -49,7 +49,6 @@ exports.signup = async (req, res, next) => {
         address: undefined,
         website: undefined,
       },
-      likes: [],
     });
 
     const result = await newUser.save();

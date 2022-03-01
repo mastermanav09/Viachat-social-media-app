@@ -6,6 +6,8 @@ const uiSlice = createSlice({
     errors: null,
     loader: false,
     isAuthLogin: true,
+    showNavbarOptions: false,
+    showNotifications: false,
   },
 
   reducers: {
@@ -23,6 +25,21 @@ const uiSlice = createSlice({
 
     switchAuth(state, action) {
       state.isAuthLogin = !state.isAuthLogin;
+    },
+
+    showNavbarOptions(state, action) {
+      state.showNavbarOptions = !state.showNavbarOptions;
+      state.showNotifications = false;
+    },
+
+    showNotifications(state, action) {
+      state.showNotifications = !state.showNotifications;
+      state.showNavbarOptions = false;
+    },
+
+    clearBars(state, action) {
+      state.showNotifications = false;
+      state.showNavbarOptions = false;
     },
   },
 });

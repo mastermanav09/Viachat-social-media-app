@@ -11,7 +11,12 @@ router.put(
   userControllers.updateProfile
 );
 
+router.get("/getUserDetails", isAuth, userControllers.getUserDetails);
 router.get("/getNotifications", isAuth, userControllers.getNotifications);
-router.get("/showNotifications", isAuth, userControllers.showNotifications);
+router.get(
+  "/markNotificationsRead",
+  isAuth,
+  userControllers.markNotificationsRead
+);
 
 module.exports = router;

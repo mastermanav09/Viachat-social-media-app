@@ -63,9 +63,10 @@ $light-sky-blue: #5e91e2;
 }
 
 .navbar {
-  padding: 0rem 30px 0rem 20px;
+  padding: 0rem 25px 0rem 20px;
   height: 65px;
   @include display-flex-prop();
+  user-select: none;
 
   svg {
     stroke: $white;
@@ -98,6 +99,7 @@ $light-sky-blue: #5e91e2;
     margin-right: 0;
     position: relative;
     display: none;
+
     .bar {
       border-radius: 5px;
       height: 4px;
@@ -119,6 +121,7 @@ $light-sky-blue: #5e91e2;
         transform: scaleX(1.1) translateY(-100%);
       }
     }
+
     &.active {
       .bar {
         transform-origin: center;
@@ -184,6 +187,10 @@ $light-sky-blue: #5e91e2;
   background-color: $light-sky-blue;
   cursor: pointer;
 
+  &.active {
+    background-color: $nav-hover-blue;
+  }
+
   &:hover {
     background-color: $nav-hover-blue;
   }
@@ -219,6 +226,20 @@ $light-sky-blue: #5e91e2;
   @media (min-width: 1024px) {
     display: flex;
   }
+}
+
+.options {
+  position: absolute;
+  right: 1rem;
+  height: 160px;
+
+  width: 28vw;
+  max-width: 300px;
+
+  background-color: #5e91e2;
+  z-index: 99;
+  top: 3.05rem;
+  border-radius: 10px;
 }
 
 @media screen and (max-width: 640px) {

@@ -6,13 +6,15 @@ $blue: #2666cf;
 
 .scream-profile-image {
   display: block;
-  width: 18vw;
+  width: 17vw;
   max-width: 170px;
+  min-width: 130px;
   height: 100%;
   border-radius: 5px;
 
   img {
-    width: 18vw;
+    width: 13vw;
+    min-width: 130px;
     max-width: 170px;
     height: 100%;
     border-radius: 5px;
@@ -24,12 +26,12 @@ $blue: #2666cf;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 0.8rem 1.5rem 0.8rem 0.8rem;
+  padding: 0.8rem 1.5rem 0.8rem 1.2rem;
   width: 100%;
 
   .name {
     color: $blue;
-    font-size: clamp(14px, 1.5vw, 20px);
+    font-size: clamp(14px, 1.4vw, 20px);
   }
 
   .timeago {
@@ -40,11 +42,11 @@ $blue: #2666cf;
   .body {
     color: black;
     font-size: clamp(12.5px, 1.1vw, 15px);
-    margin: 0.4rem 0;
+    margin: 0.5rem 0;
 
-    @media screen and (max-width: 800px) {
-      margin: 0.2rem 0;
-    }
+    // @media screen and (max-width: 800px) {
+    //   margin: 0.2rem 0;
+    // }
   }
 
   .actions {
@@ -52,9 +54,9 @@ $blue: #2666cf;
     justify-content: space-between;
     font-size: clamp(14px, 1.3vw, 16px);
     margin-top: 0.1rem;
-    @media screen and (max-width: 800px) {
-      margin-top: 0rem;
-    }
+    // @media screen and (max-width: 800px) {
+    //   margin-top: 0rem;
+    // }
   }
 }
 
@@ -84,9 +86,9 @@ $blue: #2666cf;
   margin: 0 0.6rem;
   cursor: pointer;
 
-  @media screen and (max-width: 800px) {
-    width: 0.8rem;
-  }
+  // @media screen and (max-width: 800px) {
+  //   width: 0.8rem;
+  // }
 }
 
 .actions_one span .comment {
@@ -94,7 +96,7 @@ $blue: #2666cf;
   cursor: pointer;
 
   @media screen and (max-width: 800px) {
-    width: 1.1rem;
+    // width: 1.1rem;
     height: max-content;
   }
 }
