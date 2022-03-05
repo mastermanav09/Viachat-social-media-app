@@ -9,6 +9,7 @@ import Home from "./pages/Home";
 import jwtDecode from "jwt-decode";
 import { useSelector, useDispatch } from "react-redux";
 import { userActions } from "./store/reducers/user";
+import Profile from "./pages/Profile";
 
 function App() {
   const cookies = new Cookies();
@@ -132,7 +133,7 @@ function App() {
       navigate("/login", { replace: true });
       dispatch(userActions.logout());
     } else {
-      dispatch(userActions.authenticated());
+      dispatch(userActions.authenticated(decodedToken.userId));
     }
   }
 
@@ -154,6 +155,11 @@ function App() {
           element={
             userState.authenticated ? <Navigate replace to="/" /> : <Auth />
           }
+        />
+
+        <Route
+          path="/my-profile"
+          element={userState.authenticated ? <Profile /> : <Auth />}
         />
       </Routes>
 

@@ -22,12 +22,19 @@ const Hero = () => {
     return <SkeletonProfile />;
   }
 
+  let imageSrc;
+  if (userCredentials.provider) {
+    imageSrc = userCredentials.imageUrl;
+  } else {
+    imageSrc = "/" + userCredentials.imageUrl;
+  }
+
   return (
     <Card type="profile">
       <div className={classes.profile}>
         <div className={`${classes["upper-container"]}`}>
           <div className={`${classes["image-container"]}`}>
-            <img src={"/" + userCredentials.imageUrl} alt="picture" />
+            <img src={imageSrc} alt="picture" />
           </div>
         </div>
         <div className={`${classes["lower-container"]}`}>

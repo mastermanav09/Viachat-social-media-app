@@ -7,6 +7,7 @@ import { userActions } from "../../store/reducers/user";
 import { uiActions } from "../../store/reducers/ui";
 import { DownsideArrow } from "../svg/DownsideArrow";
 import NotificationsBell from "../svg/NotificationsBell";
+import Notifications from "../Notifications";
 
 const MainNavigation = () => {
   const [showNavbarBtn, setshowNavbarBtn] = useState(false);
@@ -16,12 +17,19 @@ const MainNavigation = () => {
 
   const authHandler = () => dispatch(uiActions.switchAuth());
   const authLogoutHandler = () => dispatch(userActions.logout());
+  const userCredentials = useSelector((state) => state.user.credentials);
 
   function closeNavbar() {
     setshowNavbarBtn(false);
   }
 
-  console.log(uiState.showNavbarOptions);
+  let imageSrc;
+  if (userCredentials.provider) {
+    imageSrc = userCredentials.imageUrl;
+  } else {
+    imageSrc = "/" + userCredentials.imageUrl;
+  }
+
   return (
     <>
       <nav
@@ -154,16 +162,40 @@ const MainNavigation = () => {
       </nav>
       {showNavbarBtn && <Dropdown close={closeNavbar} />}
 
-      {uiState.showNavbarOptions && (
+      {uiState.showNavbarOptions && userState.authenticated && (
         <div className={classes.options}>
           <div className={`${classes["options-wrapper"]}`}>
-            <div></div>
+            <Link
+              to="/my-profile"
+              onClick={() => dispatch(uiActions.clearBars())}
+            >
+              <div className={`${classes["profile-option"]}`}>
+                <div className={`${classes["image-container"]}`}>
+                  <img src={imageSrc} alt="profile-icon" />
+                </div>
+                <div>
+                  <strong>Manav Naharwal</strong>
+                  <div>See your profile</div>
+                </div>
+              </div>
+            </Link>
+            <hr />
+
+            <div
+              className={`${classes["logout-btn"]}`}
+              onClick={() => dispatch(userActions.logout())}
+            >
+              <button>Logout</button>
+              <div>
+                <i data-visualcompletion="css-img"></i>
+              </div>
+            </div>
           </div>
         </div>
       )}
 
-      {uiState.showNotifications && (
-        <div className={classes.notifications}></div>
+      {uiState.showNotifications && userState.authenticated && (
+        <Notifications />
       )}
     </>
   );

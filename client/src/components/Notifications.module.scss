@@ -1,0 +1,26 @@
+.notifications {
+  position: absolute;
+  right: 1rem;
+
+  height: 90vh;
+  z-index: 99;
+  top: 3.05rem;
+  border-radius: 10px;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  background-color: #fcfcfc;
+  width: 28vw;
+  max-width: 350px;
+}
+
+.center {
+  text-align: center;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.notifications-wrapper {
+  padding: 0 0.5rem;
+  height: 100%;
+}

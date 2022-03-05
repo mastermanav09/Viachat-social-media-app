@@ -189,7 +189,6 @@ exports.deleteComment = async (req, res, next) => {
 
 exports.likeScream = async (req, res, next) => {
   const screamId = req.params.screamId;
-  const recipientId = req.params.recipientId;
 
   try {
     const scream = await Scream.findById({ _id: screamId });
@@ -219,7 +218,7 @@ exports.likeScream = async (req, res, next) => {
     await scream.save();
     await newLike.save();
 
-    res.status(200).json({ message: "Scream liked!" });
+    res.status(200).json({ message: "Scream liked!", like: newLike });
   } catch (error) {
     if (!error.statusCode) {
       error.statusCode = 500;
@@ -233,6 +232,7 @@ exports.unlikeScream = async (req, res, next) => {
   const screamId = req.params.screamId;
 
   try {
+    // const scream = await Scream.
     const scream = await Scream.findById({ _id: screamId });
 
     if (!scream) {
@@ -255,7 +255,7 @@ exports.unlikeScream = async (req, res, next) => {
     scream.likeCount -= 1;
     await scream.save();
 
-    res.status(200).json({ message: "Scream unliked!" });
+    res.status(200).json({ message: "Scream unliked!", like: isAlreadyLiked });
   } catch (error) {
     if (!error.statusCode) {
       error.statusCode = 500;

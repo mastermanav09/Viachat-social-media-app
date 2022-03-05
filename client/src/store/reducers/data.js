@@ -48,6 +48,22 @@ const dataSlice = createSlice({
     setScreams(state, action) {
       state.screams = [...action.payload.screams];
     },
+
+    increamentLike(state, action) {
+      const index = state.screams.findIndex(
+        (scream) => scream._id === action.payload.screamId
+      );
+
+      state.screams[index].likeCount += 1;
+    },
+
+    decrementLike(state, action) {
+      const index = state.screams.findIndex(
+        (scream) => scream._id === action.payload.screamId
+      );
+
+      state.screams[index].likeCount -= 1;
+    },
   },
 });
 

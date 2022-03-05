@@ -100,3 +100,29 @@ $blue: #2666cf;
     height: max-content;
   }
 }
+
+.actions-two {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin: 0.5rem;
+  font-size: clamp(13px, 1.3vw, 16px);
+  text-align: center;
+
+  span {
+    cursor: pointer;
+    margin-top: auto;
+  }
+
+  @media screen and (max-width: 1024px) {
+    margin: 0.6rem 0.6rem 0.8rem;
+  }
+
+  svg {
+    cursor: pointer;
+    @media screen and (max-width: 1024px) {
+      width: 24px;
+      height: 24px;
+    }
+  }
+}

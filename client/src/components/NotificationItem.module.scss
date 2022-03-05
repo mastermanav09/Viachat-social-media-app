@@ -1,0 +1,36 @@
+.notification-item {
+  padding: 0.5rem;
+  display: flex;
+  justify-content: space-evenly;
+  cursor: pointer;
+  margin: 0.5rem 0;
+  border-radius: 8px;
+
+  .image-container {
+    width: 7vw;
+    max-width: 60px;
+    img {
+      border-radius: 50%;
+    }
+  }
+
+  &:hover {
+    background-color: #dcdde4;
+  }
+}
+
+.lower-container {
+  display: flex;
+  flex-direction: column;
+  font-size: clamp(12px, 1.5vw, 16px);
+  max-width: 72%;
+  margin: 0 0.5rem;
+
+  .notification-user-info {
+  }
+
+  .timeago {
+    // $navy-light-blue: rgb(34, 34, 240);
+    color: rgb(34, 34, 240);
+  }
+}

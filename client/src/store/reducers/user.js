@@ -2,6 +2,7 @@ import Cookies from "universal-cookie";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { uiActions } from "./ui";
+import { dataActions } from "./data";
 
 export const auth = createAsyncThunk(
   "user/auth",
@@ -65,44 +66,132 @@ export const getUser = createAsyncThunk(
   }
 );
 
+export const likeScream = createAsyncThunk(
+  "user/likeScream",
+  async (data, { dispatch }) => {
+    const cookies = new Cookies();
+    const token = cookies.get("upid");
+
+    try {
+      const res = await axios({
+        method: "GET",
+        url: `/api/scream/${data}/like`,
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      });
+
+      if (res.status !== 200 || res.statusText !== "OK") {
+        const error = new Error("Can't load screams!");
+        throw error;
+      }
+
+      dispatch(dataActions.increamentLike(res.data.like));
+      dispatch(userSlice.actions.addLikedScream(res.data.like));
+    } catch (error) {
+      if (!error.response) {
+        dispatch(uiActions.errors(error.message));
+      } else {
+        dispatch(uiActions.errors(error.response.data));
+      }
+    }
+  }
+);
+
+export const unlikeScream = createAsyncThunk(
+  "user/unlikeScream",
+  async (data, { dispatch }) => {
+    const cookies = new Cookies();
+    const token = cookies.get("upid");
+
+    try {
+      const res = await axios({
+        method: "GET",
+        url: `/api/scream/${data}/unlike`,
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      });
+
+      if (res.status !== 200 || res.statusText !== "OK") {
+        const error = new Error("Can't load screams!");
+        throw error;
+      }
+
+      dispatch(dataActions.decrementLike(res.data.like));
+      dispatch(userSlice.actions.removeLikedScream(res.data.like));
+    } catch (error) {
+      if (!error.response) {
+        dispatch(uiActions.errors(error.message));
+      } else {
+        dispatch(uiActions.errors(error.response.data));
+      }
+    }
+  }
+);
+
 const userSlice = createSlice({
   name: "user",
   initialState: {
+    userId: null,
     authenticated: false,
     credentials: {},
-    interactions: null,
+    interactions: {
+      likes: null,
+      comments: null,
+    },
     notifications: null,
-    screams: null,
   },
 
   reducers: {
     authenticated(state, action) {
       state.authenticated = true;
+      state.userId = action.payload;
     },
 
     logout(state, action) {
       const cookies = new Cookies();
       cookies.remove("upid");
 
+      state.userId = null;
       state.authenticated = false;
       state.credentials = {};
-      state.interactions = null;
+      state.interactions = {
+        likes: null,
+        comments: null,
+      };
       state.notifications = null;
-      state.screams = null;
     },
 
     setUserData(state, action) {
       state.credentials = {
         ...action.payload.user.credentials,
+        provider: action.payload.user.provider || undefined,
         joined: action.payload.user.createdAt,
       };
       state.notifications = action.payload.notifications;
+
       state.interactions = {
         likes: action.payload.likes,
         comments: action.payload.comments,
       };
+    },
 
-      state.screams = action.payload.screams;
+    addLikedScream(state, action) {
+      state.interactions.likes = [action.payload, ...state.interactions.likes];
+    },
+
+    removeLikedScream(state, action) {
+      let index;
+      if (state.interactions.likes) {
+        index = state.interactions.likes.findIndex(
+          (scream) => scream._id === action.payload._id
+        );
+      }
+
+      if (index !== -1) {
+        state.interactions.likes.splice(index, 1);
+      }
     },
   },
 

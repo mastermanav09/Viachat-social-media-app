@@ -66,7 +66,7 @@ const Auth = () => {
     if (uiState.errors.errorData) {
       validationData = uiState.errors.errorData[0].msg;
     } else {
-      validationData = uiState.errors.message;
+      validationData = "Something went wrong!";
     }
   }
 

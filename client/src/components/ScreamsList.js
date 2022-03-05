@@ -9,6 +9,7 @@ const ScreamsList = () => {
   const dispatch = useDispatch();
   const uiState = useSelector((state) => state.ui);
   const dataState = useSelector((state) => state.data);
+  const userState = useSelector((state) => state.user);
 
   useEffect(() => {
     dispatch(getScreams());
@@ -28,19 +29,33 @@ const ScreamsList = () => {
     return content;
   }
 
-  return (
-    <>
-      {dataState.screams.length === 0 ? (
-        <p className={classes.no_screams}>No screams found.</p>
-      ) : (
-        <>
-          {dataState.screams.map((scream) => (
-            <Scream key={scream._id} scream={scream} />
-          ))}
-        </>
-      )}
-    </>
-  );
+  const isLikedScream = (id) => {
+    if (
+      userState.interactions.likes &&
+      userState.interactions.likes.find((like) => like.screamId === id)
+    ) {
+      return true;
+    }
+
+    return false;
+  };
+
+  let content =
+    dataState.screams.length === 0 ? (
+      <p className={classes.no_screams}>No screams found.</p>
+    ) : (
+      <>
+        {dataState.screams.map((scream) => (
+          <Scream
+            key={scream._id}
+            scream={scream}
+            isLikedScream={isLikedScream(scream._id) ? true : false}
+          />
+        ))}
+      </>
+    );
+
+  return <>{content}</>;
 };
 
 export default ScreamsList;
