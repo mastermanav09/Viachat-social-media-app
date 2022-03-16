@@ -10,13 +10,29 @@ import jwtDecode from "jwt-decode";
 import { useSelector, useDispatch } from "react-redux";
 import { userActions } from "./store/reducers/user";
 import Profile from "./pages/Profile";
+import ShowScream from "./components/ShowScream";
+import PostScream from "./components/PostScream";
 
 function App() {
   const cookies = new Cookies();
   const token = cookies.get("upid");
   const navigate = useNavigate();
   const userState = useSelector((state) => state.user);
+  const uiState = useSelector((state) => state.ui);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      if (!decodedToken || decodedToken.exp * 1000 < Date.now()) {
+        navigate("/login", { replace: true });
+        dispatch(userActions.logout());
+      } else {
+        dispatch(userActions.authenticated(decodedToken.userId));
+      }
+    }
+  }, [token]);
+
   // const [image, setImage] = useState(null);
   // const [socket, setSocket] = useState(null);
   // const [notifications, setNotifications] = useState([]);
@@ -127,23 +143,14 @@ function App() {
   //   });
   // };
 
-  if (token) {
-    const decodedToken = jwtDecode(token);
-    if (!decodedToken || decodedToken.exp * 1000 < Date.now()) {
-      navigate("/login", { replace: true });
-      dispatch(userActions.logout());
-    } else {
-      dispatch(userActions.authenticated(decodedToken.userId));
-    }
-  }
-
   return (
     <Layout>
       <Routes>
-        <Route
-          path="/"
-          element={userState.authenticated ? <Home /> : <Auth />}
-        />
+        <Route path="/" element={userState.authenticated ? <Home /> : <Auth />}>
+          <Route path="/:username/scream/:screamId" element={<ShowScream />} />
+          <Route path="/add-scream" element={<PostScream />} />
+        </Route>
+
         <Route
           path="/signup"
           element={
@@ -159,6 +166,13 @@ function App() {
 
         <Route
           path="/my-profile"
+          element={
+            userState.authenticated ? <Profile myProfile={true} /> : <Auth />
+          }
+        />
+
+        <Route
+          path={`/users/:username`}
           element={userState.authenticated ? <Profile /> : <Auth />}
         />
       </Routes>

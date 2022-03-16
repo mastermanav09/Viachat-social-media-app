@@ -114,6 +114,12 @@ exports.login = async (req, res, next) => {
       throw error;
     }
 
+    if (user.provider) {
+      const error = new Error("Cannot log you in!");
+      error.statusCode = 422;
+      throw error;
+    }
+
     loadedUser = user;
     const isEqual = await bcrypt.compare(password, user.credentials.password);
     if (!isEqual) {

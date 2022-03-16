@@ -130,6 +130,7 @@ exports.addComment = async (req, res, next) => {
     }
 
     const comment = new Comment({
+      username: user.credentials.username,
       userImageUrl: user.credentials.imageUrl,
       userHandle: req.user.userId,
       body: body,
@@ -205,15 +206,17 @@ exports.likeScream = async (req, res, next) => {
     });
 
     if (isAlreadyLiked) {
-      return res.status(421).json({ message: "Scream already liked!" });
+      const error = new Error("Scream already liked!");
+      error.statusCode = 421;
+      throw error;
     }
-
-    scream.likeCount += 1;
 
     const newLike = new Like({
       userHandle: req.user.userId,
       screamId: mongoose.Types.ObjectId(screamId),
     });
+
+    scream.likeCount += 1;
 
     await scream.save();
     await newLike.save();
@@ -232,7 +235,6 @@ exports.unlikeScream = async (req, res, next) => {
   const screamId = req.params.screamId;
 
   try {
-    // const scream = await Scream.
     const scream = await Scream.findById({ _id: screamId });
 
     if (!scream) {
@@ -269,7 +271,7 @@ exports.deleteScream = async (req, res, next) => {
   const screamId = req.params.screamId;
 
   try {
-    const scream = await Scream.findByIdAndDelete({
+    const scream = await Scream.findOneAndDelete({
       userHandle: req.user.userId,
       _id: mongoose.Types.ObjectId(screamId),
     });

@@ -3,7 +3,7 @@
   width: 80px;
   height: 80px;
 
-  @media screen and (max-width: 1024px) {
+  @media screen and (max-width: 768px) {
     width: 70px;
   }
 }
@@ -12,13 +12,13 @@
   display: block;
   width: 64px;
   height: 64px;
-  margin: 8px;
+  // margin: 8px;
   border-radius: 50%;
   border: 6px solid rgb(55, 104, 197);
   border-color: rgb(55, 104, 197) transparent rgb(55, 104, 197) transparent;
   animation: spinner 1s linear infinite;
 
-  @media screen and (max-width: 1024px) {
+  @media screen and (max-width: 768px) {
     width: 45px;
     height: 45px;
   }

@@ -15,18 +15,13 @@ const Hero = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getUser());
+    if (Object.keys(userCredentials).length === 0) {
+      dispatch(getUser());
+    }
   }, []);
 
   if (Object.keys(userCredentials).length === 0) {
     return <SkeletonProfile />;
-  }
-
-  let imageSrc;
-  if (userCredentials.provider) {
-    imageSrc = userCredentials.imageUrl;
-  } else {
-    imageSrc = "/" + userCredentials.imageUrl;
   }
 
   return (
@@ -34,7 +29,7 @@ const Hero = () => {
       <div className={classes.profile}>
         <div className={`${classes["upper-container"]}`}>
           <div className={`${classes["image-container"]}`}>
-            <img src={imageSrc} alt="picture" />
+            <img src={userCredentials.imageUrl} alt="profile-pic" />
           </div>
         </div>
         <div className={`${classes["lower-container"]}`}>

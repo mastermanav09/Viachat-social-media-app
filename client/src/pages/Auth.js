@@ -6,7 +6,6 @@ import Google from "../components/svg/Google";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { auth } from "../store/reducers/user";
-// import { userActions } from "../store/reducers/user";
 import { uiActions } from "../store/reducers/ui";
 import { useNavigate } from "react-router-dom";
 
@@ -17,7 +16,6 @@ const Auth = () => {
   const usernameInputRef = useRef();
   const nameInputRef = useRef();
   const dispatch = useDispatch();
-  // const userState = useSelector((state) => state.user);
   const uiState = useSelector((state) => state.ui);
   const navigate = useNavigate();
   const [switchAuthLogIn, setSwitchAuthLogIn] = useState(true);
@@ -66,7 +64,7 @@ const Auth = () => {
     if (uiState.errors.errorData) {
       validationData = uiState.errors.errorData[0].msg;
     } else {
-      validationData = "Something went wrong!";
+      validationData = uiState.errors.message;
     }
   }
 

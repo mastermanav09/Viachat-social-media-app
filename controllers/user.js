@@ -180,6 +180,32 @@ exports.getUserDetails = async (req, res, next) => {
   }
 };
 
+exports.getUserData = async (req, res, next) => {
+  const userId = req.params.userId;
+
+  try {
+    const user = await User.findById({
+      _id: userId,
+    });
+
+    if (!user) {
+      const error = new Error("User not found.");
+      error.statusCode = 404;
+      throw error;
+    }
+
+    const userScreams = await Scream.find({ userHandle: userId });
+
+    res.status(200).json({ ...user, screams: userScreams });
+  } catch (error) {
+    if (!error.statusCode) {
+      error.statusCode = 500;
+    }
+
+    next(error);
+  }
+};
+
 exports.getNotifications = async (req, res, next) => {
   try {
     const user = await User.findById({

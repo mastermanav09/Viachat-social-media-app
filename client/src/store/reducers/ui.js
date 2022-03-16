@@ -8,6 +8,8 @@ const uiSlice = createSlice({
     isAuthLogin: true,
     showNavbarOptions: false,
     showNotifications: false,
+    showPostScreamModal: false,
+    showScreamModal: false,
   },
 
   reducers: {
@@ -40,6 +42,21 @@ const uiSlice = createSlice({
     clearBars(state, action) {
       state.showNotifications = false;
       state.showNavbarOptions = false;
+    },
+
+    showPostScreamModal(state, action) {
+      state.showPostScreamModal = true;
+      state.showScreamModal = false;
+    },
+
+    showScreamModal(state, action) {
+      state.showScreamModal = true;
+      state.showPostScreamModal = false;
+    },
+
+    closeModal(state, action) {
+      state.showScreamModal = false;
+      state.showPostScreamModal = false;
     },
   },
 });

@@ -5,22 +5,26 @@ import Scream from "./Scream";
 import { useSelector, useDispatch } from "react-redux";
 import { getScreams } from "../store/reducers/data";
 
-const ScreamsList = () => {
+const ScreamsList = (props) => {
   const dispatch = useDispatch();
   const uiState = useSelector((state) => state.ui);
   const dataState = useSelector((state) => state.data);
   const userState = useSelector((state) => state.user);
 
   useEffect(() => {
-    dispatch(getScreams());
+    if (!dataState.screams) {
+      dispatch(getScreams());
+    }
   }, []);
 
   if (uiState.errors) {
-    return (
-      <p className={classes.validate}>
-        {uiState.errors.message || <>Something went wrong.</>}
-      </p>
-    );
+    if (!uiState.errors.errorData) {
+      return (
+        <p className={classes.validate}>
+          {uiState.errors.message || <>Something went wrong.</>}
+        </p>
+      );
+    }
   }
 
   if (!dataState.screams) {

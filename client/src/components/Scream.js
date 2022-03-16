@@ -2,11 +2,15 @@ import React, { useState, useEffect } from "react";
 import Card from "./UI/Card";
 import classes from "./Scream.module.scss";
 import Comment from "./svg/Comment";
+import { Link } from "react-router-dom";
 import Like from "./svg/Like";
 import { format } from "timeago.js";
 import { useDispatch, useSelector } from "react-redux";
 import { likeScream, unlikeScream } from "../store/reducers/user";
 import Delete from "./svg/Delete";
+import { deleteScream, getScream } from "../store/reducers/data";
+import Expand from "./svg/Expand";
+import { uiActions } from "../store/reducers/ui";
 
 const Scream = (props) => {
   const { scream } = props;
@@ -17,6 +21,11 @@ const Scream = (props) => {
   const [likeCount, setLikeCount] = useState(scream.likeCount);
 
   useEffect(() => {
+    setLikeCount(scream.likeCount);
+  }, [scream.likeCount]);
+
+  useEffect(() => {
+    setIsInitial(true);
     setIsLikedStatus(props.isLikedScream);
   }, [props.isLikedScream]);
 
@@ -40,7 +49,9 @@ const Scream = (props) => {
     };
   }, [isLikedStatus, initial]);
 
-  const deleteScreamHandler = (id) => {};
+  const deleteScreamHandler = (id) => {
+    dispatch(deleteScream({ id }));
+  };
 
   const likeScreamHandler = () => {
     if (props.isLikedScream) {
@@ -64,10 +75,12 @@ const Scream = (props) => {
     <Card type="scream">
       <div className={classes.main}>
         <div className={`${classes["scream-profile-image"]}`}>
-          <img src="/images/no-img.png" alt="picture" />
+          <img src={scream.userImageUrl} alt="picture" />
         </div>
         <div className={`${classes["scream-body"]}`}>
-          <div className={classes.name}>{scream.username}</div>
+          <Link to={`/users/${scream.username}?id=${scream.userHandle}`}>
+            <div className={classes.name}>{scream.username}</div>
+          </Link>
           <div className={classes.timeago}>{format(scream.createdAt)}</div>
           <div className={classes.body}>{scream.body}</div>
           <div className={classes.actions}>
@@ -90,13 +103,29 @@ const Scream = (props) => {
                 </span>
               </span>
             </div>
+            <div style={{ display: "flex", alignItems: "center" }}>
+              <Link
+                to={`/${scream.username}/scream/${scream._id}`}
+                style={{ cursor: "pointer" }}
+                onClick={() => {
+                  dispatch(uiActions.showScreamModal());
+                  dispatch(
+                    getScream({
+                      id: scream._id,
+                      likeStatus: props.isLikedScream,
+                    })
+                  );
+                }}
+              >
+                <Expand />
+              </Link>
+            </div>
           </div>
         </div>
         <div className={`${classes["actions-two"]}`}>
           {scream.userHandle === userState.userId && (
-            <Delete onClick={deleteScreamHandler} />
+            <Delete onClick={deleteScreamHandler} id={scream._id} />
           )}
-          <span>Op</span>
         </div>
       </div>
     </Card>

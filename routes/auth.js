@@ -42,7 +42,7 @@ router.get(
       }
 
       const existingUser = await User.findOne({
-        "credentials.email": user.email,
+        "credentials.email": user.credentials.email,
       });
 
       if (!existingUser) {

@@ -56,6 +56,10 @@ export const getUser = createAsyncThunk(
       }
 
       dispatch(userSlice.actions.setUserData(res.data));
+      // const reader = new FileReader();
+
+      // localStorage.setItem()
+      // reader.readAsDataURL();
     } catch (error) {
       if (!error.response) {
         dispatch(uiActions.errors(error.message));

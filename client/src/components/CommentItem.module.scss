@@ -1,0 +1,39 @@
+.comment-item {
+  padding: 0.2rem 0;
+  display: flex;
+  justify-content: flex-start;
+  margin: 0.4rem 0;
+  border-radius: 8px;
+
+  .image-container {
+    width: 14vw;
+    max-width: 85px;
+
+    img {
+      border-radius: 50%;
+    }
+  }
+}
+
+.lower-container {
+  display: flex;
+  flex-direction: column;
+  max-width: 70%;
+  margin: 0 0.6rem;
+
+  .comment-user-info {
+    font-size: clamp(11px, 3vw, 16px);
+    color: #2666cf;
+  }
+
+  .timeago {
+    color: rgba(0, 0, 0, 0.7);
+    font-weight: 500;
+    font-size: clamp(9px, 2.5vw, 13px);
+  }
+
+  .comment-body {
+    margin: 0.1rem 0;
+    font-size: clamp(10px, 2.8vw, 15px);
+  }
+}

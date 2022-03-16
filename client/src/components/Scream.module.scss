@@ -43,6 +43,7 @@ $blue: #2666cf;
     color: black;
     font-size: clamp(12.5px, 1.1vw, 15px);
     margin: 0.5rem 0;
+    word-wrap: break-word;
 
     // @media screen and (max-width: 800px) {
     //   margin: 0.2rem 0;
@@ -121,8 +122,18 @@ $blue: #2666cf;
   svg {
     cursor: pointer;
     @media screen and (max-width: 1024px) {
-      width: 24px;
-      height: 24px;
+      width: 22px;
+      height: 22px;
     }
+  }
+}
+
+.expand {
+  width: 20px;
+  height: 20px;
+
+  @media screen and (max-width: 1024px) {
+    width: 16px;
+    height: 16px;
   }
 }

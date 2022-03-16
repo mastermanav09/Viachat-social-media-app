@@ -3,6 +3,11 @@ const Schema = mongoose.Schema;
 
 const commentSchema = new Schema(
   {
+    username: {
+      type: String,
+      required: true,
+    },
+
     userImageUrl: {
       type: String,
     },
