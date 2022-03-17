@@ -34,68 +34,35 @@ function App() {
   }, [token]);
 
   // const [image, setImage] = useState(null);
-  // const [socket, setSocket] = useState(null);
+  const [socket, setSocket] = useState(null);
   // const [notifications, setNotifications] = useState([]);
   // const inputCommentRef = useRef();
   // const [stateChange, setStateChange] = useState(true);
 
-  // useEffect(() => {
+  useEffect(() => {
+    if (token) {
+      const socket = io.connect("http://localhost:8080", {
+        auth: { token: `Bearer ${token}` },
+      });
 
-  //   const socket = io.connect("http://localhost:8080", {
-  //     auth: { token: `Bearer ${token}` },
-  //   });
+      socket.on("connect_error", (error) => {
+        console.log(error);
+      });
 
-  //   socket.on("connect_error", (error) => {
-  //     console.log(error);
-  //   });
+      setSocket(socket);
+    }
+  }, [token]);
 
-  //   setSocket(socket);
-  // }, []);
-
-  // useEffect(() => {
-  //   if (socket) {
-  //     socket.emit("newUser");
-  //   }
-  // }, [socket]);
-
-  // useEffect(() => {
-  //   if (socket) {
-  //     socket.on("getNotification", (data) => {
-  //       console.log(data);
-  //       // setNotifications((prev) => {
-  //       //   return { ...prev, data };
-  //       // })
-  //     });
-  //   }
-  // }, [socket]);
-
-  // const likeHandler = () => {
-  //   socket.emit("sendLikeNotification", {
-  //     receiverId: "620a4b6c63d49ec329e8c95c", // present in post
-  //     screamId: "621188bc02a076e236120a10",
-  //   });
-  // };
-
-  // const unLikeHandler = () => {
-  //   socket.emit("sendRemoveLikeNotification", {
-  //     screamId: "6211379683d903889cd16cf3",
-  //     receiverId: "620a4b6c63d49ec329e8c95c", // present in post
-  //   });
-  // };
-
-  // const googleAuthHandler = () => {
-  //   window.open("http://localhost:8080/api/auth/google", "_self");
-  // };
+  useEffect(() => {
+    if (socket) {
+      socket.emit("newUser");
+    }
+  }, [socket]);
 
   // const handleChange = (e) => {
   //   if (e.target.files[0]) {
   //     setImage(e.target.files[0]);
   //   }
-  // };
-
-  // const stateChangeFun = () => {
-  //   console.log(stateChange);
-  //   setStateChange((prev) => !prev);
   // };
 
   // const uploadHandler = async () => {
@@ -117,16 +84,6 @@ function App() {
   //   console.log(result);
   // };
 
-  // const addCommentHandler = (event) => {
-  //   event.preventDefault();
-  //   socket.emit("sendCommentNotification", {
-  //     receiverId: "620a4b6c63d49ec329e8c95c", // present in post
-  //     message: inputCommentRef.current.value,
-  //     screamId: "621188bc02a076e236120a10",
-  //     commentId: "6211898ee0befaeaabcf8c47",
-  //   });
-  // };
-
   // const deleteCommentHandler = (event) => {
   //   event.preventDefault();
   //   socket.emit("sendRemoveCommentNotification", {
@@ -144,10 +101,18 @@ function App() {
   // };
 
   return (
-    <Layout>
+    <Layout socket={socket}>
       <Routes>
-        <Route path="/" element={userState.authenticated ? <Home /> : <Auth />}>
-          <Route path="/:username/scream/:screamId" element={<ShowScream />} />
+        <Route
+          path="/"
+          element={
+            userState.authenticated ? <Home socket={socket} /> : <Auth />
+          }
+        >
+          <Route
+            path="/:username/scream/:screamId"
+            element={<ShowScream socket={socket} />}
+          />
           <Route path="/add-scream" element={<PostScream />} />
         </Route>
 

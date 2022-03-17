@@ -19,6 +19,7 @@ const Scream = (props) => {
   const [isLikedStatus, setIsLikedStatus] = useState(props.isLikedScream);
   const [initial, setIsInitial] = useState(true);
   const [likeCount, setLikeCount] = useState(scream.likeCount);
+  const { socket } = props;
 
   useEffect(() => {
     setLikeCount(scream.likeCount);
@@ -37,10 +38,22 @@ const Scream = (props) => {
     const key = setTimeout(() => {
       if (isLikedStatus) {
         setLikeCount((prev) => prev + 1);
-        dispatch(likeScream(scream._id));
+        dispatch(
+          likeScream({
+            socket: socket,
+            id: scream._id,
+            userId: scream.userHandle,
+          })
+        );
       } else {
         setLikeCount((prev) => prev - 1);
-        dispatch(unlikeScream(scream._id));
+        dispatch(
+          unlikeScream({
+            socket: socket,
+            id: scream._id,
+            userId: scream.userHandle,
+          })
+        );
       }
     }, [100]);
 
@@ -97,7 +110,20 @@ const Scream = (props) => {
                 <span className={classes.actions_text}>{likeCount} likes</span>
               </span>
               <span>
-                <Comment />
+                <Link
+                  to={`/${scream.username}/scream/${scream._id}`}
+                  onClick={() => {
+                    dispatch(uiActions.showScreamModal());
+                    dispatch(
+                      getScream({
+                        id: scream._id,
+                        likeStatus: props.isLikedScream,
+                      })
+                    );
+                  }}
+                >
+                  <Comment />
+                </Link>
                 <span className={classes.actions_text}>
                   {scream.commentCount} comments
                 </span>

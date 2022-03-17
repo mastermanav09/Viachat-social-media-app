@@ -1,16 +1,36 @@
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { addComment } from "../store/reducers/data";
 import CommentList from "./CommentList";
 import classes from "./CommentSection.module.scss";
+import LoadingSpinner from "./UI/LoadingSpinner";
 
-const CommentsSection = () => {
+const CommentsSection = (props) => {
   const [bodyInput, setBodyInput] = useState("");
   const [error, setError] = useState(null);
+  const loader = useSelector((state) => state.ui.loader);
+  const errors = useSelector((state) => state.ui.errors);
+  const dispatch = useDispatch();
 
   const addCommentHandler = () => {
     setError(null);
     if (bodyInput === "") {
       setError("Body cannot be empty!");
       return;
+    }
+
+    dispatch(
+      addComment({
+        body: bodyInput,
+        screamId: props.screamId,
+        userId: props.screamUserId,
+        socket: props.socket,
+      })
+    );
+    setBodyInput("");
+
+    if (errors) {
+      setError(errors.errorData[0].msg);
     }
   };
 
@@ -42,7 +62,11 @@ const CommentsSection = () => {
             className={classes["add-comment-btn"]}
             onClick={addCommentHandler}
           >
-            Add Comment
+            {loader ? (
+              <div className={`${classes["dual-ring"]}`}></div>
+            ) : (
+              <>Add Comment</>
+            )}
           </button>
           {error && <p className={classes["error-msg"]}>{error}</p>}
         </div>
@@ -52,4 +76,4 @@ const CommentsSection = () => {
   );
 };
 
-export default CommentsSection;
+export default React.memo(CommentsSection);

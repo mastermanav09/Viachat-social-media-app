@@ -8,7 +8,7 @@ import classes from "./ScreamInfo.module.scss";
 import { likeScream, unlikeScream } from "../store/reducers/user";
 import CommentsSection from "./CommentsSection";
 
-const ScreamInfo = () => {
+const ScreamInfo = (props) => {
   const dispatch = useDispatch();
   const scream = useSelector((state) => state.data.currentScreamData);
   const [likeCount, setLikeCount] = useState(scream.likeCount);
@@ -18,6 +18,7 @@ const ScreamInfo = () => {
   // );
   const [isLikedStatus, setIsLikedStatus] = useState(scream.likeStatus);
   const [disabled, setDisabled] = useState(false);
+  const { socket } = props;
 
   useEffect(() => {
     if (initial === true) {
@@ -29,10 +30,22 @@ const ScreamInfo = () => {
     const key = setTimeout(() => {
       if (isLikedStatus) {
         setLikeCount((prev) => prev + 1);
-        dispatch(likeScream(scream._id));
+        dispatch(
+          likeScream({
+            userId: scream.userHandle,
+            socket: socket,
+            id: scream._id,
+          })
+        );
       } else {
         setLikeCount((prev) => prev - 1);
-        dispatch(unlikeScream(scream._id));
+        dispatch(
+          unlikeScream({
+            userId: scream.userHandle,
+            socket: socket,
+            id: scream._id,
+          })
+        );
       }
     }, [100]);
 
@@ -96,7 +109,11 @@ const ScreamInfo = () => {
             </span>
           </span>
         </div>
-        <CommentsSection />
+        <CommentsSection
+          screamId={scream._id}
+          screamUserId={scream.userHandle}
+          socket={socket}
+        />
       </div>
     </div>
   );

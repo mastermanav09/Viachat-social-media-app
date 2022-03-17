@@ -75,11 +75,12 @@ export const likeScream = createAsyncThunk(
   async (data, { dispatch }) => {
     const cookies = new Cookies();
     const token = cookies.get("upid");
+    const { socket } = data;
 
     try {
       const res = await axios({
         method: "GET",
-        url: `/api/scream/${data}/like`,
+        url: `/api/scream/${data.id}/like`,
         headers: {
           Authorization: "Bearer " + token,
         },
@@ -92,6 +93,11 @@ export const likeScream = createAsyncThunk(
 
       dispatch(dataActions.increamentLike(res.data.like));
       dispatch(userSlice.actions.addLikedScream(res.data.like));
+
+      socket.emit("sendLikeNotification", {
+        screamId: data.id,
+        receiverId: data.userId,
+      });
     } catch (error) {
       if (!error.response) {
         dispatch(uiActions.errors(error.message));
@@ -107,11 +113,12 @@ export const unlikeScream = createAsyncThunk(
   async (data, { dispatch }) => {
     const cookies = new Cookies();
     const token = cookies.get("upid");
+    const { socket } = data;
 
     try {
       const res = await axios({
         method: "GET",
-        url: `/api/scream/${data}/unlike`,
+        url: `/api/scream/${data.id}/unlike`,
         headers: {
           Authorization: "Bearer " + token,
         },
@@ -124,6 +131,11 @@ export const unlikeScream = createAsyncThunk(
 
       dispatch(dataActions.decrementLike(res.data.like));
       dispatch(userSlice.actions.removeLikedScream(res.data.like));
+
+      socket.emit("sendRemoveLikeNotification", {
+        screamId: data.id,
+        receiverId: data.userId,
+      });
     } catch (error) {
       if (!error.response) {
         dispatch(uiActions.errors(error.message));
@@ -173,7 +185,7 @@ const userSlice = createSlice({
         provider: action.payload.user.provider || undefined,
         joined: action.payload.user.createdAt,
       };
-      state.notifications = action.payload.notifications;
+      state.notifications = [...action.payload.notifications];
 
       state.interactions = {
         likes: action.payload.likes,
@@ -195,6 +207,15 @@ const userSlice = createSlice({
 
       if (index !== -1) {
         state.interactions.likes.splice(index, 1);
+      }
+    },
+
+    getNotifications(state, action) {
+      if (Array.isArray(action.payload)) {
+        console.log(action.payload);
+        state.notifications = [...action.payload];
+      } else {
+        state.notifications = [action.payload, ...state.notifications];
       }
     },
   },

@@ -1,10 +1,10 @@
-import React, { useEffect } from "react";
+import React from "react";
 import classes from "./Notifications.module.scss";
 import NotificationItem from "./NotificationItem";
 import LoadingSpinner from "./UI/LoadingSpinner";
 import { useSelector } from "react-redux";
 
-const Notifications = () => {
+const Notifications = (props) => {
   const userState = useSelector((state) => state.user);
   const uiState = useSelector((state) => state.ui);
 
@@ -52,7 +52,10 @@ const Notifications = () => {
         </p>
       ) : (
         notifications.map((notification) => (
-          <NotificationItem notification={notification} />
+          <NotificationItem
+            notification={notification}
+            key={notification._id}
+          />
         ))
       );
   }

@@ -137,11 +137,13 @@ exports.addComment = async (req, res, next) => {
       screamId: mongoose.Types.ObjectId(screamId),
     });
 
-    await comment.save();
+    const newComment = await comment.save();
     scream.commentCount += 1;
     await scream.save();
 
-    res.status(201).json({ message: "Comment added successfully." });
+    res
+      .status(201)
+      .json({ message: "Comment added successfully.", comment: newComment });
   } catch (error) {
     if (!error.statusCode) {
       error.statusCode = 500;

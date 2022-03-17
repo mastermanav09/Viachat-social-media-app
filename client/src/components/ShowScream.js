@@ -39,12 +39,12 @@ const ShowScream = (props) => {
 
   return (
     <Modal type="show-scream">
-      {isLoading || !screamData || !userState.interactions.likes ? (
+      {!screamData || !userState.interactions.likes ? (
         <div className={classes["loading-spinner"]}>
           <LoadingSpinner />
         </div>
       ) : (
-        <ScreamInfo />
+        <ScreamInfo socket={props.socket} />
       )}
     </Modal>
   );

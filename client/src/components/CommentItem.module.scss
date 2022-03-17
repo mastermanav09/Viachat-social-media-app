@@ -6,8 +6,8 @@
   border-radius: 8px;
 
   .image-container {
-    width: 14vw;
-    max-width: 85px;
+    width: 12vw;
+    max-width: 70px;
 
     img {
       border-radius: 50%;
@@ -22,18 +22,18 @@
   margin: 0 0.6rem;
 
   .comment-user-info {
-    font-size: clamp(11px, 3vw, 16px);
+    font-size: clamp(11px, 3vw, 15px);
     color: #2666cf;
   }
 
   .timeago {
     color: rgba(0, 0, 0, 0.7);
     font-weight: 500;
-    font-size: clamp(9px, 2.5vw, 13px);
+    font-size: clamp(8px, 2.5vw, 11px);
   }
 
   .comment-body {
     margin: 0.1rem 0;
-    font-size: clamp(10px, 2.8vw, 15px);
+    font-size: clamp(9px, 2.8vw, 14px);
   }
 }

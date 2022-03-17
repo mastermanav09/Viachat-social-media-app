@@ -37,11 +37,12 @@
 
 .add-comment-btn {
   margin: 0.1rem 0;
-  padding: 0.4rem 0.4rem;
+  padding: 0.4rem 0;
   color: white;
-  font-size: clamp(12px, 1.8vw, 14px);
+  font-size: clamp(12.5px, 2.2vw, 14.5px);
   background-color: rgb(55, 124, 236);
   border-radius: 5px;
+  width: 7rem;
 
   &:hover {
     background-color: rgb(8, 99, 246);
@@ -61,5 +62,32 @@
 
   @media screen and (max-width: 768px) {
     font-size: 12px;
+  }
+}
+
+.dual-ring:after {
+  content: " ";
+  text-align: center;
+  margin: auto;
+  display: block;
+  width: 15px;
+  height: 12px;
+  border-radius: 50%;
+  border: 3.5px solid #fff;
+  border-color: #fff transparent #fff transparent;
+  animation: lds-dual-ring 1s linear infinite;
+
+  @media screen and (max-width: 768px) {
+    width: 14px;
+    height: 11px;
+  }
+}
+
+@keyframes lds-dual-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
   }
 }

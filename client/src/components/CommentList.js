@@ -1,12 +1,13 @@
 import React from "react";
 import CommentItem from "./CommentItem";
 import { useSelector } from "react-redux";
+import classes from "./CommentList.module.scss";
 
 const CommentList = () => {
   const dataState = useSelector((state) => state.data);
 
   return (
-    <div style={{ margin: "0.5rem 0", overflow: "auto" }}>
+    <div className={classes["comment-list"]}>
       {dataState.currentScreamData.comments.length == 0 ? (
         <p
           style={{
@@ -20,7 +21,7 @@ const CommentList = () => {
       ) : (
         <>
           {dataState.currentScreamData.comments.map((comment) => (
-            <CommentItem comment={comment} />
+            <CommentItem comment={comment} key={comment._id} />
           ))}
         </>
       )}
@@ -28,4 +29,4 @@ const CommentList = () => {
   );
 };
 
-export default CommentList;
+export default React.memo(CommentList);

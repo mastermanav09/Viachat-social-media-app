@@ -75,11 +75,10 @@ module.exports = function (socket) {
             recipient: receiverId,
           });
 
-          await notification.save();
+          const newNotification = await notification.save();
 
-          io.to(receiver.socketId).emit("getNotification", {
-            message: "Liked your scream.",
-            notification: notification,
+          io.to(receiver.socketId).emit("getNewNotification", {
+            notification: newNotification,
           });
         }
       }
@@ -128,7 +127,7 @@ module.exports = function (socket) {
           recipient: receiverId,
         });
 
-        io.to(receiver.socketId).emit("getNotification", {
+        io.to(receiver.socketId).emit("getNotifications", {
           notifications: userNotifications,
         });
       }
@@ -168,6 +167,8 @@ module.exports = function (socket) {
         }
 
         if (message !== comment.body) {
+          console.log(message);
+          console.log(comment.body);
           const error = new Error("Comment contains different body!");
           error.statusCode = 422;
           throw error;

@@ -54,6 +54,7 @@ const ScreamsList = (props) => {
             key={scream._id}
             scream={scream}
             isLikedScream={isLikedScream(scream._id) ? true : false}
+            socket={props.socket}
           />
         ))}
       </>

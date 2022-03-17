@@ -59,7 +59,7 @@ export const postScream = createAsyncThunk(
         },
       });
 
-      if (res.status !== 201) {
+      if (res.status !== 201 || res.statusText !== "Created") {
         const error = new Error("Unauthorized!");
         throw error;
       }
@@ -149,7 +149,53 @@ export const getScream = createAsyncThunk(
   }
 );
 
-// export const addComment = createAsyncThunk("data/addComment", async () => {});
+export const addComment = createAsyncThunk(
+  "data/addComment",
+  async (data, { dispatch }) => {
+    const cookies = new Cookies();
+    const token = cookies.get("upid");
+    const { socket } = data;
+
+    dispatch(uiActions.setLoader());
+
+    try {
+      const res = await axios.post(
+        `/api/scream/${data.screamId}/addComment`,
+        {
+          body: data.body,
+        },
+        {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        }
+      );
+
+      if (res.status !== 201 || res.statusText !== "Created") {
+        const error = new Error("Unauthorized!");
+        throw error;
+      }
+
+      dispatch(dataSlice.actions.addNewComment(res.data));
+
+      socket.emit("sendCommentNotification", {
+        receiverId: data.userId,
+        message: data.body,
+        screamId: data.screamId,
+        commentId: res.data.comment._id,
+      });
+    } catch (error) {
+      if (!error.response) {
+        dispatch(uiActions.errors(error.message));
+      } else {
+        dispatch(uiActions.errors(error.response.data));
+      }
+    }
+
+    dispatch(uiActions.setLoader());
+  }
+);
+
 export const getUser = createAsyncThunk(
   "data/getUser",
   async (data, { getState, dispatch }) => {
@@ -170,7 +216,6 @@ export const getUser = createAsyncThunk(
         throw error;
       }
 
-      console.log(res.data);
       dispatch(dataSlice.actions.setShowCurrentUser(res.data));
     } catch (error) {
       if (!error.response) {
@@ -246,6 +291,18 @@ const dataSlice = createSlice({
 
     addNewScream(state, action) {
       state.screams.unshift(action.payload);
+    },
+
+    addNewComment(state, action) {
+      state.currentScreamData.comments.unshift(action.payload.comment);
+      state.currentScreamData.commentCount += 1;
+      let screamIndex = state.screams.findIndex(
+        (scream) => scream._id === action.payload.comment.screamId
+      );
+
+      if (screamIndex !== -1) {
+        state.screams[screamIndex].commentCount += 1;
+      }
     },
   },
 });

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import classes from "./MainNavigation.module.scss";
 import { Link, NavLink } from "react-router-dom";
 import Dropdown from "../UI/Dropdown";
@@ -11,7 +11,7 @@ import Notifications from "../Notifications";
 import Home from "../svg/Home";
 import Add from "../svg/Add";
 
-const MainNavigation = () => {
+const MainNavigation = (props) => {
   const [showNavbarBtn, setshowNavbarBtn] = useState(false);
   const dispatch = useDispatch();
   const userState = useSelector((state) => state.user);
@@ -20,10 +20,23 @@ const MainNavigation = () => {
   const authHandler = () => dispatch(uiActions.switchAuth());
   const authLogoutHandler = () => dispatch(userActions.logout());
   const userCredentials = useSelector((state) => state.user.credentials);
+  const { socket } = props;
 
   function closeNavbar() {
     setshowNavbarBtn(false);
   }
+
+  useEffect(() => {
+    if (socket) {
+      socket.on("getNewNotification", (data) => {
+        dispatch(userActions.getNotifications(data.notification));
+      });
+
+      socket.on("getNotifications", (data) => {
+        dispatch(userActions.getNotifications(data.notifications));
+      });
+    }
+  }, [socket]);
 
   return (
     <>
@@ -173,7 +186,7 @@ const MainNavigation = () => {
       )}
 
       {uiState.showNotifications && userState.authenticated && (
-        <Notifications />
+        <Notifications socket={props.socket} />
       )}
     </>
   );
