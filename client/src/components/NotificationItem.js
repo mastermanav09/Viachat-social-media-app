@@ -1,24 +1,50 @@
 import React from "react";
 import classes from "./NotificationItem.module.scss";
+import { format } from "timeago.js";
+import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { uiActions } from "../store/reducers/ui";
 
 const NotificationItem = (props) => {
   const { notification } = props;
-  return (
-    <div className={`${classes["notification-item"]}`}>
-      <div className={`${classes["image-container"]}`}>
-        <img src="/images/no-img.png" alt="profile-icon" />
-      </div>
+  const username = useSelector((state) => state.user.credentials.username);
+  const dispatch = useDispatch();
 
-      <div className={`${classes["lower-container"]}`}>
-        <div className={`${classes["notification-user-info"]}`}>
-          <div>
-            Manav Naharwal <strong>liked your scream.</strong>
-          </div>
-          {/* <div style={{ margin: "0.1rem 0" }}>comment is this yes</div> */}
+  return (
+    <Link
+      to={`/${username}/scream/${notification.screamId}`}
+      onClick={() => dispatch(uiActions.clearBars())}
+      className={classes["notification-link"]}
+    >
+      <div className={`${classes["notification-item"]}`}>
+        <div className={`${classes["image-container"]}`}>
+          <img src={notification.userImageUrl} alt="profile-icon" />
         </div>
-        <div className={classes.timeago}>30 minutes ago</div>
+
+        <div className={`${classes["lower-container"]}`}>
+          <div className={`${classes["notification-user-info"]}`}>
+            <div>
+              {notification.senderUsername}
+              <strong>
+                {notification.type === "Like" ? (
+                  <> liked your scream.</>
+                ) : (
+                  <> commented on your scream.</>
+                )}
+              </strong>
+            </div>
+            {notification.type !== "Like" ? (
+              <div style={{ margin: "0.1rem 0" }}>{notification.message}</div>
+            ) : (
+              <></>
+            )}
+          </div>
+          <div className={classes.timeago}>
+            {format(notification.createdAt)}
+          </div>
+        </div>
       </div>
-    </div>
+    </Link>
   );
 };
 

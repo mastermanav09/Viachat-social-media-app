@@ -146,6 +146,32 @@ export const unlikeScream = createAsyncThunk(
   }
 );
 
+export const markNotificationsRead = createAsyncThunk(
+  "user/markNotificationsRead",
+  async () => {
+    const cookies = new Cookies();
+    const token = cookies.get("upid");
+
+    try {
+      const res = await axios({
+        method: "POST",
+        url: `/api/user/markNotificationRead`,
+        data: {},
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      });
+
+      if (res.status !== 200 || res.statusText !== "OK") {
+        const error = new Error("Some error occured!");
+        throw error;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
 const userSlice = createSlice({
   name: "user",
   initialState: {
@@ -212,10 +238,9 @@ const userSlice = createSlice({
 
     getNotifications(state, action) {
       if (Array.isArray(action.payload)) {
-        console.log(action.payload);
         state.notifications = [...action.payload];
       } else {
-        state.notifications = [action.payload, ...state.notifications];
+        state.notifications.unshift(action.payload);
       }
     },
   },

@@ -1,19 +1,19 @@
 import React from "react";
-import "./Dropdown.css";
+import classes from "./Dropdown.scss";
 
 const Dropdown = (props) => {
   return (
     <>
-      <div className="dropdown-menu">
+      <div className={classes["dropdown-menu"]}>
         {/* <button class="menu-btn">Open <</button> */}
-        <div className="menu-content" onClick={props.close}>
-          <a className="links" href="#">
+        <div className={classes["menu-content"]} onClick={props.close}>
+          <a className={classes.links} href="#">
             Contact Us
           </a>
-          <a className="links" href="#">
+          <a className={classes.links} href="#">
             Visit Us
           </a>
-          <a className="links" href="#">
+          <a className={classes.links} href="#">
             About Us
           </a>
         </div>

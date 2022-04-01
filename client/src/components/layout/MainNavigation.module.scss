@@ -67,6 +67,7 @@ $light-sky-blue: #5e91e2;
   height: 65px;
   @include display-flex-prop();
   user-select: none;
+  z-index: 99;
 
   svg {
     stroke: $white;
@@ -226,6 +227,22 @@ $light-sky-blue: #5e91e2;
   @media (min-width: 1024px) {
     display: flex;
   }
+}
+
+.unread-notification-icon {
+  height: 25px;
+  width: 25px;
+  border-radius: 50%;
+  position: absolute;
+  right: 5rem;
+  top: 5px;
+  background-color: #0944a3;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(12px, 1.6vw, 16px);
+  z-index: 999;
 }
 
 .options {

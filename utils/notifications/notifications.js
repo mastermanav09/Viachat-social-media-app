@@ -30,9 +30,7 @@ module.exports = function (socket) {
         throw error;
       }
 
-      const scream = await Scream.findById({
-        _id: screamId,
-      });
+      const scream = await Scream.findById(screamId);
 
       if (!scream) {
         const error = new Error("Scream not found!");
@@ -159,7 +157,7 @@ module.exports = function (socket) {
           throw error;
         }
 
-        const comment = await Comment.findById({ _id: commentId });
+        const comment = await Comment.findById(commentId);
         if (!comment) {
           const error = new Error("Comment not found!");
           error.statusCode = 404;
@@ -174,7 +172,7 @@ module.exports = function (socket) {
           throw error;
         }
 
-        const scream = await Scream.findById({ _id: screamId });
+        const scream = await Scream.findById(screamId);
 
         if (!scream) {
           const error = new Error("Scream not found!");
@@ -213,7 +211,7 @@ module.exports = function (socket) {
 
           await notification.save();
 
-          io.to(receiver.socketId).emit("getNotification", {
+          io.to(receiver.socketId).emit("getNewNotification", {
             message: "Commented on your scream.",
             notification: notification,
           });
@@ -237,9 +235,7 @@ module.exports = function (socket) {
           throw error;
         }
 
-        const user = await User.findOne({
-          _id: mongoose.Types.ObjectId(socket.decodedToken.userId),
-        });
+        const user = await User.findById(socket.decodedToken.userId);
 
         if (!user) {
           const error = new Error("User not found!");
@@ -247,14 +243,14 @@ module.exports = function (socket) {
           throw error;
         }
 
-        const comment = await Comment.findById({ _id: commentId });
+        const comment = await Comment.findById(commentId);
         if (comment) {
           const error = new Error("Comment still exists!");
           error.statusCode = 409;
           throw error;
         }
 
-        if (socket.decodedToken.userId !== receiverId.toString()) {
+        if (socket.decodedToken.userId.toString() !== receiverId.toString()) {
           const notification = await Notification.findOneAndDelete({
             screamId: screamId,
             sender: socket.decodedToken.userId,
@@ -273,7 +269,7 @@ module.exports = function (socket) {
             recipient: receiverId,
           });
 
-          io.to(receiver.socketId).emit("getNotification", {
+          io.to(receiver.socketId).emit("getNotifications", {
             notifications: userNotifications,
           });
         }
@@ -287,7 +283,7 @@ module.exports = function (socket) {
     const receiver = getCurrentUser(socket.decodedToken.userId);
 
     try {
-      const scream = await Scream.findById({ _id: screamId });
+      const scream = await Scream.findById(screamId);
       if (scream) {
         const error = new Error("Scream still exists!");
         error.statusCode = 404;
@@ -303,7 +299,7 @@ module.exports = function (socket) {
         recipient: socket.decodedToken.userId,
       });
 
-      io.to(receiver.socketId).emit("getNotification", {
+      io.to(receiver.socketId).emit("getNotifications", {
         notifications: notifications,
       });
     } catch (error) {

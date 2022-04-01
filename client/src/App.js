@@ -8,7 +8,7 @@ import Auth from "./pages/Auth";
 import Home from "./pages/Home";
 import jwtDecode from "jwt-decode";
 import { useSelector, useDispatch } from "react-redux";
-import { userActions } from "./store/reducers/user";
+import { getUser, userActions } from "./store/reducers/user";
 import Profile from "./pages/Profile";
 import ShowScream from "./components/ShowScream";
 import PostScream from "./components/PostScream";
@@ -29,6 +29,7 @@ function App() {
         dispatch(userActions.logout());
       } else {
         dispatch(userActions.authenticated(decodedToken.userId));
+        dispatch(getUser());
       }
     }
   }, [token]);
@@ -84,22 +85,6 @@ function App() {
   //   console.log(result);
   // };
 
-  // const deleteCommentHandler = (event) => {
-  //   event.preventDefault();
-  //   socket.emit("sendRemoveCommentNotification", {
-  //     commentId: "621183c66a4af2945bcadb2a",
-  //     receiverId: "620a4b6c63d49ec329e8c95c", // present in post
-  //     screamId: "6211379683d903889cd16cf3",
-  //   });
-  // };
-
-  // const deleteScreamHandler = (event) => {
-  //   event.preventDefault();
-  //   socket.emit("sendDeleteScreamNotification", {
-  //     screamId: "621188bc02a076e236120a10",
-  //   });
-  // };
-
   return (
     <Layout socket={socket}>
       <Routes>
@@ -113,7 +98,10 @@ function App() {
             path="/:username/scream/:screamId"
             element={<ShowScream socket={socket} />}
           />
-          <Route path="/add-scream" element={<PostScream />} />
+          <Route
+            path="/add-scream"
+            element={uiState.showPostScreamModal && <PostScream />}
+          />
         </Route>
 
         <Route

@@ -10,13 +10,14 @@ import NotificationsBell from "../svg/NotificationsBell";
 import Notifications from "../Notifications";
 import Home from "../svg/Home";
 import Add from "../svg/Add";
+import { markNotificationsRead } from "../../store/reducers/user";
 
 const MainNavigation = (props) => {
   const [showNavbarBtn, setshowNavbarBtn] = useState(false);
   const dispatch = useDispatch();
   const userState = useSelector((state) => state.user);
   const uiState = useSelector((state) => state.ui);
-
+  const [unreadNotifications, setUnreadNotifications] = useState(null);
   const authHandler = () => dispatch(uiActions.switchAuth());
   const authLogoutHandler = () => dispatch(userActions.logout());
   const userCredentials = useSelector((state) => state.user.credentials);
@@ -25,6 +26,16 @@ const MainNavigation = (props) => {
   function closeNavbar() {
     setshowNavbarBtn(false);
   }
+
+  useEffect(() => {
+    if (userState.notifications) {
+      let unreadNotifications = userState.notifications.filter(
+        (notification) => notification.read === false
+      );
+
+      setUnreadNotifications(unreadNotifications);
+    }
+  }, [userState.notifications]);
 
   useEffect(() => {
     if (socket) {
@@ -37,6 +48,13 @@ const MainNavigation = (props) => {
       });
     }
   }, [socket]);
+
+  useEffect(() => {
+    if (uiState.showNotifications) {
+      setUnreadNotifications(null);
+      dispatch(markNotificationsRead());
+    }
+  }, [uiState.showNotifications, userState.notifications]);
 
   return (
     <>
@@ -82,22 +100,42 @@ const MainNavigation = (props) => {
                 <Link to="/my-profile">
                   <li>
                     <div className={`${classes["profile-icon"]}`}>
-                      <img
-                        src={userCredentials.imageUrl}
-                        className="profile-img"
-                        alt="picture"
-                      />
-                      <span>Manav</span>
+                      {userCredentials.imageUrl ? (
+                        <img
+                          src={userCredentials.imageUrl}
+                          referrerPolicy="no-referrer"
+                          className="profile-img"
+                          alt="picture"
+                        />
+                      ) : (
+                        <img
+                          src="/images/no-img.png"
+                          className="profile-img"
+                          alt="picture"
+                        />
+                      )}
+                      <span>{userCredentials.username}</span>
                     </div>
                   </li>
                 </Link>
                 <li>
+                  {unreadNotifications && unreadNotifications.length !== 0 && (
+                    <div className={classes["unread-notification-icon"]}>
+                      {unreadNotifications.length}
+                    </div>
+                  )}
+                </li>
+                <li style={{ position: "relative" }}>
                   <div
                     className={[
                       classes["navbar-actions-icon"],
                       uiState.showNotifications ? classes.active : "",
                     ].join(" ")}
-                    onClick={() => dispatch(uiActions.showNotifications())}
+                    onClick={() => {
+                      setUnreadNotifications(null);
+                      dispatch(uiActions.showNotifications());
+                      dispatch(markNotificationsRead());
+                    }}
                   >
                     <NotificationsBell />
                   </div>
@@ -161,10 +199,18 @@ const MainNavigation = (props) => {
             >
               <div className={`${classes["profile-option"]}`}>
                 <div className={`${classes["image-container"]}`}>
-                  <img src={userCredentials.imageUrl} alt="profile-icon" />
+                  {userCredentials.imageUrl ? (
+                    <img
+                      src={userCredentials.imageUrl}
+                      referrerPolicy="no-referrer"
+                      alt="profile-icon"
+                    />
+                  ) : (
+                    <img src="/images/no-img.png" alt="profile-icon" />
+                  )}
                 </div>
                 <div>
-                  <strong>Manav Naharwal</strong>
+                  <strong>{userCredentials.username}</strong>
                   <div>See your profile</div>
                 </div>
               </div>
@@ -192,4 +238,4 @@ const MainNavigation = (props) => {
   );
 };
 
-export default MainNavigation;
+export default React.memo(MainNavigation);

@@ -14,10 +14,10 @@ router.put(
 router.get("/getUserDetails", isAuth, userControllers.getUserDetails);
 router.get("/:userId", isAuth, userControllers.getUserData);
 router.get("/getNotifications", isAuth, userControllers.getNotifications);
-router.get(
-  "/markNotificationsRead",
+router.post(
+  "/markNotificationRead",
   isAuth,
-  userControllers.markNotificationsRead
+  userControllers.markNotificationRead
 );
 
 module.exports = router;

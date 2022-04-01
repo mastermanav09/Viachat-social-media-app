@@ -38,7 +38,7 @@ exports.createScream = async (req, res, next) => {
       throw error;
     }
 
-    const user = await User.findById({ _id: req.user.userId });
+    const user = await User.findById(req.user.userId);
     if (!user) {
       const error = new Error("User not found.");
       error.statusCode = 404;
@@ -74,7 +74,7 @@ exports.getScream = async (req, res, next) => {
   const screamId = req.params.screamId;
 
   try {
-    const scream = await Scream.findById({ _id: screamId });
+    const scream = await Scream.findById(screamId);
 
     if (!scream) {
       const error = new Error("Scream not found!");
@@ -115,14 +115,14 @@ exports.addComment = async (req, res, next) => {
       throw error;
     }
 
-    const scream = await Scream.findById({ _id: screamId });
+    const scream = await Scream.findById(screamId);
     if (!scream) {
       const error = new Error("Scream not found!");
       error.statusCode = 404;
       throw error;
     }
 
-    const user = await User.findById({ _id: req.user.userId });
+    const user = await User.findById(req.user.userId);
     if (!user) {
       const error = new Error("User not found.");
       error.statusCode = 404;
@@ -158,7 +158,7 @@ exports.deleteComment = async (req, res, next) => {
   const commentId = req.params.commentId;
 
   try {
-    const scream = await Scream.findById({ _id: screamId });
+    const scream = await Scream.findById(screamId);
     if (!scream) {
       const error = new Error("Scream not found!");
       error.statusCode = 404;
@@ -180,7 +180,9 @@ exports.deleteComment = async (req, res, next) => {
     scream.commentCount -= 1;
     await scream.save();
 
-    res.status(201).json({ message: "Comment deleted successfully." });
+    res
+      .status(200)
+      .json({ message: "Comment deleted successfully.", comment: result });
   } catch (error) {
     if (!error.statusCode) {
       error.statusCode = 500;
@@ -194,7 +196,7 @@ exports.likeScream = async (req, res, next) => {
   const screamId = req.params.screamId;
 
   try {
-    const scream = await Scream.findById({ _id: screamId });
+    const scream = await Scream.findById(screamId);
 
     if (!scream) {
       const error = new Error("Scream not found!");
@@ -237,7 +239,7 @@ exports.unlikeScream = async (req, res, next) => {
   const screamId = req.params.screamId;
 
   try {
-    const scream = await Scream.findById({ _id: screamId });
+    const scream = await Scream.findById(screamId);
 
     if (!scream) {
       const error = new Error("Scream not found!");

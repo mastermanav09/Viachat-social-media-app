@@ -1,6 +1,6 @@
 .container {
   display: grid;
-  grid-template-columns: 1.6fr 0.8fr;
+  grid-template-columns: 1.7fr 0.7fr;
   grid-template-rows: 1fr;
   grid-template-areas: "left-sub-container right-sub-container";
   margin: 0 auto 1rem;
@@ -8,6 +8,10 @@
   padding: 1.5rem 0;
   width: 88%;
   grid-column-gap: 2.5rem;
+
+  @media screen and (max-width: 1024px) {
+    width: 94%;
+  }
 
   @media screen and (max-width: 990px) {
     display: grid;

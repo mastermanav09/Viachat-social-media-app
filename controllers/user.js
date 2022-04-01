@@ -25,7 +25,7 @@ exports.updateProfilePhoto = async (req, res, next) => {
       throw error;
     }
 
-    user = await User.findById({ _id: req.user.userId });
+    user = await User.findById(req.user.userId);
     if (!user) {
       const error = new Error("User not found.");
       error.statusCode = 404;
@@ -107,17 +107,14 @@ exports.updateProfile = async (req, res, next) => {
       throw error;
     }
 
-    const user = await User.findByIdAndUpdate(
-      { _id: req.user.userId },
-      {
-        "credentials.username": username,
-        "credentials.name": name,
-        "credentials.age": age,
-        "credentials.address": address,
-        "credentials.bio": bio,
-        "credentials.website": website,
-      }
-    );
+    const user = await User.findByIdAndUpdate(req.user.userId, {
+      "credentials.username": username,
+      "credentials.name": name,
+      "credentials.age": age,
+      "credentials.address": address,
+      "credentials.bio": bio,
+      "credentials.website": website,
+    });
 
     if (!user) {
       const error = new Error("User not found.");
@@ -144,9 +141,9 @@ exports.updateProfile = async (req, res, next) => {
 
 exports.getUserDetails = async (req, res, next) => {
   try {
-    const user = await User.findById({
-      _id: req.user.userId,
-    }).select("-credentials.password");
+    const user = await User.findById(req.user.userId).select(
+      "-credentials.password"
+    );
 
     if (!user) {
       const error = new Error("User not found.");
@@ -184,9 +181,7 @@ exports.getUserData = async (req, res, next) => {
   const userId = req.params.userId;
 
   try {
-    const user = await User.findById({
-      _id: userId,
-    });
+    const user = await User.findById(userId);
 
     if (!user) {
       const error = new Error("User not found.");
@@ -208,9 +203,7 @@ exports.getUserData = async (req, res, next) => {
 
 exports.getNotifications = async (req, res, next) => {
   try {
-    const user = await User.findById({
-      _id: req.user.userId,
-    });
+    const user = await User.findById(req.user.userId);
 
     if (!user) {
       const error = new Error("User not found.");
@@ -232,19 +225,17 @@ exports.getNotifications = async (req, res, next) => {
   }
 };
 
-exports.markNotificationsRead = async (req, res, next) => {
+exports.markNotificationRead = async (req, res, next) => {
   try {
-    const user = await User.findById({ _id: req.user.userId });
-
+    const user = await User.findById(req.user.userId);
     if (!user) {
       const error = new Error("User not found.");
       error.statusCode = 404;
       throw error;
     }
-
-    const notifications = await Notification.updateMany(
+    await Notification.updateMany(
       {
-        recipient: req.user.userId,
+        recipient: mongoose.Types.ObjectId(req.user.userId),
         read: false,
       },
       { read: true }
@@ -255,7 +246,6 @@ exports.markNotificationsRead = async (req, res, next) => {
     if (!error.statusCode) {
       error.statusCode = 500;
     }
-
     next(error);
   }
 };

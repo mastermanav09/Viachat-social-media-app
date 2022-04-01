@@ -26,7 +26,7 @@ $blue: #2666cf;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 0.8rem 1.5rem 0.8rem 1.2rem;
+  padding: 0.8rem 0.8rem 0.8rem 1.2rem;
   width: 100%;
 
   .name {
@@ -45,19 +45,16 @@ $blue: #2666cf;
     margin: 0.5rem 0;
     word-wrap: break-word;
 
-    // @media screen and (max-width: 800px) {
-    //   margin: 0.2rem 0;
-    // }
+    @media screen and (max-width: 1200px) {
+      margin: 0.2rem 0;
+    }
   }
 
   .actions {
     display: flex;
     justify-content: space-between;
     font-size: clamp(14px, 1.3vw, 16px);
-    margin-top: 0.1rem;
-    // @media screen and (max-width: 800px) {
-    //   margin-top: 0rem;
-    // }
+    margin-top: auto;
   }
 }
 
@@ -86,10 +83,6 @@ $blue: #2666cf;
   width: 1rem;
   margin: 0 0.6rem;
   cursor: pointer;
-
-  // @media screen and (max-width: 800px) {
-  //   width: 0.8rem;
-  // }
 }
 
 .actions_one span .comment {

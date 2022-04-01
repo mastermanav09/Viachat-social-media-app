@@ -33,7 +33,15 @@ const Profile = (props) => {
         <div>
           <div className={classes["profile-background"]}>
             <div className={classes["profile-img-container"]}>
-              <img src={userData.credentials.imageUrl} alt="" />
+              {userData.credentials.imageUrl ? (
+                <img
+                  src={userData.credentials.imageUrl}
+                  alt="profile-pic"
+                  referrerPolicy="no-referrer"
+                />
+              ) : (
+                <img src="/images/no-img.png" alt="profile-pic" />
+              )}
             </div>
           </div>
           <div className={classes["profile-username"]}>

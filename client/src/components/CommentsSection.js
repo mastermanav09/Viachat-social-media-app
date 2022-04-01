@@ -71,7 +71,7 @@ const CommentsSection = (props) => {
           {error && <p className={classes["error-msg"]}>{error}</p>}
         </div>
       </div>
-      <CommentList />
+      <CommentList socket={props.socket} screamUserId={props.screamUserId} />
     </div>
   );
 };

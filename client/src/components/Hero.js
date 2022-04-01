@@ -29,7 +29,15 @@ const Hero = () => {
       <div className={classes.profile}>
         <div className={`${classes["upper-container"]}`}>
           <div className={`${classes["image-container"]}`}>
-            <img src={userCredentials.imageUrl} alt="profile-pic" />
+            {userCredentials.imageUrl ? (
+              <img
+                src={userCredentials.imageUrl}
+                referrerPolicy="no-referrer"
+                alt="profile-pic"
+              />
+            ) : (
+              <img src="/images/no-img.png" alt="profile-pic" />
+            )}
           </div>
         </div>
         <div className={`${classes["lower-container"]}`}>
@@ -38,13 +46,13 @@ const Hero = () => {
           </div>
           <div className={classes.name}>{userCredentials.name}</div>
           <div className={classes.intro}>Hello, I'm user</div>
-          {!userCredentials.location && (
+          {userCredentials.location && (
             <div className={classes.location}>
               <Location /> New Delhi, India
             </div>
           )}
 
-          {!userCredentials.website && (
+          {userCredentials.website && (
             <div className={classes.website}>
               <WebsiteLink />
               <a

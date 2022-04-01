@@ -32,7 +32,7 @@ app.use((req, res, next) => {
   );
   res.setHeader(
     "Access-Control-Allow-Headers",
-    "origin, Content-Type, Authorization, Accept"
+    "origin, Content-Type, Authorization, Accept, Referrer-Policy"
   );
 
   if (req.method === "OPTIONS") {
@@ -78,6 +78,11 @@ const fileStorage = multer.diskStorage({
 
 app.use(
   "/assets/profileImages",
+  express.static(path.join(__dirname, "assets/profileImages"))
+);
+
+app.use(
+  "/:var1/:var2/assets/profileImages",
   express.static(path.join(__dirname, "assets/profileImages"))
 );
 

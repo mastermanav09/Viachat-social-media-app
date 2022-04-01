@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
 import classes from "./PostScream.module.scss";
 import Modal from "./UI/Modal";
-import Cross from "./svg/Cross";
 import { useDispatch, useSelector } from "react-redux";
 import { postScream } from "../store/reducers/data";
-import { uiActions } from "../store/reducers/ui";
+import { useNavigate } from "react-router-dom";
 
 const PostScream = () => {
   const [bodyInput, setBodyInput] = useState("");
   const [error, setError] = useState(null);
   const dispatch = useDispatch();
   const uiState = useSelector((state) => state.ui);
+  const navigate = useNavigate();
 
   const addScreamHandler = () => {
     setError(null);
@@ -20,7 +20,7 @@ const PostScream = () => {
       return;
     }
 
-    dispatch(postScream(bodyInput));
+    dispatch(postScream({ bodyInput: bodyInput, navigate: navigate }));
   };
 
   useEffect(() => {

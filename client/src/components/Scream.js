@@ -62,8 +62,8 @@ const Scream = (props) => {
     };
   }, [isLikedStatus, initial]);
 
-  const deleteScreamHandler = (id) => {
-    dispatch(deleteScream({ id }));
+  const deleteScreamHandler = () => {
+    dispatch(deleteScream({ id: scream._id, socket: socket }));
   };
 
   const likeScreamHandler = () => {
@@ -84,18 +84,33 @@ const Scream = (props) => {
     setIsLikedStatus(false);
   };
 
+  let updatedScreamBody;
+  if (scream.body.length > 120) {
+    updatedScreamBody = scream.body.slice(0, 120);
+    updatedScreamBody += "...";
+  } else {
+    updatedScreamBody = scream.body;
+  }
   return (
     <Card type="scream">
       <div className={classes.main}>
         <div className={`${classes["scream-profile-image"]}`}>
-          <img src={scream.userImageUrl} alt="picture" />
+          {scream.userImageUrl ? (
+            <img
+              src={scream.userImageUrl}
+              alt="picture"
+              referrerPolicy="no-referrer"
+            />
+          ) : (
+            <img src="/images/no-img.png" alt="picture" />
+          )}
         </div>
         <div className={`${classes["scream-body"]}`}>
           <Link to={`/users/${scream.username}?id=${scream.userHandle}`}>
             <div className={classes.name}>{scream.username}</div>
           </Link>
           <div className={classes.timeago}>{format(scream.createdAt)}</div>
-          <div className={classes.body}>{scream.body}</div>
+          <div className={classes.body}>{updatedScreamBody}</div>
           <div className={classes.actions}>
             <div className={classes.actions_one}>
               <span>
@@ -150,7 +165,7 @@ const Scream = (props) => {
         </div>
         <div className={`${classes["actions-two"]}`}>
           {scream.userHandle === userState.userId && (
-            <Delete onClick={deleteScreamHandler} id={scream._id} />
+            <Delete onClick={deleteScreamHandler} />
           )}
         </div>
       </div>

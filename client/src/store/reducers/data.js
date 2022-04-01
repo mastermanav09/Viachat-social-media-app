@@ -52,7 +52,7 @@ export const postScream = createAsyncThunk(
         url: `/api/scream/create`,
         method: "POST",
         data: {
-          body: body,
+          body: body.bodyInput,
         },
         headers: {
           Authorization: "Bearer " + token,
@@ -66,6 +66,7 @@ export const postScream = createAsyncThunk(
 
       dispatch(dataSlice.actions.addNewScream(res.data.scream));
       dispatch(uiActions.closeModal());
+      body.navigate("/");
     } catch (error) {
       if (!error.response) {
         dispatch(uiActions.errors(error.message));
@@ -84,6 +85,8 @@ export const deleteScream = createAsyncThunk(
     const cookies = new Cookies();
     const token = cookies.get("upid");
 
+    const { socket } = data;
+
     try {
       dispatch(dataSlice.actions.deleteUserScream(data));
       const res = await axios.delete(`/api/scream/${data.id}/delete`, {
@@ -96,6 +99,10 @@ export const deleteScream = createAsyncThunk(
         const error = new Error("Unauthorized!");
         throw error;
       }
+
+      socket.emit("sendDeleteScreamNotification", {
+        screamId: data.id,
+      });
     } catch (error) {
       if (!error.response) {
         dispatch(uiActions.errors(error.message));
@@ -183,6 +190,54 @@ export const addComment = createAsyncThunk(
         message: data.body,
         screamId: data.screamId,
         commentId: res.data.comment._id,
+      });
+    } catch (error) {
+      if (!error.response) {
+        dispatch(uiActions.errors(error.message));
+      } else {
+        dispatch(uiActions.errors(error.response.data));
+      }
+    }
+
+    dispatch(uiActions.setLoader());
+  }
+);
+
+export const deleteComment = createAsyncThunk(
+  "data/deleteComment",
+  async (data, { dispatch }) => {
+    const cookies = new Cookies();
+    const token = cookies.get("upid");
+    const { socket } = data;
+
+    dispatch(uiActions.setLoader());
+
+    try {
+      const res = await axios.delete(
+        `/api/scream/${data.screamId}/${data.commentId}/deleteComment`,
+        {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        }
+      );
+
+      if (res.status !== 200 || res.statusText !== "OK") {
+        const error = new Error("Unauthorized!");
+        throw error;
+      }
+
+      dispatch(
+        dataSlice.actions.deleteComment({
+          commentId: data.commentId,
+          screamId: data.screamId,
+        })
+      );
+
+      socket.emit("sendRemoveCommentNotification", {
+        commentId: data.commentId,
+        receiverId: data.userId,
+        screamId: data.screamId,
       });
     } catch (error) {
       if (!error.response) {
@@ -287,6 +342,21 @@ const dataSlice = createSlice({
       );
 
       state.screams = updatedScreams;
+    },
+
+    deleteComment(state, action) {
+      const commentIndex = state.currentScreamData.comments.findIndex(
+        (comment) => comment._id === action.payload.commentId
+      );
+
+      state.currentScreamData.comments.splice(commentIndex, 1);
+      state.currentScreamData.commentCount -= 1;
+
+      const screamIndex = state.screams.findIndex(
+        (scream) => scream._id === action.payload.screamId
+      );
+
+      state.screams[screamIndex].commentCount -= 1;
     },
 
     addNewScream(state, action) {
