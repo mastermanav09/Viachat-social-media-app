@@ -16,7 +16,12 @@ const Backdrop = (props) => {
       className={classes.backdrop}
       onClick={() => {
         dispatch(uiActions.closeModal());
-        navigate("/");
+        if (
+          props.type !== "edit-profile" &&
+          props.type !== "update-profile-picture"
+        ) {
+          navigate("/");
+        }
       }}
     ></div>
   );
@@ -33,10 +38,13 @@ const ModalOverlay = (props) => {
 const Modal = (props) => {
   return (
     <>
-      {ReactDOM.createPortal(<Backdrop />, document.getElementById("overlay"))}
+      {ReactDOM.createPortal(
+        <Backdrop type={props.type} />,
+        document.getElementById("overlay")
+      )}
       {ReactDOM.createPortal(
         <ModalOverlay type={props.type}>
-          <Cross />
+          <Cross type={props.type} />
           {props.children}
         </ModalOverlay>,
         document.getElementById("overlay")

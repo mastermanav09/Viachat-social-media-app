@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { uiActions } from "../../store/reducers/ui";
 import { useNavigate } from "react-router-dom";
 
-const Cross = () => {
+const Cross = (props) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -16,7 +16,13 @@ const Cross = () => {
       viewBox="0 0 94.926 94.926"
       onClick={() => {
         dispatch(uiActions.closeModal());
-        navigate("/");
+
+        if (
+          props.type !== "edit-profile" &&
+          props.type !== "update-profile-picture"
+        ) {
+          navigate("/");
+        }
       }}
     >
       <g>

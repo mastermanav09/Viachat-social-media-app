@@ -66,6 +66,8 @@ img {
     font-size: clamp(13px, 2.5vw, 17px);
     font-weight: 400;
     color: $color-black;
+    margin-top: 2px;
+    margin-bottom: 2px;
 
     span {
       &:nth-child(2) {
@@ -87,7 +89,7 @@ img {
 }
 
 .validate {
-  font-size: clamp(12px, 2.5vw, 17px);
+  font-size: clamp(12px, 2.5vw, 16px);
   margin: 0.8rem 0 0.5rem 0;
   color: red;
 

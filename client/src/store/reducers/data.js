@@ -134,14 +134,14 @@ export const getScream = createAsyncThunk(
         throw error;
       }
 
-      dispatch(
+      await dispatch(
         dataSlice.actions.setCurrentScreamData({
           dataLoad: res.data,
           likeStatus: data.likeStatus,
         })
       );
 
-      dispatch(
+      await dispatch(
         dataActions.setCurrentLikeStatus({ likeStatus: data.likeStatus })
       );
     } catch (error) {
@@ -213,8 +213,15 @@ export const deleteComment = createAsyncThunk(
     dispatch(uiActions.setLoader());
 
     try {
+      dispatch(
+        dataSlice.actions.deleteComment({
+          commentId: data.commentId,
+          screamId: data.screamId,
+        })
+      );
+
       const res = await axios.delete(
-        `/api/scream/${data.screamId}/${data.commentId}/deleteComment`,
+        `/api/scream/${data.userHandle}/${data.screamId}/${data.commentId}/deleteComment`,
         {
           headers: {
             Authorization: "Bearer " + token,
@@ -226,13 +233,6 @@ export const deleteComment = createAsyncThunk(
         const error = new Error("Unauthorized!");
         throw error;
       }
-
-      dispatch(
-        dataSlice.actions.deleteComment({
-          commentId: data.commentId,
-          screamId: data.screamId,
-        })
-      );
 
       socket.emit("sendRemoveCommentNotification", {
         commentId: data.commentId,
@@ -372,6 +372,15 @@ const dataSlice = createSlice({
 
       if (screamIndex !== -1) {
         state.screams[screamIndex].commentCount += 1;
+      }
+    },
+
+    updateUserPhoto(state, action) {
+      console.log(state.screams);
+      for (let scream of state.screams) {
+        if (scream.userHandle === action.payload.userId) {
+          scream.userImageUrl = action.payload.imageUrl;
+        }
       }
     },
   },

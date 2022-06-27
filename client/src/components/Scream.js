@@ -11,6 +11,7 @@ import Delete from "./svg/Delete";
 import { deleteScream, getScream } from "../store/reducers/data";
 import Expand from "./svg/Expand";
 import { uiActions } from "../store/reducers/ui";
+import { useNavigate } from "react-router-dom";
 
 const Scream = (props) => {
   const { scream } = props;
@@ -20,6 +21,7 @@ const Scream = (props) => {
   const [initial, setIsInitial] = useState(true);
   const [likeCount, setLikeCount] = useState(scream.likeCount);
   const { socket } = props;
+  const navigate = useNavigate();
 
   useEffect(() => {
     setLikeCount(scream.likeCount);
@@ -31,6 +33,11 @@ const Scream = (props) => {
   }, [props.isLikedScream]);
 
   useEffect(() => {
+    if (userState.tokenExpiryState * 1000 < Date.now()) {
+      navigate("/login", { replace: true });
+      return;
+    }
+
     if (initial === true) {
       return;
     }
@@ -98,17 +105,23 @@ const Scream = (props) => {
           {scream.userImageUrl ? (
             <img
               src={scream.userImageUrl}
-              alt="picture"
+              alt="profile-icon"
               referrerPolicy="no-referrer"
             />
           ) : (
-            <img src="/images/no-img.png" alt="picture" />
+            <img src="/images/no-img.png" alt="profile-icon" />
           )}
         </div>
         <div className={`${classes["scream-body"]}`}>
-          <Link to={`/users/${scream.username}?id=${scream.userHandle}`}>
-            <div className={classes.name}>{scream.username}</div>
-          </Link>
+          {userState.userId === scream.userHandle ? (
+            <Link to={`/my-profile`}>
+              <div className={classes.name}>{scream.username}</div>
+            </Link>
+          ) : (
+            <Link to={`/users/${scream.username}?id=${scream.userHandle}`}>
+              <div className={classes.name}>{scream.username}</div>
+            </Link>
+          )}
           <div className={classes.timeago}>{format(scream.createdAt)}</div>
           <div className={classes.body}>{updatedScreamBody}</div>
           <div className={classes.actions}>
@@ -164,8 +177,12 @@ const Scream = (props) => {
           </div>
         </div>
         <div className={`${classes["actions-two"]}`}>
-          {scream.userHandle === userState.userId && (
+          {scream.userHandle === userState.userId ? (
             <Delete onClick={deleteScreamHandler} />
+          ) : (
+            <div
+              style={{ width: "24px", height: "24px", visibility: "hidden" }}
+            ></div>
           )}
         </div>
       </div>
@@ -173,4 +190,4 @@ const Scream = (props) => {
   );
 };
 
-export default Scream;
+export default React.memo(Scream);

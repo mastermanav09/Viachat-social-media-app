@@ -1,0 +1,242 @@
+$font-family-heading: "Francois One", sans-serif;
+$font-family: "Source Sans Pro", Helvetica, Arial, sans-serif;
+$font-weight-light: 300;
+$font-weight-bold: 700;
+$font-size-base: 16px;
+
+$gutter: 10px;
+$border-radius: 5px;
+
+$color-primary: #31d47d;
+$background: #f4fcff;
+$input-bg: #fff;
+$text-color: darken($background, 86%);
+$border-color: desaturate(darken($background, 16%), 56%);
+
+$important-color: #f42866;
+
+.wrapper {
+  min-height: 100%;
+}
+
+.form-error {
+  font-size: 0.8rem;
+}
+
+.title {
+  display: inline-block;
+  font-family: $font-family-heading;
+  font-size: clamp(18px, 2.8vw, 25px);
+  line-height: 1.2;
+  font-weight: $font-weight-bold;
+  border-bottom: 4px solid $color-primary;
+}
+
+.text-muted {
+  color: desaturate(lighten($text-color, 60%), 80%);
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.section-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0 1rem;
+
+  @media screen and (max-width: 768px) {
+    margin: 1rem 0;
+  }
+}
+
+.form {
+  display: block;
+  width: 100%;
+  margin: 1rem 0;
+
+  @media screen and (max-width: 768px) {
+    margin-bottom: 0;
+  }
+}
+
+.form-group {
+  margin-bottom: $gutter * 2;
+  width: 100%;
+}
+
+.form-label,
+.form-input {
+  font-size: clamp(13px, 2vw, 18px);
+  display: block;
+  width: 100%;
+}
+
+.form-label {
+  cursor: pointer;
+  margin-bottom: $gutter / 2;
+}
+
+.form-input {
+  padding: 8px;
+  background-color: transparent;
+  border: 0;
+
+  &:focus {
+    outline: none;
+    background-color: desaturate(darken($background, 2%), 55%);
+  }
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.form-footer {
+  text-align: right;
+  margin-top: 1.2rem;
+}
+
+.save-btn {
+  color: white;
+  background-color: $color-primary;
+  padding: 6px 16px;
+  max-width: 4rem;
+  min-width: 4rem;
+  border: 0;
+  border-radius: $border-radius;
+  transition: all 150ms ease-out;
+  font-size: 16px;
+  margin-left: auto;
+
+  &:focus,
+  &:hover {
+    background-color: darken($color-primary, 14%);
+  }
+
+  @media screen and (max-width: 768px) {
+    font-size: 14px;
+  }
+
+  @media screen and (max-width: 480px) {
+    font-size: 12px;
+  }
+}
+
+.form-addon {
+  position: relative;
+  display: table;
+  width: 100%;
+  border: 1px solid $border-color;
+  background-color: $input-bg;
+
+  .form-input,
+  .form-addon__addon {
+    display: table-cell;
+    vertical-align: middle;
+  }
+
+  .form-input {
+    width: 100%;
+  }
+
+  .form-addon__addon {
+    position: relative;
+    width: 40px;
+    text-align: center;
+
+    &:before {
+      content: "";
+      position: absolute;
+      top: 4px;
+      right: 0;
+      height: calc(100% - 8px);
+      border-right: 1px solid $border-color;
+    }
+  }
+}
+
+.form-addon__icon {
+  position: absolute;
+  color: $color-primary;
+  font-size: 0.8rem;
+  line-height: 1;
+  top: 50%;
+  transform: translateY(-50%);
+  right: $gutter;
+}
+
+footer {
+  @extend .text-muted;
+  margin-top: $gutter;
+}
+
+.form-addon {
+  .form-addon__icon {
+    transform: translateY(0);
+    opacity: 0;
+    transition: transform 150ms ease, opacity 150ms ease;
+  }
+
+  &.is-valid [class*="icon-valid"] {
+    transform: translateY(-50%);
+    opacity: 1;
+  }
+}
+
+.sub-footer-part {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+}
+
+.validate {
+  font-size: 14px;
+  color: red;
+
+  @media screen and (max-width: 768px) {
+    font-size: 13px;
+  }
+
+  @media screen and (max-width: 480px) {
+    font-size: 12px;
+  }
+}
+
+.dual-ring:after {
+  content: " ";
+  text-align: center;
+  margin: auto;
+  display: block;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  border-color: #fff transparent #fff transparent;
+  animation: lds-dual-ring 1s linear infinite;
+
+  @media screen and (max-width: 768px) {
+    width: 14px;
+    height: 11px;
+  }
+}
+
+@keyframes lds-dual-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

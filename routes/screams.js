@@ -20,7 +20,7 @@ router.post(
   screamsController.addComment
 );
 router.delete(
-  "/:screamId/:commentId/deleteComment",
+  "/:userHandle/:screamId/:commentId/deleteComment",
   isAuth,
   screamsController.deleteComment
 );

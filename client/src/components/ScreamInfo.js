@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Like from "./svg/Like";
 import { Link } from "react-router-dom";
 import Comment from "./svg/Comment";
@@ -16,6 +16,7 @@ const ScreamInfo = (props) => {
   // const likedStatus = useSelector(
   //   (state) => state.data.currentScreamData.likeStatus
   // );
+  const userState = useSelector((state) => state.user);
   const [isLikedStatus, setIsLikedStatus] = useState(scream.likeStatus);
   const [disabled, setDisabled] = useState(false);
   const { socket } = props;
@@ -57,7 +58,7 @@ const ScreamInfo = (props) => {
       clearTimeout(key);
       clearTimeout(key2);
     };
-  }, [isLikedStatus, initial]);
+  }, [isLikedStatus, initial, dispatch, scream._id, scream.userHandle, socket]);
 
   const likeScreamHandler = () => {
     if (isLikedStatus) {
@@ -81,11 +82,22 @@ const ScreamInfo = (props) => {
     <div className={classes["show-scream-box"]}>
       <div>
         <div className={classes["profile"]}>
-          <img src={scream.userImageUrl} alt="profile-pic" />
+          <img
+            src={scream.userImageUrl}
+            alt="profile-pic"
+            referrerPolicy="no-referrer"
+          />
           <div className={classes["user-details"]}>
-            <Link to={`/users/${scream.username}?id=${scream.userHandle}`}>
-              <div>{scream.username}</div>
-            </Link>
+            {scream.userHandle === userState.userId ? (
+              <Link to={`/my-profile`}>
+                <div>{scream.username}</div>
+              </Link>
+            ) : (
+              <Link to={`/users/${scream.username}?id=${scream.userHandle}`}>
+                <div>{scream.username}</div>
+              </Link>
+            )}
+
             <div>{format(scream.createdAt)}</div>
           </div>
         </div>
@@ -112,7 +124,7 @@ const ScreamInfo = (props) => {
         <CommentsSection
           screamId={scream._id}
           screamUserId={scream.userHandle}
-          socket={socket}
+          socket={useMemo(() => socket, [socket])}
         />
       </div>
     </div>

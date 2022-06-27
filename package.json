@@ -22,12 +22,12 @@
   "dependencies": {
     "@thream/socketio-jwt": "^2.2.1",
     "bcryptjs": "^2.4.3",
+    "compression": "^1.7.4",
     "dotenv": "^10.0.0",
     "express": "^4.17.2",
     "express-validator": "^6.14.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.1.5",
-    "morgan": "^1.10.0",
     "multer": "^1.4.4",
     "node-schedule": "^2.1.0",
     "nodemon": "^2.0.15",
@@ -37,5 +37,8 @@
     "passport-local": "^1.0.0",
     "socket.io": "^4.4.1",
     "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "morgan": "^1.10.0"
   }
 }

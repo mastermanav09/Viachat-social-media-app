@@ -1,14 +1,21 @@
-import React from "react";
+import React, { useEffect } from "react";
 import classes from "./Notifications.module.scss";
 import NotificationItem from "./NotificationItem";
 import LoadingSpinner from "./UI/LoadingSpinner";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const Notifications = (props) => {
   const userState = useSelector((state) => state.user);
   const uiState = useSelector((state) => state.ui);
-
   const { notifications } = userState;
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (userState.tokenExpiryState * 1000 < Date.now()) {
+      navigate("/login", { replace: true });
+    }
+  }, []);
 
   if (!notifications) {
     return (

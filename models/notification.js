@@ -38,10 +38,10 @@ const notificationSchema = new Schema(
       required: true,
     },
 
-    receiverUsername: {
-      type: String,
-      required: true,
-    },
+    // receiverUsername: {
+    //   type: String,
+    //   required: true,
+    // },
 
     sender: {
       type: Schema.Types.ObjectId,

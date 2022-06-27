@@ -8,18 +8,21 @@ import LoadingSpinner from "./UI/LoadingSpinner";
 const CommentsSection = (props) => {
   const [bodyInput, setBodyInput] = useState("");
   const [error, setError] = useState(null);
-  const loader = useSelector((state) => state.ui.loader);
+  const [isLoading, setIsLoading] = useState(false);
   const errors = useSelector((state) => state.ui.errors);
   const dispatch = useDispatch();
 
-  const addCommentHandler = () => {
+  const addCommentHandler = async () => {
     setError(null);
+
     if (bodyInput === "") {
       setError("Body cannot be empty!");
       return;
     }
 
-    dispatch(
+    setIsLoading(true);
+
+    await dispatch(
       addComment({
         body: bodyInput,
         screamId: props.screamId,
@@ -27,9 +30,11 @@ const CommentsSection = (props) => {
         socket: props.socket,
       })
     );
-    setBodyInput("");
 
-    if (errors) {
+    setBodyInput("");
+    setIsLoading(false);
+
+    if (errors && errors.errorData) {
       setError(errors.errorData[0].msg);
     }
   };
@@ -62,7 +67,7 @@ const CommentsSection = (props) => {
             className={classes["add-comment-btn"]}
             onClick={addCommentHandler}
           >
-            {loader ? (
+            {isLoading ? (
               <div className={`${classes["dual-ring"]}`}></div>
             ) : (
               <>Add Comment</>

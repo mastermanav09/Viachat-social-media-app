@@ -12,7 +12,6 @@ module.exports = function (socket) {
   socket.on("sendLikeNotification", async ({ receiverId, screamId }) => {
     const receiver = getCurrentUser(receiverId);
     const sender = getCurrentUser(socket.decodedToken.userId);
-
     try {
       if (!sender) {
         const error = new Error("Something went wrong!");

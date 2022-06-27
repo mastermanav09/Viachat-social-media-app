@@ -18,10 +18,24 @@ const Hero = () => {
     if (Object.keys(userCredentials).length === 0) {
       dispatch(getUser());
     }
-  }, []);
+  }, [dispatch]);
 
   if (Object.keys(userCredentials).length === 0) {
     return <SkeletonProfile />;
+  }
+
+  let address;
+  if (userCredentials.address && userCredentials.address.length > 25) {
+    address = userCredentials.address.slice(0, 25) + "...";
+  } else {
+    address = userCredentials.address;
+  }
+
+  let bio;
+  if (userCredentials.bio && userCredentials.bio.length > 25) {
+    bio = userCredentials.bio.slice(0, 25) + "...";
+  } else {
+    bio = userCredentials.bio;
   }
 
   return (
@@ -45,10 +59,14 @@ const Hero = () => {
             <Link to="/my-profile">@{userCredentials.username}</Link>
           </div>
           <div className={classes.name}>{userCredentials.name}</div>
-          <div className={classes.intro}>Hello, I'm user</div>
-          {userCredentials.location && (
+          {userCredentials.bio ? (
+            <div className={classes.bio}>{bio}</div>
+          ) : (
+            <div className={classes.bio}>Hello, I'm user</div>
+          )}
+          {userCredentials.address && (
             <div className={classes.location}>
-              <Location /> New Delhi, India
+              <Location /> {address}
             </div>
           )}
 
@@ -56,11 +74,12 @@ const Hero = () => {
             <div className={classes.website}>
               <WebsiteLink />
               <a
-                href="https://facebook.com"
+                href={`${userCredentials.website}`}
                 target="_blank"
                 style={{ margin: "0" }}
+                rel="noreferrer"
               >
-                https://facebook.com
+                {userCredentials.website}
               </a>
             </div>
           )}

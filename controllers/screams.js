@@ -85,7 +85,7 @@ exports.getScream = async (req, res, next) => {
     const comments = await Comment.find({
       screamId: screamId,
     })
-      .select("-__v -updatedAt -screamId")
+      .select("-__v -updatedAt")
       .sort({ createdAt: -1 });
 
     res.status(200).json({
@@ -156,6 +156,7 @@ exports.addComment = async (req, res, next) => {
 exports.deleteComment = async (req, res, next) => {
   const screamId = req.params.screamId;
   const commentId = req.params.commentId;
+  const userHandle = req.params.userHandle;
 
   try {
     const scream = await Scream.findById(screamId);
@@ -165,11 +166,26 @@ exports.deleteComment = async (req, res, next) => {
       throw error;
     }
 
-    const result = await Comment.findOneAndDelete({
-      _id: mongoose.Types.ObjectId(commentId),
-      screamId: mongoose.Types.ObjectId(screamId),
-      userHandle: req.user.userId,
-    });
+    if (
+      req.user.userId.toString() !== scream.userHandle.toString() &&
+      req.user.userId.toString() !== userHandle.toString()
+    ) {
+      return;
+    }
+
+    let result;
+    if (req.user.userId.toString() === scream.userHandle.toString()) {
+      result = await Comment.findOneAndDelete({
+        _id: mongoose.Types.ObjectId(commentId),
+        screamId: mongoose.Types.ObjectId(screamId),
+      });
+    } else {
+      result = await Comment.findOneAndDelete({
+        _id: mongoose.Types.ObjectId(commentId),
+        screamId: mongoose.Types.ObjectId(screamId),
+        userHandle: req.user.userId,
+      });
+    }
 
     if (!result) {
       const error = new Error("Something went wrong!");

@@ -10,6 +10,8 @@ const uiSlice = createSlice({
     showNotifications: false,
     showPostScreamModal: false,
     showScreamModal: false,
+    showProfileEditModal: false,
+    showUpdateProfilePictureModal: false,
   },
 
   reducers: {
@@ -54,9 +56,21 @@ const uiSlice = createSlice({
       state.showPostScreamModal = false;
     },
 
+    showProfileEditModal(state, action) {
+      state.showProfileEditModal = true;
+      state.showUpdateProfilePictureModal = false;
+    },
+
+    showUpdateProfilePictureModal(state, action) {
+      state.showUpdateProfilePictureModal = true;
+      state.showProfileEditModal = false;
+    },
+
     closeModal(state, action) {
       state.showScreamModal = false;
       state.showPostScreamModal = false;
+      state.showProfileEditModal = false;
+      state.showUpdateProfilePictureModal = false;
     },
   },
 });

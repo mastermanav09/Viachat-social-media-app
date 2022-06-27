@@ -26,6 +26,11 @@ module.exports = (req, res, next) => {
       error.statusCode = 500;
     }
 
+    if (error.message === "jwt expired") {
+      error.message = "Session Expired! Please login again.";
+      error.statusCode = 403;
+    }
+
     next(error);
   }
 

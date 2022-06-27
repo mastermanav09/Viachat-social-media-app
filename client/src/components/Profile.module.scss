@@ -15,14 +15,23 @@
   left: calc(50% - 80px);
   border-radius: 50%;
 
-  @media screen and (max-width: 480px) {
+  @media screen and (max-width: 1024px) {
     width: 130px;
     height: 130px;
     left: calc(50% - 65px);
   }
 
+  @media screen and (max-width: 480px) {
+    width: 100px;
+    height: 100px;
+    left: calc(50% - 65px);
+  }
+
   img {
     border-radius: 50%;
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
   }
 }
 
@@ -40,9 +49,44 @@
   margin: 5rem 0;
   width: 100%;
   text-align: center;
-  font-size: clamp(24px, 3.5vw, 40px);
+  font-size: clamp(30px, 3.3vw, 40px);
+
+  @media screen and (max-width: 1024px) {
+    margin: 3.5rem 0;
+  }
 
   @media screen and (max-width: 480px) {
-    margin: 3.5rem 0;
+    margin: 2rem 0;
+  }
+}
+
+.profile-options {
+  position: absolute;
+  margin: 0.5rem 1rem;
+  font-size: clamp(10px, 5vw, 16px);
+
+  .profile-options-inner {
+    display: flex;
+    gap: 1rem;
+    padding: 0.5rem;
+    border-radius: 8px;
+    font-size: 15px;
+
+    @media screen and (max-width: 768px) {
+      font-size: 12px;
+    }
+
+    .profile-option-1,
+    .profile-option-2 {
+      padding: 0.5rem;
+      border-radius: 5px;
+      color: white;
+      background-color: rgba(19, 35, 72, 0.216);
+      cursor: pointer;
+
+      &:hover {
+        background-color: rgba(33, 65, 140, 0.616);
+      }
+    }
   }
 }

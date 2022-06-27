@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import classes from "./MainNavigation.module.scss";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import Dropdown from "../UI/Dropdown";
 import { useSelector, useDispatch } from "react-redux";
 import { userActions } from "../../store/reducers/user";
@@ -18,10 +18,20 @@ const MainNavigation = (props) => {
   const userState = useSelector((state) => state.user);
   const uiState = useSelector((state) => state.ui);
   const [unreadNotifications, setUnreadNotifications] = useState(null);
-  const authHandler = () => dispatch(uiActions.switchAuth());
-  const authLogoutHandler = () => dispatch(userActions.logout());
   const userCredentials = useSelector((state) => state.user.credentials);
   const { socket } = props;
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (userState.tokenExpiryState * 1000 < Date.now()) {
+      navigate("/login", { replace: true });
+    }
+  }, []);
+
+  const authHandler = () => {
+    dispatch(uiActions.errorsNullify());
+    dispatch(uiActions.switchAuth());
+  };
 
   function closeNavbar() {
     setshowNavbarBtn(false);
@@ -29,11 +39,11 @@ const MainNavigation = (props) => {
 
   useEffect(() => {
     if (userState.notifications) {
-      let unreadNotifications = userState.notifications.filter(
+      let notifications = userState.notifications.filter(
         (notification) => notification.read === false
       );
 
-      setUnreadNotifications(unreadNotifications);
+      setUnreadNotifications(notifications);
     }
   }, [userState.notifications]);
 
@@ -49,12 +59,12 @@ const MainNavigation = (props) => {
     }
   }, [socket]);
 
-  useEffect(() => {
-    if (uiState.showNotifications) {
-      setUnreadNotifications(null);
-      dispatch(markNotificationsRead());
-    }
-  }, [uiState.showNotifications, userState.notifications]);
+  const manageNotifications = () => {
+    setUnreadNotifications(null);
+    dispatch(userActions.setNotificationsMarked());
+    dispatch(uiActions.showNotifications());
+    dispatch(markNotificationsRead());
+  };
 
   return (
     <>
@@ -105,13 +115,13 @@ const MainNavigation = (props) => {
                           src={userCredentials.imageUrl}
                           referrerPolicy="no-referrer"
                           className="profile-img"
-                          alt="picture"
+                          alt="profile-icon"
                         />
                       ) : (
                         <img
                           src="/images/no-img.png"
                           className="profile-img"
-                          alt="picture"
+                          alt="profile-icon"
                         />
                       )}
                       <span>{userCredentials.username}</span>
@@ -131,11 +141,7 @@ const MainNavigation = (props) => {
                       classes["navbar-actions-icon"],
                       uiState.showNotifications ? classes.active : "",
                     ].join(" ")}
-                    onClick={() => {
-                      setUnreadNotifications(null);
-                      dispatch(uiActions.showNotifications());
-                      dispatch(markNotificationsRead());
-                    }}
+                    onClick={manageNotifications}
                   >
                     <NotificationsBell />
                   </div>
@@ -155,11 +161,7 @@ const MainNavigation = (props) => {
               </>
             )}
 
-            {userState.authenticated ? (
-              <li onClick={authLogoutHandler} className={`${classes["auth"]}`}>
-                <span></span>
-              </li>
-            ) : (
+            {!userState.authenticated && !userState.decodedTokenState && (
               <li onClick={authHandler} className={`${classes["auth"]}`}>
                 {!uiState.isAuthLogin ? (
                   <Link to="/login">
@@ -183,7 +185,7 @@ const MainNavigation = (props) => {
               : `${classes["navbar-btn"]}`
           }
         >
-          <div className={`${classes["bar"]}`}></div>w
+          <div className={`${classes["bar"]}`}></div>
           <div className={`${classes["bar"]}`}></div>
           <div className={`${classes["bar"]}`}></div>
         </div>

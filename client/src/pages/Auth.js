@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
+import Cookies from "universal-cookie";
 import { useRef } from "react";
 import classes from "./Auth.module.scss";
 import Google from "../components/svg/Google";
@@ -18,28 +19,40 @@ const Auth = () => {
   const dispatch = useDispatch();
   const uiState = useSelector((state) => state.ui);
   const navigate = useNavigate();
-  const [switchAuthLogIn, setSwitchAuthLogIn] = useState(true);
+  const userState = useSelector((state) => state.user);
+  const [validationData, setValidationData] = useState(null);
 
   const googleAuthHandler = () => {
     window.open("http://localhost:8080/api/auth/google", "_self");
   };
 
   const switchAuthHandler = () => {
+    setValidationData(null);
     dispatch(uiActions.errorsNullify());
     dispatch(uiActions.switchAuth());
   };
 
-  let validationData = null;
+  useEffect(() => {
+    setValidationData(false);
+  }, [uiState.isAuthLogin]);
+
   const loginHandler = async (e) => {
     e.preventDefault();
 
+    dispatch(uiActions.errorsNullify());
+    setValidationData(null);
     let authData;
 
-    if (switchAuthLogIn) {
+    if (uiState.isAuthLogin) {
       authData = {
         email: emailInputRef.current.value,
         password: passwordInputRef.current.value,
       };
+
+      if (!authData.email || !authData.password) {
+        setValidationData("Please enter your details.");
+        return;
+      }
     } else {
       authData = {
         username: usernameInputRef.current.value,
@@ -48,25 +61,38 @@ const Auth = () => {
         password: passwordInputRef.current.value,
         confirmPassword: confirmPasswordInputRef.current.value,
       };
+
+      if (
+        !authData.email ||
+        !authData.password ||
+        !authData.username ||
+        !authData.confirmPassword ||
+        !authData.name
+      ) {
+        setValidationData("Please enter all details.");
+        return;
+      }
     }
 
     let authUrl;
-    if (switchAuthLogIn) {
+    if (uiState.isAuthLogin) {
       authUrl = "/api/auth/login";
     } else {
       authUrl = "/api/auth/signup";
     }
 
-    dispatch(auth({ authData, authUrl, navigate }));
+    await dispatch(auth({ authData, authUrl, navigate }));
   };
 
-  if (uiState.errors) {
-    if (uiState.errors.errorData) {
-      validationData = uiState.errors.errorData[0].msg;
-    } else {
-      validationData = uiState.errors.message;
+  useEffect(() => {
+    if (uiState.errors) {
+      if (uiState.errors.errorData) {
+        setValidationData(uiState.errors.errorData[0].msg);
+      } else {
+        setValidationData(uiState.errors.message);
+      }
     }
-  }
+  }, [uiState.errors]);
 
   return (
     <main className={classes.main}>
@@ -204,12 +230,12 @@ const Auth = () => {
 
             <div className={`${classes["input-control"]}`}>
               {uiState.isAuthLogin && (
-                <a
-                  href="#"
+                <Link
+                  to="#"
                   className={`${classes.text} ${classes["text-links"]}`}
                 >
                   Forgot Password
-                </a>
+                </Link>
               )}
 
               {uiState.isAuthLogin ? (

@@ -23,4 +23,15 @@
 .notifications-wrapper {
   padding: 0 0.5rem;
   height: 100%;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 0px;
+    background-color: transparent;
+  }
+
+  @media screen and (max-width: 768px) {
+    padding: 0 0rem;
+    margin: auto;
+  }
 }

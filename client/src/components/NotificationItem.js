@@ -13,12 +13,19 @@ const NotificationItem = (props) => {
   return (
     <Link
       to={`/${username}/scream/${notification.screamId}`}
-      onClick={() => dispatch(uiActions.clearBars())}
+      onClick={() => {
+        dispatch(uiActions.showScreamModal());
+        dispatch(uiActions.clearBars());
+      }}
       className={classes["notification-link"]}
     >
       <div className={`${classes["notification-item"]}`}>
         <div className={`${classes["image-container"]}`}>
-          <img src={notification.userImageUrl} alt="profile-icon" />
+          <img
+            src={notification.userImageUrl}
+            alt="profile-icon"
+            referrerPolicy="no-referrer"
+          />
         </div>
 
         <div className={`${classes["lower-container"]}`}>

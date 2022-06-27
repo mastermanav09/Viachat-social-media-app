@@ -33,7 +33,6 @@ const userSchema = new Schema(
 
       age: {
         type: Number,
-        min: 12,
       },
 
       bio: {

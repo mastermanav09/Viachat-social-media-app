@@ -12,6 +12,7 @@ $blue: #2666cf;
     background: hsla(154, 100%, 76%, 1);
     background: hsla(239, 100%, 67%, 1);
     border-radius: 5px 5px 0 0;
+    min-height: 120px;
 
     background: linear-gradient(
       90deg,
@@ -33,7 +34,10 @@ $blue: #2666cf;
 
     img {
       width: 12vw;
+      height: 12vw;
       max-width: 150px;
+      min-height: 120px;
+      max-height: 150px;
       text-align: center;
       object-fit: cover;
       border-radius: 50%;
@@ -65,12 +69,11 @@ $blue: #2666cf;
   }
 
   .name {
-    font-size: clamp(17px, 1.4vw, 20px);
+    font-size: clamp(17px, 1.5vw, 20px);
     color: rgba($color: #000000, $alpha: 0.6);
   }
 
   .website {
-    font-size: clamp(15px, 1.4vw, 17px);
     color: $blue;
     cursor: pointer;
     display: flex;
@@ -87,6 +90,9 @@ $blue: #2666cf;
   .location {
     display: flex;
     align-items: center;
+
+    word-wrap: normal;
+
     svg {
       width: 18px;
       height: 18px;
@@ -95,16 +101,18 @@ $blue: #2666cf;
     }
   }
 
-  .intro,
+  .bio,
   .location,
-  .joined {
+  .joined,
+  .website {
     color: black;
-    font-size: clamp(15px, 1.4vw, 17px);
+    font-size: clamp(12px, 1.3vw, 15px);
   }
 
   .joined {
     display: flex;
     align-items: center;
+
     svg {
       width: 18px;
       height: 18px;

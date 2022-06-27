@@ -7,7 +7,7 @@ const signupValidationArray = [
     .withMessage("Username should be of at least 3 characters.")
     .matches(/^[A-Za-z0-9.]+$/)
     .withMessage(
-      "Sorry, only letters (a-z/A-Z), numbers (0-9), and periods (.) are allowed."
+      "Sorry, only letters (a-z/A-Z), numbers (0-9) and periods (.) are allowed in username."
     ),
 
   body("name")

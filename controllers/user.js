@@ -71,6 +71,7 @@ exports.updateProfilePhoto = async (req, res, next) => {
 
     res.status(200).json({
       message: "Photo uploaded successfully.",
+      imageUrl: user.credentials.imageUrl,
     });
   } catch (error) {
     if (!isLink) {
@@ -90,8 +91,9 @@ exports.updateProfilePhoto = async (req, res, next) => {
 };
 
 exports.updateProfile = async (req, res, next) => {
-  const username = req.body.username;
-  const name = req.body.name;
+  // const username = req.body.username;
+  // const name = req.body.name;
+
   const age = req.body.age || undefined;
   const bio = req.body.bio || undefined;
   const address = req.body.address || undefined;
@@ -108,8 +110,8 @@ exports.updateProfile = async (req, res, next) => {
     }
 
     const user = await User.findByIdAndUpdate(req.user.userId, {
-      "credentials.username": username,
-      "credentials.name": name,
+      // "credentials.username": username,
+      // "credentials.name": name,
       "credentials.age": age,
       "credentials.address": address,
       "credentials.bio": bio,
@@ -122,12 +124,12 @@ exports.updateProfile = async (req, res, next) => {
       throw error;
     }
 
-    await Notification.updateMany(
-      {
-        sender: req.user.userId,
-      },
-      { senderUsername: username }
-    );
+    // await Notification.updateMany(
+    //   {
+    //     sender: req.user.userId,
+    //   },
+    //   { senderUsername: username }
+    // );
 
     res.status(200).json({ message: "Profile updated!" });
   } catch (error) {

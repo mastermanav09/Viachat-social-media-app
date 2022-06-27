@@ -4,6 +4,7 @@ import Modal from "./UI/Modal";
 import { useDispatch, useSelector } from "react-redux";
 import { postScream } from "../store/reducers/data";
 import { useNavigate } from "react-router-dom";
+import { uiActions } from "../store/reducers/ui";
 
 const PostScream = () => {
   const [bodyInput, setBodyInput] = useState("");
@@ -29,8 +30,11 @@ const PostScream = () => {
         setError(uiState.errors.errorData[0].msg);
       }
     }
-  }, [uiState.errors]);
 
+    dispatch(uiActions.showPostScreamModal());
+  }, [uiState.errors, uiState.showPostScreamModal, dispatch]);
+
+  console.log(uiState.showPostScreamModal);
   return (
     <Modal type="add-scream">
       <div className={`${classes["heading-add-scream"]}`}>

@@ -5,11 +5,11 @@ import classes from "./CommentList.module.scss";
 
 const CommentList = (props) => {
   const dataState = useSelector((state) => state.data);
+  const comments = dataState.currentScreamData.comments;
 
-  console.log(dataState.currentScreamData.comments);
   return (
     <div className={classes["comment-list"]}>
-      {dataState.currentScreamData.comments.length == 0 ? (
+      {comments.length === 0 ? (
         <p
           style={{
             textAlign: "center",
@@ -21,7 +21,7 @@ const CommentList = (props) => {
         </p>
       ) : (
         <>
-          {dataState.currentScreamData.comments.map((comment) => (
+          {comments.map((comment) => (
             <CommentItem
               comment={comment}
               key={comment._id}
