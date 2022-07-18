@@ -23,6 +23,7 @@
 
   .left-sub-container {
     grid-area: left-sub-container;
+    width: 100%;
     margin: auto;
     @media screen and (max-width: 640px) {
       display: grid;
