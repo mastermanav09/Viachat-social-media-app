@@ -144,6 +144,10 @@ $light-sky-blue: #5e91e2;
 .nav-brand {
   display: flex;
   align-items: center;
+
+  @media screen and (max-width: 640px) {
+    font-size: 1.3rem;
+  }
 }
 
 .navbar-mid-nav {
@@ -338,10 +342,22 @@ $light-sky-blue: #5e91e2;
   }
 }
 
+.hamburger-action {
+  margin-left: auto;
+  height: 100%;
+  display: none;
+  @media screen and (max-width: 640px) {
+    display: block;
+  }
+}
+
 @media screen and (max-width: 640px) {
-  .navbar-nav {
+  .navbar-nav,
+  .navbar-mid-nav {
+    display: none;
     display: none;
   }
+
   .navbar .navbar-btn {
     display: block;
   }

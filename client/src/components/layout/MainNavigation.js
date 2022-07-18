@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import classes from "./MainNavigation.module.scss";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import Dropdown from "../UI/Dropdown";
+import Sidebar from "../UI/Sidebar";
 import { useSelector, useDispatch } from "react-redux";
 import { userActions } from "../../store/reducers/user";
 import { uiActions } from "../../store/reducers/ui";
@@ -11,9 +11,9 @@ import Notifications from "../Notifications";
 import Home from "../svg/Home";
 import Add from "../svg/Add";
 import { markNotificationsRead } from "../../store/reducers/user";
+import HamburgerIcon from "../UI/Hamburger";
 
 const MainNavigation = (props) => {
-  const [showNavbarBtn, setshowNavbarBtn] = useState(false);
   const dispatch = useDispatch();
   const userState = useSelector((state) => state.user);
   const uiState = useSelector((state) => state.ui);
@@ -32,10 +32,6 @@ const MainNavigation = (props) => {
     dispatch(uiActions.errorsNullify());
     dispatch(uiActions.switchAuth());
   };
-
-  function closeNavbar() {
-    setshowNavbarBtn(false);
-  }
 
   useEffect(() => {
     if (userState.notifications) {
@@ -90,14 +86,14 @@ const MainNavigation = (props) => {
                   </li>
                 </NavLink>
 
-                <Link
+                <NavLink
                   to="/add-scream"
                   onClick={() => dispatch(uiActions.showPostScreamModal())}
                 >
                   <li>
                     <Add />
                   </li>
-                </Link>
+                </NavLink>
               </>
             )}
           </ul>
@@ -178,20 +174,16 @@ const MainNavigation = (props) => {
         </div>
 
         <div
-          onClick={() => setshowNavbarBtn((prev) => !prev)}
-          className={
-            showNavbarBtn
-              ? `${classes["navbar-btn"]} ${classes.active}`
-              : `${classes["navbar-btn"]}`
-          }
+          onClick={() => dispatch(uiActions.setSideBar())}
+          style={{ marginLeft: "auto", height: "100%" }}
+          className={classes["hamburger-action"]}
         >
-          <div className={`${classes["bar"]}`}></div>
-          <div className={`${classes["bar"]}`}></div>
-          <div className={`${classes["bar"]}`}></div>
+          <HamburgerIcon showSidebarBtn={uiState.showSideBar} />
         </div>
       </nav>
 
-      {showNavbarBtn && <Dropdown close={closeNavbar} />}
+      <Sidebar socket={socket} manageNotifications={manageNotifications} />
+
       {uiState.showNavbarOptions && userState.authenticated && (
         <div className={classes.options}>
           <div className={`${classes["options-wrapper"]}`}>

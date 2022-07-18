@@ -9,6 +9,13 @@ const store = configureStore({
     data: dataReducer,
     ui: uiReducer,
   },
+
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoreActions: ["./reducers/user.js/addUserDetails"],
+      },
+    }).concat(),
 });
 
 export default store;

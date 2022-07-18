@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { uiActions } from "../store/reducers/ui";
-import { updateProfilePhoto, userActions } from "../store/reducers/user";
+import { updateProfilePhoto } from "../store/reducers/user";
 import classes from "./UpdateProfilePicture.module.scss";
 
-const UpdateProfilePicture = () => {
+const UpdateProfilePicture = (props) => {
   const userState = useSelector((state) => state.user);
   const uiState = useSelector((state) => state.ui);
   const [isLoading, setIsLoading] = useState(false);
   const [image, setImage] = useState(userState.credentials.imageUrl);
   const [isNewImageSelected, setIsNewImageSelected] = useState(false);
   const dispatch = useDispatch();
-  //   const [errors, setErrors] = useState(null);
 
   useEffect(() => {
     dispatch(uiActions.errorsNullify());
@@ -29,6 +28,7 @@ const UpdateProfilePicture = () => {
       formData.append("oldPath", userState.credentials.imageUrl);
     }
 
+    formData.append("currentUserId", props.currentUserId);
     dispatch(updateProfilePhoto({ formData, setIsLoading }));
   };
 
@@ -39,8 +39,6 @@ const UpdateProfilePicture = () => {
       dispatch(uiActions.errorsNullify());
     }
   };
-
-  console.log(uiState.errors);
 
   return (
     <div className={classes["wrapper"]}>

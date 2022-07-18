@@ -14,14 +14,15 @@ const Profile = (props) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const dispatch = useDispatch();
   const uiState = useSelector((state) => state.ui);
-  const userData = useSelector((state) =>
+  const currentUserData = useSelector((state) =>
     props.myProfile ? state.user : state.data.currentUser
   );
   const location = useLocation();
+  const userState = useSelector((state) => state.user);
+  const userId = searchParams.get("id");
 
   useEffect(() => {
     if (!props.myProfile) {
-      const userId = searchParams.get("id");
       if (userId) {
         dispatch(getUser({ userId: userId }));
       }
@@ -34,10 +35,18 @@ const Profile = (props) => {
   }, [dispatch, props.myProfile, searchParams]);
 
   const showEditOptionsHandler = () => {
+    if (currentUserData.userId !== userState.userId) {
+      return;
+    }
+
     dispatch(uiActions.showProfileEditModal());
   };
 
   const showProfilePictureHandler = () => {
+    if (currentUserData.userId !== userState.userId) {
+      return;
+    }
+
     dispatch(uiActions.showUpdateProfilePictureModal());
   };
 
@@ -45,43 +54,50 @@ const Profile = (props) => {
     <>
       {uiState.showProfileEditModal && (
         <Modal type="edit-profile">
-          <EditProfile />
+          <EditProfile
+            currentUserId={currentUserData.userId}
+            myProfile={props.myProfile}
+          />
         </Modal>
       )}
 
       {uiState.showUpdateProfilePictureModal && (
         <Modal type="update-profile-picture">
-          <UpdateProfilePicture />
+          <UpdateProfilePicture currentUserId={currentUserData.userId} />
         </Modal>
       )}
       <>
-        {uiState.loader || !userData ? (
+        {uiState.loader || !currentUserData ? (
           <div className={classes["center"]}>
             <LoadingSpinner />
           </div>
         ) : (
           <div>
             <div className={classes["profile-background"]}>
-              <div className={classes["profile-options"]}>
-                <div className={classes["profile-options-inner"]}>
-                  <div
-                    className={classes["profile-option-1"]}
-                    onClick={showEditOptionsHandler}
-                  >
-                    Edit profile
+              {userState.authenticated &&
+                userState.userId === currentUserData.userId && (
+                  <div className={classes["profile-options"]}>
+                    <div className={classes["profile-options-inner"]}>
+                      <div
+                        className={classes["profile-option-1"]}
+                        onClick={showEditOptionsHandler}
+                      >
+                        Edit profile
+                      </div>
+                      <div
+                        className={classes["profile-option-2"]}
+                        onClick={showProfilePictureHandler}
+                      >
+                        Update picture
+                      </div>
+                    </div>
                   </div>
-                  <div
-                    className={classes["profile-option-2"]}
-                    onClick={showProfilePictureHandler}
-                  >
-                    Update picture
-                  </div>
-                </div>
-              </div>
+                )}
+
               <div className={classes["profile-img-container"]}>
-                {userData.credentials.imageUrl ? (
+                {currentUserData.credentials.imageUrl ? (
                   <img
-                    src={userData.credentials.imageUrl}
+                    src={currentUserData.credentials.imageUrl}
                     alt="profile-pic"
                     referrerPolicy="no-referrer"
                   />
@@ -91,7 +107,7 @@ const Profile = (props) => {
               </div>
             </div>
             <div className={classes["profile-username"]}>
-              {userData.credentials.name}
+              {currentUserData.credentials.name}
             </div>
           </div>
         )}

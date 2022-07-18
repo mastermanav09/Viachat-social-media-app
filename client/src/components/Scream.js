@@ -92,8 +92,8 @@ const Scream = (props) => {
   };
 
   let updatedScreamBody;
-  if (scream.body.length > 120) {
-    updatedScreamBody = scream.body.slice(0, 120);
+  if (scream.body.length > 80) {
+    updatedScreamBody = scream.body.slice(0, 80);
     updatedScreamBody += "...";
   } else {
     updatedScreamBody = scream.body;
@@ -113,17 +113,19 @@ const Scream = (props) => {
           )}
         </div>
         <div className={`${classes["scream-body"]}`}>
-          {userState.userId === scream.userHandle ? (
-            <Link to={`/my-profile`}>
-              <div className={classes.name}>{scream.username}</div>
-            </Link>
-          ) : (
-            <Link to={`/users/${scream.username}?id=${scream.userHandle}`}>
-              <div className={classes.name}>{scream.username}</div>
-            </Link>
-          )}
-          <div className={classes.timeago}>{format(scream.createdAt)}</div>
-          <div className={classes.body}>{updatedScreamBody}</div>
+          <div className={classes["upper-body"]}>
+            {userState.userId === scream.userHandle ? (
+              <Link to={`/my-profile`}>
+                <div className={classes.name}>{scream.username}</div>
+              </Link>
+            ) : (
+              <Link to={`/users/${scream.username}?id=${scream.userHandle}`}>
+                <div className={classes.name}>{scream.username}</div>
+              </Link>
+            )}
+            <div className={classes.timeago}>{format(scream.createdAt)}</div>
+            <div className={classes.body}>{updatedScreamBody}</div>
+          </div>
           <div className={classes.actions}>
             <div className={classes.actions_one}>
               <span>
@@ -157,7 +159,7 @@ const Scream = (props) => {
                 </span>
               </span>
             </div>
-            <div style={{ display: "flex", alignItems: "center" }}>
+            <div className={classes.show}>
               <Link
                 to={`/${scream.username}/scream/${scream._id}`}
                 style={{ cursor: "pointer" }}
@@ -177,12 +179,29 @@ const Scream = (props) => {
           </div>
         </div>
         <div className={`${classes["actions-two"]}`}>
+          <div className={classes["show-mobile"]}>
+            <Link
+              to={`/${scream.username}/scream/${scream._id}`}
+              style={{ cursor: "pointer" }}
+              onClick={() => {
+                dispatch(uiActions.showScreamModal());
+                dispatch(
+                  getScream({
+                    id: scream._id,
+                    likeStatus: props.isLikedScream,
+                  })
+                );
+              }}
+            >
+              <Expand />
+            </Link>
+          </div>
           {scream.userHandle === userState.userId ? (
-            <Delete onClick={deleteScreamHandler} />
+            <div>
+              <Delete onClick={deleteScreamHandler} />
+            </div>
           ) : (
-            <div
-              style={{ width: "24px", height: "24px", visibility: "hidden" }}
-            ></div>
+            <div className={classes["delete-placeholder"]}></div>
           )}
         </div>
       </div>

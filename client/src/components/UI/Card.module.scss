@@ -11,6 +11,7 @@
   height: 13vw;
   max-height: 170px;
   min-height: 130px;
+  max-width: 815px;
   @include card-base-prop();
 }
 
@@ -19,4 +20,23 @@
   height: 35vw;
   max-height: 21rem;
   @include card-base-prop();
+}
+
+@media screen and (max-width: 640px) {
+  .scream {
+    width: 45vw;
+    height: 77vw;
+    max-height: 400px;
+    max-width: 300px;
+    margin: auto;
+    min-height: 360px;
+  }
+}
+
+@media screen and (max-width: 460px) {
+  .scream {
+    width: 100%;
+    height: 50rem;
+    margin: auto;
+  }
 }

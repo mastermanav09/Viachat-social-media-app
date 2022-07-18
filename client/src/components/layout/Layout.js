@@ -12,16 +12,20 @@ const Layout = (props) => {
     if (
       uiState.showScreamModal ||
       uiState.showProfileEditModal ||
-      uiState.showPostScreamModal
+      uiState.showPostScreamModal ||
+      uiState.showSideBar ||
+      uiState.showNotifications
     ) {
       document.querySelector("body").style.overflow = "hidden";
     } else {
-      document.querySelector("body").style.overflow = "auto";
+      document.querySelector("body").style.overflow = "";
     }
   }, [
     uiState.showScreamModal,
     uiState.showProfileEditModal,
     uiState.showPostScreamModal,
+    uiState.showSideBar,
+    uiState.showNotifications,
   ]);
 
   return (

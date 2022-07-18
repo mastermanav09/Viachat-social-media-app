@@ -20,3 +20,9 @@ body {
 ::selection {
   background: rgb(174, 224, 240);
 }
+
+/* @media screen and (max-width: 640px) {
+  body {
+    overflow: hidden;
+  }
+} */

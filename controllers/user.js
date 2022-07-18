@@ -19,6 +19,12 @@ exports.updateProfilePhoto = async (req, res, next) => {
     isLink = false;
 
   try {
+    if (req.user.userId !== req.body.currentUserId) {
+      const error = new Error("Unauthorized!");
+      error.statusCode = 403;
+      throw error;
+    }
+
     if (!req.body.oldPath) {
       const error = new Error("Something went wrong.");
       error.statusCode = 404;
@@ -91,9 +97,6 @@ exports.updateProfilePhoto = async (req, res, next) => {
 };
 
 exports.updateProfile = async (req, res, next) => {
-  // const username = req.body.username;
-  // const name = req.body.name;
-
   const age = req.body.age || undefined;
   const bio = req.body.bio || undefined;
   const address = req.body.address || undefined;
@@ -102,6 +105,13 @@ exports.updateProfile = async (req, res, next) => {
   const errors = validationResult(req);
 
   try {
+    if (req.user.userId !== req.body.userId) {
+      const error = new Error("Unauthorized!");
+      error.statusCode = 403;
+      error.data = errors.array();
+      throw error;
+    }
+
     if (!errors.isEmpty()) {
       const error = new Error("Validation failed.");
       error.statusCode = 422;
@@ -110,8 +120,6 @@ exports.updateProfile = async (req, res, next) => {
     }
 
     const user = await User.findByIdAndUpdate(req.user.userId, {
-      // "credentials.username": username,
-      // "credentials.name": name,
       "credentials.age": age,
       "credentials.address": address,
       "credentials.bio": bio,
@@ -123,13 +131,6 @@ exports.updateProfile = async (req, res, next) => {
       error.statusCode = 404;
       throw error;
     }
-
-    // await Notification.updateMany(
-    //   {
-    //     sender: req.user.userId,
-    //   },
-    //   { senderUsername: username }
-    // );
 
     res.status(200).json({ message: "Profile updated!" });
   } catch (error) {

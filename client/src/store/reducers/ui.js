@@ -12,6 +12,7 @@ const uiSlice = createSlice({
     showScreamModal: false,
     showProfileEditModal: false,
     showUpdateProfilePictureModal: false,
+    showSideBar: false,
   },
 
   reducers: {
@@ -37,7 +38,7 @@ const uiSlice = createSlice({
     },
 
     showNotifications(state, action) {
-      state.showNotifications = !state.showNotifications;
+      state.showNotifications = action.payload || !state.showNotifications;
       state.showNavbarOptions = false;
     },
 
@@ -66,11 +67,16 @@ const uiSlice = createSlice({
       state.showProfileEditModal = false;
     },
 
+    setSideBar(state, action) {
+      state.showSideBar = action.payload || !state.showSideBar;
+    },
+
     closeModal(state, action) {
       state.showScreamModal = false;
       state.showPostScreamModal = false;
       state.showProfileEditModal = false;
       state.showUpdateProfilePictureModal = false;
+      state.showNotifications = false;
     },
   },
 });

@@ -4,6 +4,7 @@ import NotificationItem from "./NotificationItem";
 import LoadingSpinner from "./UI/LoadingSpinner";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import Cross from "./svg/Cross";
 
 const Notifications = (props) => {
   const userState = useSelector((state) => state.user);
@@ -48,15 +49,7 @@ const Notifications = (props) => {
   } else {
     content =
       notifications.length === 0 ? (
-        <p
-          style={{
-            textAlign: "center",
-            margin: "0.8rem 0",
-            fontSize: "clamp(14px,1.4vw,20px)",
-          }}
-        >
-          No notifications
-        </p>
+        <p className={classes["notification-text"]}>No notifications</p>
       ) : (
         notifications.map((notification) => (
           <NotificationItem
@@ -68,7 +61,15 @@ const Notifications = (props) => {
   }
 
   return (
-    <div className={classes.notifications}>
+    <div
+      className={[
+        classes.notifications,
+        uiState.showNotifications ? classes["open"] : classes["close"],
+      ].join(" ")}
+    >
+      <div className={classes["close"]}>
+        <Cross type="notification-bar-mobile" />
+      </div>
       <div className={`${classes["notifications-wrapper"]}`}>{content}</div>
     </div>
   );

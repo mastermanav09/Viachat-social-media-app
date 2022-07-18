@@ -15,11 +15,22 @@ const Cross = (props) => {
       height="20px"
       viewBox="0 0 94.926 94.926"
       onClick={() => {
+        if (props.type === "notification-bar-mobile") {
+          dispatch(uiActions.showNotifications(false));
+          return;
+        }
+
+        if (props.type === "sidebar-mobile") {
+          dispatch(uiActions.setSideBar());
+          return;
+        }
+
         dispatch(uiActions.closeModal());
 
         if (
           props.type !== "edit-profile" &&
-          props.type !== "update-profile-picture"
+          props.type !== "update-profile-picture" &&
+          props.type !== "sidebar"
         ) {
           navigate("/");
         }

@@ -5,11 +5,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { addUserDetails } from "../store/reducers/user";
 import { uiActions } from "../store/reducers/ui";
 
-const EditProfile = () => {
+const EditProfile = (props) => {
   const userState = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const uiState = useSelector((state) => state.ui);
-  const [errors, setErrors] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const ageInputRef = useRef(userState.credentials.age || null);
   const bioInputRef = useRef(userState.credentials.bio || null);
@@ -25,7 +24,6 @@ const EditProfile = () => {
 
     dispatch(uiActions.errorsNullify());
     setIsLoading(true);
-    setErrors(null);
 
     const age = ageInputRef.current.value;
     const bio = bioInputRef.current.value;
@@ -38,17 +36,23 @@ const EditProfile = () => {
         bio,
         address,
         website,
+        userId: props.currentUserId,
         setIsLoading,
       })
     );
   };
+
+  let errors = null;
+  if (uiState.errors) {
+    errors = uiState.errors.message || uiState.errors.errorData[0].msg;
+  }
 
   return (
     <div>
       <main className={classes.wrapper}>
         <section className={classes["section-form"]}>
           <h2 className={classes.title}>Edit your profile</h2>
-          {errors && <p className={classes.validate}>{errors}</p>}
+
           <form
             className={classes.form}
             noValidate
@@ -141,12 +145,7 @@ const EditProfile = () => {
 
             <div className={classes["form-footer"]}>
               <div className={classes["sub-footer-part"]}>
-                {uiState.errors && uiState.errors.errorData && (
-                  <p className={classes.validate}>
-                    {uiState.errors.errorData[0].msg}
-                  </p>
-                )}
-
+                {errors && <p className={classes.validate}>{errors}</p>}
                 <button type="submit" className={classes["save-btn"]}>
                   {isLoading ? (
                     <div className={`${classes["dual-ring"]}`}></div>
