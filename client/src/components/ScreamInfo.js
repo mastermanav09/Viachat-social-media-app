@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import Like from "./svg/Like";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Comment from "./svg/Comment";
 import { useDispatch, useSelector } from "react-redux";
 import { format } from "timeago.js";
@@ -13,22 +13,28 @@ const ScreamInfo = (props) => {
   const scream = useSelector((state) => state.data.currentScreamData);
   const [likeCount, setLikeCount] = useState(scream.likeCount);
   const [initial, setIsInitial] = useState(true);
-  // const likedStatus = useSelector(
-  //   (state) => state.data.currentScreamData.likeStatus
-  // );
-  const userState = useSelector((state) => state.user);
+
+  const navigate = useNavigate();
+
+  const userId = useSelector((state) => state.user.userId);
+  const userTokenExpiry = useSelector((state) => state.user.tokenExpiryState);
   const [isLikedStatus, setIsLikedStatus] = useState(scream.likeStatus);
   const [disabled, setDisabled] = useState(false);
   const { socket } = props;
 
   useEffect(() => {
+    if (userTokenExpiry * 1000 < Date.now()) {
+      navigate("/login", { replace: true });
+      return;
+    }
+
     if (initial === true) {
       return;
     }
 
     setDisabled(true);
 
-    const key = setTimeout(() => {
+    const key1 = setTimeout(() => {
       if (isLikedStatus) {
         setLikeCount((prev) => prev + 1);
         dispatch(
@@ -55,10 +61,19 @@ const ScreamInfo = (props) => {
     }, [300]);
 
     return () => {
-      clearTimeout(key);
+      clearTimeout(key1);
       clearTimeout(key2);
     };
-  }, [isLikedStatus, initial, dispatch, scream._id, scream.userHandle, socket]);
+  }, [
+    isLikedStatus,
+    initial,
+    dispatch,
+    scream._id,
+    scream.userHandle,
+    socket,
+    userTokenExpiry,
+    navigate,
+  ]);
 
   const likeScreamHandler = () => {
     if (isLikedStatus) {
@@ -88,12 +103,12 @@ const ScreamInfo = (props) => {
             referrerPolicy="no-referrer"
           />
           <div className={classes["user-details"]}>
-            {scream.userHandle === userState.userId ? (
+            {scream.userHandle === userId ? (
               <Link to={`/my-profile`}>
                 <div>{scream.username}</div>
               </Link>
             ) : (
-              <Link to={`/users/${scream.username}?id=${scream.userHandle}`}>
+              <Link to={`/users/${scream.userHandle}`}>
                 <div>{scream.username}</div>
               </Link>
             )}
@@ -131,4 +146,4 @@ const ScreamInfo = (props) => {
   );
 };
 
-export default ScreamInfo;
+export default React.memo(ScreamInfo);

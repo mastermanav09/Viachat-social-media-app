@@ -4,8 +4,9 @@ import { useSelector } from "react-redux";
 import classes from "./CommentList.module.scss";
 
 const CommentList = (props) => {
-  const dataState = useSelector((state) => state.data);
-  const comments = dataState.currentScreamData.comments;
+  const comments = useSelector(
+    (state) => state.data.currentScreamData.comments
+  );
 
   return (
     <div className={classes["comment-list"]}>

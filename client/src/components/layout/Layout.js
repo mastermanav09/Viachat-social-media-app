@@ -9,12 +9,17 @@ const Layout = (props) => {
   const uiState = useSelector((state) => state.ui);
 
   useEffect(() => {
+    const bodyWidth =
+      window.innerWidth ||
+      document.documentElement.clientWidth ||
+      document.body.clientWidth;
+
     if (
       uiState.showScreamModal ||
       uiState.showProfileEditModal ||
       uiState.showPostScreamModal ||
       uiState.showSideBar ||
-      uiState.showNotifications
+      (uiState.showNotifications && bodyWidth <= 640)
     ) {
       document.querySelector("body").style.overflow = "hidden";
     } else {

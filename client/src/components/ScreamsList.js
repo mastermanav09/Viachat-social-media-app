@@ -53,14 +53,17 @@ const ScreamsList = (props) => {
       <p className={classes.no_screams}>No screams found.</p>
     ) : (
       <>
-        {dataState.screams.map((scream) => (
-          <Scream
-            key={scream._id}
-            scream={scream}
-            isLikedScream={isLikedScream(scream._id) ? true : false}
-            socket={props.socket}
-          />
-        ))}
+        {dataState.screams.map((scream) => {
+          return (
+            <Scream
+              key={scream._id}
+              scream={scream}
+              isLikedScream={isLikedScream(scream._id) ? true : false}
+              socket={props.socket}
+              type="home-scream"
+            />
+          );
+        })}
       </>
     );
 

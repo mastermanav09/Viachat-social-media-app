@@ -16,7 +16,9 @@ import { useNavigate } from "react-router-dom";
 const Scream = (props) => {
   const { scream } = props;
   const dispatch = useDispatch();
-  const userState = useSelector((state) => state.user);
+
+  const userId = useSelector((state) => state.user.userId);
+  const userTokenExpiry = useSelector((state) => state.user.tokenExpiryState);
   const [isLikedStatus, setIsLikedStatus] = useState(props.isLikedScream);
   const [initial, setIsInitial] = useState(true);
   const [likeCount, setLikeCount] = useState(scream.likeCount);
@@ -33,7 +35,7 @@ const Scream = (props) => {
   }, [props.isLikedScream]);
 
   useEffect(() => {
-    if (userState.tokenExpiryState * 1000 < Date.now()) {
+    if (userTokenExpiry * 1000 < Date.now()) {
       navigate("/login", { replace: true });
       return;
     }
@@ -42,31 +44,25 @@ const Scream = (props) => {
       return;
     }
 
-    const key = setTimeout(() => {
-      if (isLikedStatus) {
-        setLikeCount((prev) => prev + 1);
-        dispatch(
-          likeScream({
-            socket: socket,
-            id: scream._id,
-            userId: scream.userHandle,
-          })
-        );
-      } else {
-        setLikeCount((prev) => prev - 1);
-        dispatch(
-          unlikeScream({
-            socket: socket,
-            id: scream._id,
-            userId: scream.userHandle,
-          })
-        );
-      }
-    }, [100]);
-
-    return () => {
-      clearTimeout(key);
-    };
+    if (isLikedStatus) {
+      setLikeCount((prev) => prev + 1);
+      dispatch(
+        likeScream({
+          socket: socket,
+          id: scream._id,
+          userId: scream.userHandle,
+        })
+      );
+    } else {
+      setLikeCount((prev) => prev - 1);
+      dispatch(
+        unlikeScream({
+          socket: socket,
+          id: scream._id,
+          userId: scream.userHandle,
+        })
+      );
+    }
   }, [isLikedStatus, initial]);
 
   const deleteScreamHandler = () => {
@@ -78,6 +74,7 @@ const Scream = (props) => {
       return;
     }
 
+    console.log("like");
     setIsInitial(false);
     setIsLikedStatus(true);
   };
@@ -87,8 +84,18 @@ const Scream = (props) => {
       return;
     }
 
+    console.log("unlike");
     setIsInitial(false);
     setIsLikedStatus(false);
+  };
+  const setShowScreamIdentifierHandler = () => {
+    if (props.type === "profile-scream") {
+      dispatch(uiActions.setShowScreamIdentifier(props.type));
+    } else if (props.type === "random-user-scream") {
+      dispatch(uiActions.setShowScreamIdentifier(props.type));
+    } else {
+      dispatch(uiActions.setShowScreamIdentifier("show-scream"));
+    }
   };
 
   let updatedScreamBody;
@@ -98,6 +105,7 @@ const Scream = (props) => {
   } else {
     updatedScreamBody = scream.body;
   }
+
   return (
     <Card type="scream">
       <div className={classes.main}>
@@ -114,12 +122,12 @@ const Scream = (props) => {
         </div>
         <div className={`${classes["scream-body"]}`}>
           <div className={classes["upper-body"]}>
-            {userState.userId === scream.userHandle ? (
+            {userId === scream.userHandle ? (
               <Link to={`/my-profile`}>
                 <div className={classes.name}>{scream.username}</div>
               </Link>
             ) : (
-              <Link to={`/users/${scream.username}?id=${scream.userHandle}`}>
+              <Link to={`/users/${scream.userHandle}`}>
                 <div className={classes.name}>{scream.username}</div>
               </Link>
             )}
@@ -141,8 +149,15 @@ const Scream = (props) => {
               </span>
               <span>
                 <Link
-                  to={`/${scream.username}/scream/${scream._id}`}
+                  to={
+                    props.type === "profile-scream"
+                      ? `/my-profile/scream/${scream._id}`
+                      : `${
+                          props.type === "random-user-scream" ? `/users` : ``
+                        }/${scream.userHandle}/scream/${scream._id}`
+                  }
                   onClick={() => {
+                    setShowScreamIdentifierHandler();
                     dispatch(uiActions.showScreamModal());
                     dispatch(
                       getScream({
@@ -161,16 +176,17 @@ const Scream = (props) => {
             </div>
             <div className={classes.show}>
               <Link
-                to={`/${scream.username}/scream/${scream._id}`}
+                to={
+                  props.type === "profile-scream"
+                    ? `/my-profile/scream/${scream._id}`
+                    : `${props.type === "random-user-scream" ? `/users` : ``}/${
+                        scream.userHandle
+                      }/scream/${scream._id}`
+                }
                 style={{ cursor: "pointer" }}
                 onClick={() => {
+                  setShowScreamIdentifierHandler();
                   dispatch(uiActions.showScreamModal());
-                  dispatch(
-                    getScream({
-                      id: scream._id,
-                      likeStatus: props.isLikedScream,
-                    })
-                  );
                 }}
               >
                 <Expand />
@@ -181,22 +197,23 @@ const Scream = (props) => {
         <div className={`${classes["actions-two"]}`}>
           <div className={classes["show-mobile"]}>
             <Link
-              to={`/${scream.username}/scream/${scream._id}`}
+              to={
+                props.type === "profile-scream"
+                  ? `/my-profile/scream/${scream._id}`
+                  : `${props.type === "random-user-scream" ? `/users` : ``}/${
+                      scream.userHandle
+                    }/scream/${scream._id}`
+              }
               style={{ cursor: "pointer" }}
               onClick={() => {
+                setShowScreamIdentifierHandler();
                 dispatch(uiActions.showScreamModal());
-                dispatch(
-                  getScream({
-                    id: scream._id,
-                    likeStatus: props.isLikedScream,
-                  })
-                );
               }}
             >
               <Expand />
             </Link>
           </div>
-          {scream.userHandle === userState.userId ? (
+          {scream.userHandle === userId ? (
             <div>
               <Delete onClick={deleteScreamHandler} />
             </div>

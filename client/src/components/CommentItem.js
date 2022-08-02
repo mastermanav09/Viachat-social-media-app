@@ -8,13 +8,10 @@ import { deleteComment } from "../store/reducers/data";
 const CommentItem = (props) => {
   const { comment } = props;
   const dispatch = useDispatch();
-  const userState = useSelector((state) => state.user);
+  const userId = useSelector((state) => state.user.userId);
 
   const deleteCommentHandler = () => {
-    if (
-      props.comment.userHandle === userState.userId ||
-      userState.userId === props.screamUserId
-    ) {
+    if (props.comment.userHandle === userId || userId === props.screamUserId) {
       dispatch(
         deleteComment({
           commentId: comment._id,
@@ -48,8 +45,7 @@ const CommentItem = (props) => {
         <div className={classes.timeago}>{format(comment.createdAt)}</div>
         <div className={classes["comment-body"]}>{comment.body}</div>
       </div>
-      {props.comment.userHandle === userState.userId ||
-      userState.userId === props.screamUserId ? (
+      {props.comment.userHandle === userId || userId === props.screamUserId ? (
         <div className={classes["comment-actions"]}>
           <Delete onClick={deleteCommentHandler} />
         </div>

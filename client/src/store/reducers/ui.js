@@ -13,6 +13,7 @@ const uiSlice = createSlice({
     showProfileEditModal: false,
     showUpdateProfilePictureModal: false,
     showSideBar: false,
+    showScreamIdentifier: null,
   },
 
   reducers: {
@@ -60,6 +61,10 @@ const uiSlice = createSlice({
     showProfileEditModal(state, action) {
       state.showProfileEditModal = true;
       state.showUpdateProfilePictureModal = false;
+    },
+
+    setShowScreamIdentifier(state, action) {
+      state.showScreamIdentifier = action.payload;
     },
 
     showUpdateProfilePictureModal(state, action) {

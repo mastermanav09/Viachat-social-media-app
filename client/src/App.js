@@ -18,6 +18,7 @@ import Profile from "./pages/Profile";
 import PostScream from "./components/PostScream";
 import ScreamDisplay from "./components/ScreamDisplay";
 import Error from "./pages/Error";
+import { getScreams } from "./store/reducers/data";
 import { uiActions } from "./store/reducers/ui";
 
 function App() {
@@ -25,7 +26,8 @@ function App() {
   const cookies = new Cookies();
   const token = cookies.get("upid");
   const navigate = useNavigate();
-  const userState = useSelector((state) => state.user);
+  const userTokenExpiry = useSelector((state) => state.user.tokenExpiryState);
+  const isUserAuthenticated = useSelector((state) => state.user.authenticated);
   const dispatch = useDispatch();
   const location = useLocation();
 
@@ -58,11 +60,11 @@ function App() {
         dispatch(uiActions.errors({ message: error.message }));
       }
     }
-  }, [token, dispatch, navigate, userState.tokenExpiryState]);
+  }, [token, dispatch, navigate, userTokenExpiry]);
 
-  // const [notifications, setNotifications] = useState([]);
-  // const inputCommentRef = useRef();
-  // const [stateChange, setStateChange] = useState(true);
+  useEffect(() => {
+    dispatch(getScreams());
+  }, [dispatch]);
 
   useEffect(() => {
     if (token) {
@@ -108,7 +110,7 @@ function App() {
           <Route
             path="/"
             element={
-              userState.authenticated ? (
+              isUserAuthenticated ? (
                 <Home socket={socket} />
               ) : (
                 <Navigate replace to="/login" />
@@ -116,19 +118,20 @@ function App() {
             }
           >
             <Route
-              path="/:username/scream/:screamId"
+              path="/:userId/scream/:screamId"
               element={
-                userState.authenticated ? (
+                isUserAuthenticated ? (
                   <ScreamDisplay socket={socket} />
                 ) : (
                   <Navigate replace to="/login" />
                 )
               }
             />
+
             <Route
               path="/add-scream"
               element={
-                userState.authenticated ? (
+                isUserAuthenticated ? (
                   <PostScream />
                 ) : (
                   <Navigate replace to="/login" />
@@ -140,61 +143,62 @@ function App() {
           <Route
             path="/signup"
             element={
-              userState.authenticated ? <Navigate replace to="/" /> : <Auth />
+              isUserAuthenticated ? <Navigate replace to="/" /> : <Auth />
             }
           />
           <Route
             path="/login"
             element={
-              userState.authenticated ? <Navigate replace to="/" /> : <Auth />
+              isUserAuthenticated ? <Navigate replace to="/" /> : <Auth />
             }
           />
 
           <Route
             path="/my-profile"
             element={
-              userState.authenticated ? (
+              isUserAuthenticated ? (
                 <Profile myProfile={true} />
               ) : (
                 <Navigate replace to="/login" />
               )
             }
-          />
+          >
+            <Route
+              path="/my-profile/scream/:screamId"
+              element={
+                isUserAuthenticated ? (
+                  <ScreamDisplay socket={socket} />
+                ) : (
+                  <Navigate replace to="/login" />
+                )
+              }
+            />
+          </Route>
 
           <Route
-            path={`/users/:username`}
+            path={`/users/:userId`}
             element={
-              userState.authenticated ? (
+              isUserAuthenticated ? (
                 <Profile />
               ) : (
                 <Navigate replace to="/login" />
               )
             }
-          />
+          >
+            <Route
+              path="/users/:userId/scream/:screamId"
+              element={
+                isUserAuthenticated ? (
+                  <ScreamDisplay socket={socket} />
+                ) : (
+                  <Navigate replace to="/login" />
+                )
+              }
+            />
+          </Route>
 
           <Route path="/*" element={<Error />} />
         </Routes>
-
-        {/* <Login />
-      <div>
-        <button onClick={googleAuthHandler}>Google</button>
-      </div>
-
-      <input type="file" onChange={handleChange} />
-      <button onClick={uploadHandler}>Upload</button>
-
-      <button onClick={likeHandler}>Like</button>
-      <button onClick={unLikeHandler}>Unlike</button>
-
-      <form onSubmit={addCommentHandler}>
-        <input type="text" id="comment" ref={inputCommentRef} />
-        <button>Add comment</button>
-      </form>
-
-      <button onClick={deleteCommentHandler}>Delete Comment</button>
-      <button onClick={deleteScreamHandler}>Delete Scream</button>
-
-      <button onClick={stateChangeFun}>Change</button> */}
       </Layout>
     </>
   );

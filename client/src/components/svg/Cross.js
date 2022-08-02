@@ -1,12 +1,12 @@
 import React from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { uiActions } from "../../store/reducers/ui";
 import { useNavigate } from "react-router-dom";
 
 const Cross = (props) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
+  const uiState = useSelector((state) => state.ui);
   return (
     <svg
       x="0px"
@@ -26,6 +26,16 @@ const Cross = (props) => {
         }
 
         dispatch(uiActions.closeModal());
+
+        if (uiState.showScreamIdentifier === "random-user-scream") {
+          navigate(-1);
+          return;
+        }
+
+        if (uiState.showScreamIdentifier === "profile-scream") {
+          navigate("/my-profile");
+          return;
+        }
 
         if (
           props.type !== "edit-profile" &&

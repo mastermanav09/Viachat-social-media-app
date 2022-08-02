@@ -160,9 +160,11 @@ exports.getUserDetails = async (req, res, next) => {
 
     const userLikes = await Like.find({ userHandle: req.user.userId });
     const userComments = await Comment.find({ userHandle: req.user.userId });
-    const userScreams = await Scream.find({ userHandle: req.user.userId });
+    const userScreams = await Scream.find({ userHandle: req.user.userId }).sort(
+      { createdAt: -1 }
+    );
 
-    const updatedUser = {
+    const fetchedUser = {
       user,
       notifications: userNotifications,
       likes: userLikes,
@@ -170,7 +172,7 @@ exports.getUserDetails = async (req, res, next) => {
       screams: userScreams,
     };
 
-    res.status(200).json(updatedUser);
+    res.status(200).json(fetchedUser);
   } catch (error) {
     if (!error.statusCode) {
       error.statusCode = 500;

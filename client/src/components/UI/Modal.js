@@ -16,6 +16,17 @@ const Backdrop = (props) => {
       className={classes.backdrop}
       onClick={() => {
         dispatch(uiActions.closeModal());
+
+        if (uiState.showScreamIdentifier === "profile-scream") {
+          navigate("/my-profile");
+          return;
+        }
+
+        if (uiState.showScreamIdentifier === "random-user-scream") {
+          navigate(-1);
+          return;
+        }
+
         if (
           props.type !== "edit-profile" &&
           props.type !== "update-profile-picture"

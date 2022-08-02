@@ -9,7 +9,8 @@ import { useDispatch, useSelector } from "react-redux";
 
 const ShowScream = (props) => {
   const screamData = useSelector((state) => state.data.currentScreamData);
-  const userState = useSelector((state) => state.user);
+  const userLikes = useSelector((state) => state.user.interactions.likes);
+  const uiState = useSelector((state) => state.ui);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -17,10 +18,8 @@ const ShowScream = (props) => {
       let likeStatus;
 
       if (
-        userState.interactions.likes &&
-        userState.interactions.likes.find(
-          (like) => like.screamId === props.screamId
-        )
+        userLikes &&
+        userLikes.find((like) => like.screamId === props.screamId)
       ) {
         likeStatus = true;
       } else {
@@ -39,7 +38,13 @@ const ShowScream = (props) => {
   }, []);
 
   return (
-    <Modal type="show-scream">
+    <Modal
+      type={
+        uiState.showScreamIdentifier
+          ? uiState.showScreamIdentifier
+          : "show-scream"
+      }
+    >
       {!screamData ? (
         <div className={classes["loading-spinner"]}>
           <LoadingSpinner />

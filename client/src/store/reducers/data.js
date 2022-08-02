@@ -257,6 +257,7 @@ export const getUser = createAsyncThunk(
     const cookies = new Cookies();
     const token = cookies.get("upid");
 
+    dispatch(dataSlice.actions.nullifyCurrentUserData());
     dispatch(uiActions.setLoader());
 
     try {
@@ -316,24 +317,52 @@ const dataSlice = createSlice({
       state.currentScreamData = null;
     },
 
+    nullifyCurrentUserData(state, action) {
+      state.currentUser = null;
+    },
+
     setScreams(state, action) {
       state.screams = [...action.payload.screams];
     },
 
     increamentLike(state, action) {
-      const index = state.screams.findIndex(
-        (scream) => scream._id === action.payload.screamId
-      );
+      const index1 = state.screams.findIndex((scream) => {
+        return scream._id === action.payload.screamId;
+      });
 
-      state.screams[index].likeCount += 1;
+      if (index1 !== -1) {
+        state.screams[index1].likeCount += 1;
+      }
+
+      if (state.currentUser) {
+        const index2 = state.currentUser.screams.findIndex(
+          (scream) => scream._id === action.payload.screamId
+        );
+
+        if (index2 !== -1) {
+          state.currentUser.screams[index2].likeCount += 1;
+        }
+      }
     },
 
     decrementLike(state, action) {
-      const index = state.screams.findIndex(
+      const index1 = state.screams.findIndex(
         (scream) => scream._id === action.payload.screamId
       );
 
-      state.screams[index].likeCount -= 1;
+      if (index1 !== -1) {
+        state.screams[index1].likeCount -= 1;
+      }
+
+      if (state.currentUser) {
+        const index2 = state.currentUser.screams.findIndex(
+          (scream) => scream._id === action.payload.screamId
+        );
+
+        if (index2 !== -1) {
+          state.currentUser.screams[index2].likeCount -= 1;
+        }
+      }
     },
 
     deleteUserScream(state, action) {
@@ -376,7 +405,6 @@ const dataSlice = createSlice({
     },
 
     updateUserPhoto(state, action) {
-      console.log(state.screams);
       for (let scream of state.screams) {
         if (scream.userHandle === action.payload.userId) {
           scream.userImageUrl = action.payload.imageUrl;

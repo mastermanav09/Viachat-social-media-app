@@ -67,10 +67,6 @@ export const getUser = createAsyncThunk(
       }
 
       dispatch(userSlice.actions.setUserData(res.data));
-      // const reader = new FileReader();
-
-      // localStorage.setItem()
-      // reader.readAsDataURL();
     } catch (error) {
       if (!error.response) {
         dispatch(uiActions.errors(error.message));
@@ -103,6 +99,8 @@ export const likeScream = createAsyncThunk(
       }
 
       dispatch(dataActions.increamentLike(res.data.like));
+      dispatch(userSlice.actions.increamentLike(res.data.like));
+
       dispatch(userSlice.actions.addLikedScream(res.data.like));
 
       socket.emit("sendLikeNotification", {
@@ -141,6 +139,7 @@ export const unlikeScream = createAsyncThunk(
       }
 
       dispatch(dataActions.decrementLike(res.data.like));
+      dispatch(userSlice.actions.decrementLike(res.data.like));
       dispatch(userSlice.actions.removeLikedScream(res.data.like));
 
       socket.emit("sendRemoveLikeNotification", {
@@ -280,6 +279,7 @@ const userSlice = createSlice({
       comments: null,
     },
     notifications: null,
+    screams: [],
   },
 
   reducers: {
@@ -315,10 +315,22 @@ const userSlice = createSlice({
         likes: action.payload.likes,
         comments: action.payload.comments,
       };
+
+      state.screams = action.payload.screams;
     },
 
     addLikedScream(state, action) {
       state.interactions.likes = [action.payload, ...state.interactions.likes];
+    },
+
+    increamentLike(state, action) {
+      const index = state.screams.findIndex(
+        (scream) => scream._id === action.payload.screamId
+      );
+
+      if (index !== -1) {
+        state.screams[index].likeCount += 1;
+      }
     },
 
     removeLikedScream(state, action) {
@@ -331,6 +343,16 @@ const userSlice = createSlice({
 
       if (index !== -1) {
         state.interactions.likes.splice(index, 1);
+      }
+    },
+
+    decrementLike(state, action) {
+      const index = state.screams.findIndex(
+        (scream) => scream._id === action.payload.screamId
+      );
+
+      if (index !== -1) {
+        state.screams[index].likeCount -= 1;
       }
     },
 

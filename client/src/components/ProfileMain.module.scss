@@ -24,7 +24,7 @@
   @media screen and (max-width: 480px) {
     width: 100px;
     height: 100px;
-    left: calc(50% - 65px);
+    left: calc((100% - 100px) / 2);
   }
 
   img {
@@ -49,14 +49,16 @@
   margin: 5rem 0;
   width: 100%;
   text-align: center;
-  font-size: clamp(30px, 3.3vw, 40px);
+  font-size: 2rem;
 
   @media screen and (max-width: 1024px) {
     margin: 3.5rem 0;
+    font-size: 1.6rem;
   }
 
   @media screen and (max-width: 480px) {
     margin: 2rem 0;
+    font-size: 1.2rem;
   }
 }
 
@@ -88,5 +90,45 @@
         background-color: rgba(33, 65, 140, 0.616);
       }
     }
+  }
+}
+
+.profile-main {
+  width: 95%;
+  max-width: 60rem;
+  margin: auto;
+  padding-top: 15rem;
+
+  @media screen and (max-width: 640px) {
+    width: 90%;
+  }
+}
+
+.no_screams {
+  text-align: center;
+}
+
+.divider {
+  width: 100%;
+  background-color: rgb(34, 85, 227);
+  height: 2px;
+  margin: 0.2rem 0;
+}
+
+.screams {
+  margin: 1rem auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  @media screen and (max-width: 640px) {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 0.5rem;
+    grid-row-gap: 0.8rem;
+  }
+
+  @media screen and (max-width: 460px) {
+    grid-template-columns: 1fr;
   }
 }

@@ -7,13 +7,13 @@ import { useNavigate } from "react-router-dom";
 import Cross from "./svg/Cross";
 
 const Notifications = (props) => {
-  const userState = useSelector((state) => state.user);
+  const userTokenExpiry = useSelector((state) => state.user.tokenExpiryState);
   const uiState = useSelector((state) => state.ui);
-  const { notifications } = userState;
+  const notifications = useSelector((state) => state.user.notifications);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (userState.tokenExpiryState * 1000 < Date.now()) {
+    if (userTokenExpiry * 1000 < Date.now()) {
       navigate("/login", { replace: true });
     }
   }, []);
