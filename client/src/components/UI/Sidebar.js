@@ -7,6 +7,7 @@ import { uiActions } from "../../store/reducers/ui";
 import Home from "../svg/Home";
 import NotificationsBell from "../svg/NotificationsBell";
 import { userActions } from "../../store/reducers/user";
+import { SIDEBAR_MOBILE } from "../../utils/constants";
 
 const Sidebar = (props) => {
   const uiState = useSelector((state) => state.ui);
@@ -40,7 +41,7 @@ const Sidebar = (props) => {
         ].join(" ")}
       >
         <div className={classes["close-icon"]}>
-          <Cross type="sidebar-mobile" />
+          <Cross type={SIDEBAR_MOBILE} />
         </div>
 
         <div className={classes["mobile-main-navigation"]}>

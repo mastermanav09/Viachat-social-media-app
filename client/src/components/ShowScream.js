@@ -6,6 +6,7 @@ import LoadingSpinner from "./UI/LoadingSpinner";
 import ScreamInfo from "./ScreamInfo";
 import { getScream } from "../store/reducers/data";
 import { useDispatch, useSelector } from "react-redux";
+import { SHOW_SCREAM } from "../utils/constants";
 
 const ShowScream = (props) => {
   const screamData = useSelector((state) => state.data.currentScreamData);
@@ -42,7 +43,7 @@ const ShowScream = (props) => {
       type={
         uiState.showScreamIdentifier
           ? uiState.showScreamIdentifier
-          : "show-scream"
+          : SHOW_SCREAM
       }
     >
       {!screamData ? (

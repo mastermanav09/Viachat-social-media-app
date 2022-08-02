@@ -5,6 +5,7 @@ import Scream from "./Scream";
 import { useSelector, useDispatch } from "react-redux";
 import { getScreams } from "../store/reducers/data";
 import { useNavigate } from "react-router-dom";
+import { HOME_SCREAM } from "../utils/constants";
 
 const ScreamsList = (props) => {
   const dispatch = useDispatch();
@@ -60,7 +61,7 @@ const ScreamsList = (props) => {
               scream={scream}
               isLikedScream={isLikedScream(scream._id) ? true : false}
               socket={props.socket}
-              type="home-scream"
+              type={HOME_SCREAM}
             />
           );
         })}

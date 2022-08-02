@@ -12,6 +12,12 @@ import { useLocation } from "react-router-dom";
 import UpdateProfilePicture from "./UpdateProfilePicture";
 import Scream from "./Scream";
 import { useState } from "react";
+import {
+  EDIT_PROFILE,
+  PROFILE_SCREAM,
+  RAND_USER_SCREAM,
+  UPDATE_PROFILE_PIC,
+} from "../utils/constants";
 
 const ProfileMain = (props) => {
   const dispatch = useDispatch();
@@ -92,7 +98,7 @@ const ProfileMain = (props) => {
   return (
     <>
       {showProfileEditModal && (
-        <Modal type="edit-profile">
+        <Modal type={EDIT_PROFILE}>
           <EditProfile
             currentUserId={userState.userId}
             myProfile={props.myProfile}
@@ -101,7 +107,7 @@ const ProfileMain = (props) => {
       )}
 
       {showUpdateProfilePictureModal && (
-        <Modal type="update-profile-picture">
+        <Modal type={UPDATE_PROFILE_PIC}>
           <UpdateProfilePicture currentUserId={userState.userId} />
         </Modal>
       )}
@@ -166,9 +172,7 @@ const ProfileMain = (props) => {
                           }
                           socket={props.socket}
                           type={
-                            props.myProfile
-                              ? "profile-scream"
-                              : "random-user-scream"
+                            props.myProfile ? PROFILE_SCREAM : RAND_USER_SCREAM
                           }
                         />
                       ))}

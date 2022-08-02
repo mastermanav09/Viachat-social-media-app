@@ -12,6 +12,12 @@ import { deleteScream, getScream } from "../store/reducers/data";
 import Expand from "./svg/Expand";
 import { uiActions } from "../store/reducers/ui";
 import { useNavigate } from "react-router-dom";
+import {
+  PROFILE_SCREAM,
+  RAND_USER_SCREAM,
+  SCREAM,
+  SHOW_SCREAM,
+} from "../utils/constants";
 
 const Scream = (props) => {
   const { scream } = props;
@@ -74,7 +80,6 @@ const Scream = (props) => {
       return;
     }
 
-    console.log("like");
     setIsInitial(false);
     setIsLikedStatus(true);
   };
@@ -89,12 +94,12 @@ const Scream = (props) => {
     setIsLikedStatus(false);
   };
   const setShowScreamIdentifierHandler = () => {
-    if (props.type === "profile-scream") {
+    if (props.type === PROFILE_SCREAM) {
       dispatch(uiActions.setShowScreamIdentifier(props.type));
-    } else if (props.type === "random-user-scream") {
+    } else if (props.type === RAND_USER_SCREAM) {
       dispatch(uiActions.setShowScreamIdentifier(props.type));
     } else {
-      dispatch(uiActions.setShowScreamIdentifier("show-scream"));
+      dispatch(uiActions.setShowScreamIdentifier(SHOW_SCREAM));
     }
   };
 
@@ -107,7 +112,7 @@ const Scream = (props) => {
   }
 
   return (
-    <Card type="scream">
+    <Card type={SCREAM}>
       <div className={classes.main}>
         <div className={`${classes["scream-profile-image"]}`}>
           {scream.userImageUrl ? (
@@ -150,11 +155,11 @@ const Scream = (props) => {
               <span>
                 <Link
                   to={
-                    props.type === "profile-scream"
+                    props.type === PROFILE_SCREAM
                       ? `/my-profile/scream/${scream._id}`
-                      : `${
-                          props.type === "random-user-scream" ? `/users` : ``
-                        }/${scream.userHandle}/scream/${scream._id}`
+                      : `${props.type === RAND_USER_SCREAM ? `/users` : ``}/${
+                          scream.userHandle
+                        }/scream/${scream._id}`
                   }
                   onClick={() => {
                     setShowScreamIdentifierHandler();
@@ -177,9 +182,9 @@ const Scream = (props) => {
             <div className={classes.show}>
               <Link
                 to={
-                  props.type === "profile-scream"
+                  props.type === PROFILE_SCREAM
                     ? `/my-profile/scream/${scream._id}`
-                    : `${props.type === "random-user-scream" ? `/users` : ``}/${
+                    : `${props.type === RAND_USER_SCREAM ? `/users` : ``}/${
                         scream.userHandle
                       }/scream/${scream._id}`
                 }
@@ -198,9 +203,9 @@ const Scream = (props) => {
           <div className={classes["show-mobile"]}>
             <Link
               to={
-                props.type === "profile-scream"
+                props.type === PROFILE_SCREAM
                   ? `/my-profile/scream/${scream._id}`
-                  : `${props.type === "random-user-scream" ? `/users` : ``}/${
+                  : `${props.type === RAND_USER_SCREAM ? `/users` : ``}/${
                       scream.userHandle
                     }/scream/${scream._id}`
               }

@@ -5,6 +5,7 @@ import LoadingSpinner from "./UI/LoadingSpinner";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Cross from "./svg/Cross";
+import { NOTIFICATION_BAR_MOBILE } from "../utils/constants";
 
 const Notifications = (props) => {
   const userTokenExpiry = useSelector((state) => state.user.tokenExpiryState);
@@ -68,7 +69,7 @@ const Notifications = (props) => {
       ].join(" ")}
     >
       <div className={classes["close"]}>
-        <Cross type="notification-bar-mobile" />
+        <Cross type={NOTIFICATION_BAR_MOBILE} />
       </div>
       <div className={`${classes["notifications-wrapper"]}`}>{content}</div>
     </div>

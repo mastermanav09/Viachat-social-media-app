@@ -2,6 +2,15 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { uiActions } from "../../store/reducers/ui";
 import { useNavigate } from "react-router-dom";
+import {
+  NOTIFICATION_BAR_MOBILE,
+  SIDEBAR_MOBILE,
+  PROFILE_SCREAM,
+  RAND_USER_SCREAM,
+  EDIT_PROFILE,
+  UPDATE_PROFILE_PIC,
+  SIDEBAR,
+} from "../../utils/constants";
 
 const Cross = (props) => {
   const dispatch = useDispatch();
@@ -15,32 +24,32 @@ const Cross = (props) => {
       height="20px"
       viewBox="0 0 94.926 94.926"
       onClick={() => {
-        if (props.type === "notification-bar-mobile") {
+        if (props.type === NOTIFICATION_BAR_MOBILE) {
           dispatch(uiActions.showNotifications(false));
           return;
         }
 
-        if (props.type === "sidebar-mobile") {
+        if (props.type === SIDEBAR_MOBILE) {
           dispatch(uiActions.setSideBar());
           return;
         }
 
         dispatch(uiActions.closeModal());
 
-        if (uiState.showScreamIdentifier === "random-user-scream") {
+        if (uiState.showScreamIdentifier === RAND_USER_SCREAM) {
           navigate(-1);
           return;
         }
 
-        if (uiState.showScreamIdentifier === "profile-scream") {
+        if (uiState.showScreamIdentifier === PROFILE_SCREAM) {
           navigate("/my-profile");
           return;
         }
 
         if (
-          props.type !== "edit-profile" &&
-          props.type !== "update-profile-picture" &&
-          props.type !== "sidebar"
+          props.type !== EDIT_PROFILE &&
+          props.type !== UPDATE_PROFILE_PIC &&
+          props.type !== SIDEBAR
         ) {
           navigate("/");
         }

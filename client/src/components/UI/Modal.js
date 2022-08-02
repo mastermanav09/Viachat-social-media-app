@@ -5,6 +5,12 @@ import Cross from "../svg/Cross";
 import { uiActions } from "../../store/reducers/ui";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import {
+  EDIT_PROFILE,
+  PROFILE_SCREAM,
+  RAND_USER_SCREAM,
+  UPDATE_PROFILE_PIC,
+} from "../../utils/constants";
 
 const Backdrop = (props) => {
   const dispatch = useDispatch();
@@ -17,20 +23,17 @@ const Backdrop = (props) => {
       onClick={() => {
         dispatch(uiActions.closeModal());
 
-        if (uiState.showScreamIdentifier === "profile-scream") {
+        if (uiState.showScreamIdentifier === PROFILE_SCREAM) {
           navigate("/my-profile");
           return;
         }
 
-        if (uiState.showScreamIdentifier === "random-user-scream") {
+        if (uiState.showScreamIdentifier === RAND_USER_SCREAM) {
           navigate(-1);
           return;
         }
 
-        if (
-          props.type !== "edit-profile" &&
-          props.type !== "update-profile-picture"
-        ) {
+        if (props.type !== EDIT_PROFILE && props.type !== UPDATE_PROFILE_PIC) {
           navigate("/");
         }
       }}

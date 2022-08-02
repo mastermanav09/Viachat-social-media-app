@@ -47,9 +47,9 @@ const PostScream = () => {
           placeholder="Scream!!"
           name="add-scream-body"
           id="add-scream-body"
-          onChange={(e) => {
+          onChange={(event) => {
             setError(null);
-            setBodyInput(e.target.value);
+            setBodyInput(event.target.value);
           }}
           value={bodyInput}
         ></textarea>
