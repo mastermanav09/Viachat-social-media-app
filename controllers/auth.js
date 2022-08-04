@@ -79,20 +79,6 @@ exports.signup = async (req, res, next) => {
 };
 
 exports.login = async (req, res, next) => {
-  // if (CheckUser(req.body)) {
-  //   let token = jwt.sign(
-  //     {
-  //       data: req.body,
-  //     },
-  //     "secret",
-  //     { expiresIn: "1h" }
-  //   ); // expiry in seconds or duration strings
-  //   res.cookie("jwt", token);
-  //   res.send(`Log in success ${req.body.email}`);
-  // } else {
-  //   res.send("Invalid login credentials");
-  // }
-
   const errors = validationResult(req);
 
   const email = req.body.email;

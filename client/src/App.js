@@ -30,6 +30,7 @@ function App() {
   const isUserAuthenticated = useSelector((state) => state.user.authenticated);
   const dispatch = useDispatch();
   const location = useLocation();
+  const errors = useSelector((state) => state.ui.errors);
 
   useEffect(() => {
     if (token) {
@@ -55,16 +56,13 @@ function App() {
           dispatch(userActions.authenticated(decodedToken.userId));
           dispatch(userActions.setTokenExpiryState(decodedToken.exp));
           dispatch(getUser());
+          dispatch(getScreams());
         }
       } catch (error) {
         dispatch(uiActions.errors({ message: error.message }));
       }
     }
   }, [token, dispatch, navigate, userTokenExpiry]);
-
-  useEffect(() => {
-    dispatch(getScreams());
-  }, [dispatch]);
 
   useEffect(() => {
     if (token) {
@@ -75,11 +73,14 @@ function App() {
       socket.on("connect_error", (error) => {
         dispatch(userActions.logout());
         localStorage.clear("target");
-        dispatch(
-          uiActions.errors({
-            message: "Couldn't connect to the server!",
-          })
-        );
+
+        if (!errors) {
+          dispatch(
+            uiActions.errors({
+              message: "Couldn't connect to the server!",
+            })
+          );
+        }
       });
 
       setSocket(socket);
