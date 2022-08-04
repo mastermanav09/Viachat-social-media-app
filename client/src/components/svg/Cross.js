@@ -10,6 +10,7 @@ import {
   EDIT_PROFILE,
   UPDATE_PROFILE_PIC,
   SIDEBAR,
+  CHATS_BAR_MOBILE,
 } from "../../utils/constants";
 
 const Cross = (props) => {
@@ -26,6 +27,11 @@ const Cross = (props) => {
       onClick={() => {
         if (props.type === NOTIFICATION_BAR_MOBILE) {
           dispatch(uiActions.showNotifications(false));
+          return;
+        }
+
+        if (props.type === CHATS_BAR_MOBILE) {
+          dispatch(uiActions.showChats(false));
           return;
         }
 

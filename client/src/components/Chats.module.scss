@@ -1,4 +1,4 @@
-.notifications {
+.chats {
   position: absolute;
   right: 1rem;
   height: 90vh;
@@ -11,21 +11,13 @@
   max-width: 330px;
 }
 
-.notification-text {
+.chat-main-text {
   text-align: center;
   margin: 0.8rem 0;
   font-size: clamp(14px, 1.6vw, 20px);
 }
 
-.center {
-  text-align: center;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.notifications-wrapper {
+.chats-wrapper {
   padding: 0 0.5rem;
   height: 100%;
   overflow-y: auto;
@@ -45,8 +37,16 @@
   display: none;
 }
 
+.center {
+  text-align: center;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 @media screen and (max-width: 700px) {
-  .notifications {
+  .chats {
     position: fixed;
     width: 95%;
     height: 100vh;
@@ -62,7 +62,7 @@
       -webkit-animation: slide-up 0.4s forwards 0s;
     }
 
-    .notification-text {
+    .chat-main-text {
       font-size: clamp(15px, 3vw, 18px);
     }
 

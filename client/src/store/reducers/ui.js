@@ -8,6 +8,7 @@ const uiSlice = createSlice({
     isAuthLogin: true,
     showNavbarOptions: false,
     showNotifications: false,
+    showChats: false,
     showPostScreamModal: false,
     showScreamModal: false,
     showProfileEditModal: false,
@@ -34,18 +35,27 @@ const uiSlice = createSlice({
     },
 
     showNavbarOptions(state, action) {
-      state.showNavbarOptions = !state.showNavbarOptions;
+      state.showNavbarOptions = action.payload || !state.showNavbarOptions;
       state.showNotifications = false;
+      state.showChats = false;
     },
 
     showNotifications(state, action) {
       state.showNotifications = action.payload || !state.showNotifications;
       state.showNavbarOptions = false;
+      state.showChats = false;
+    },
+
+    showChats(state, action) {
+      state.showChats = action.payload || !state.showChats;
+      state.showNavbarOptions = false;
+      state.showNotifications = false;
     },
 
     clearBars(state, action) {
       state.showNotifications = false;
       state.showNavbarOptions = false;
+      state.showChats = false;
     },
 
     showPostScreamModal(state, action) {
@@ -82,6 +92,7 @@ const uiSlice = createSlice({
       state.showProfileEditModal = false;
       state.showUpdateProfilePictureModal = false;
       state.showNotifications = false;
+      state.showChats = false;
     },
   },
 });

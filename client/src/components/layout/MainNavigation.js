@@ -12,6 +12,8 @@ import Home from "../svg/Home";
 import Add from "../svg/Add";
 import { markNotificationsRead } from "../../store/reducers/user";
 import HamburgerIcon from "../UI/Hamburger";
+import Message from "../svg/Message";
+import Chats from "../Chats";
 
 const MainNavigation = (props) => {
   const dispatch = useDispatch();
@@ -60,6 +62,10 @@ const MainNavigation = (props) => {
     dispatch(userActions.setNotificationsMarked());
     dispatch(uiActions.showNotifications());
     dispatch(markNotificationsRead());
+  };
+
+  const manageChats = () => {
+    dispatch(uiActions.showChats());
   };
 
   return (
@@ -131,7 +137,20 @@ const MainNavigation = (props) => {
                     </div>
                   )}
                 </li>
-                <li style={{ position: "relative" }}>
+
+                <li>
+                  <div
+                    className={[
+                      classes["navbar-actions-icon"],
+                      uiState.showChats ? classes.active : "",
+                    ].join(" ")}
+                    onClick={manageChats}
+                  >
+                    <Message />
+                  </div>
+                </li>
+
+                <li>
                   <div
                     className={[
                       classes["navbar-actions-icon"],
@@ -227,6 +246,10 @@ const MainNavigation = (props) => {
 
       {uiState.showNotifications && userState.authenticated && (
         <Notifications socket={props.socket} />
+      )}
+
+      {uiState.showChats && userState.authenticated && (
+        <Chats socket={props.socket} />
       )}
     </>
   );

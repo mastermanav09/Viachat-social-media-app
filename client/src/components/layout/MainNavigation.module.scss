@@ -145,7 +145,7 @@ $light-sky-blue: #5e91e2;
   display: flex;
   align-items: center;
 
-  @media screen and (max-width: 640px) {
+  @media screen and (max-width: 700px) {
     font-size: 1.3rem;
   }
 }
@@ -164,8 +164,8 @@ $light-sky-blue: #5e91e2;
   height: 100%;
 
   li {
-    margin: auto 0.5rem;
-    padding: 0.48rem 2rem 0.38rem 2rem;
+    margin: auto 4vw;
+    padding: 0.48rem 0 0.38rem 0;
     cursor: pointer;
 
     &:hover {
@@ -204,7 +204,7 @@ $light-sky-blue: #5e91e2;
 .profile-icon {
   display: none;
   position: absolute;
-  right: 170px;
+  right: 210px;
   top: 10px;
   cursor: pointer;
   padding: 0.25rem 0.55rem 0.25rem 0.35rem;
@@ -228,7 +228,7 @@ $light-sky-blue: #5e91e2;
     align-items: center;
   }
 
-  @media (min-width: 1024px) {
+  @media (min-width: 991px) {
     display: flex;
   }
 }
@@ -348,12 +348,12 @@ $light-sky-blue: #5e91e2;
   margin-left: auto;
   height: 100%;
   display: none;
-  @media screen and (max-width: 640px) {
+  @media screen and (max-width: 700px) {
     display: block;
   }
 }
 
-@media screen and (max-width: 640px) {
+@media screen and (max-width: 700px) {
   .navbar-nav,
   .navbar-mid-nav {
     display: none;

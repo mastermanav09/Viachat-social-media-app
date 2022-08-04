@@ -99,7 +99,7 @@
   margin: auto;
   padding-top: 15rem;
 
-  @media screen and (max-width: 640px) {
+  @media screen and (max-width: 700px) {
     width: 90%;
   }
 }
@@ -121,7 +121,7 @@
   flex-direction: column;
   justify-content: center;
 
-  @media screen and (max-width: 640px) {
+  @media screen and (max-width: 700px) {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-gap: 0.5rem;

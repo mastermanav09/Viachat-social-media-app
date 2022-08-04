@@ -123,7 +123,7 @@ $blue: #2666cf;
     }
   }
 
-  @media screen and (max-width: 640px) {
+  @media screen and (max-width: 700px) {
     display: none;
   }
 }
@@ -155,7 +155,7 @@ $blue: #2666cf;
 
 // mobile resolution
 
-@media screen and (max-width: 640px) {
+@media screen and (max-width: 700px) {
   .main {
     flex-direction: column;
   }

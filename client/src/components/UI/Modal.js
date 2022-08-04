@@ -6,6 +6,7 @@ import { uiActions } from "../../store/reducers/ui";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
+  ADD_SCREAM,
   EDIT_PROFILE,
   PROFILE_SCREAM,
   RAND_USER_SCREAM,
