@@ -10,6 +10,9 @@ const multer = require("multer");
 const screamRoutes = require("./routes/screams");
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/user");
+const conversationRoutes = require("./routes/conversation");
+const messageRoues = require("./routes/message");
+const initializeMessenger = require("./utils/messenging/messaging");
 const initializeNotifications = require("./utils/notifications/notifications");
 const fs = require("fs");
 const jwt = require("jsonwebtoken");
@@ -21,6 +24,7 @@ const notificationDeletionJob = require("./utils/schedulers/notificationDelete")
 const {
   userJoin,
   userLeave,
+  getUsers,
   // getRoomUsers,
 } = require("./utils/users/connectedUsers");
 
@@ -93,12 +97,16 @@ notificationDeletionJob();
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/scream", screamRoutes);
+app.use("/api/conversation", conversationRoutes);
+app.use("/api/message", messageRoues);
 
 app.use((error, req, res, next) => {
   console.log(error);
   const status = error.statusCode || 500;
   const message = error.message || "Something went wrong!";
   const errorData = error.data;
+
+  console.log(message);
   res.status(status).json({
     message: message,
     errorData: errorData,
@@ -123,12 +131,15 @@ mongoose
     io.on("connection", async (socket) => {
       socket.on("newUser", () => {
         userJoin(socket.decodedToken.userId, socket.id);
+        io.emit("getUsers", getUsers());
       });
 
+      initializeMessenger(socket);
       initializeNotifications(socket);
 
       socket.on("disconnect", () => {
         userLeave(socket.id);
+        io.emit("getUsers", getUsers());
       });
     });
   })

@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import Cookies from "universal-cookie";
 import { uiActions } from "./ui";
 import axios from "axios";
+import { userActions } from "./user";
 
 export const getScreams = createAsyncThunk(
   "data/getScreams",
@@ -89,6 +90,7 @@ export const deleteScream = createAsyncThunk(
 
     try {
       dispatch(dataSlice.actions.deleteUserScream(data));
+      dispatch(userActions.removeScream(data));
       const res = await axios.delete(`/api/scream/${data.id}/delete`, {
         headers: {
           Authorization: "Bearer " + token,
@@ -291,6 +293,7 @@ const dataSlice = createSlice({
     screams: null,
     currentScreamData: null,
     currentUser: null,
+    currentConversation: null,
   },
 
   reducers: {
@@ -410,6 +413,10 @@ const dataSlice = createSlice({
           scream.userImageUrl = action.payload.imageUrl;
         }
       }
+    },
+
+    setcurrentConversation(state, action) {
+      state.currentConversation = action.payload;
     },
   },
 });

@@ -33,7 +33,6 @@ const ProfileMain = (props) => {
 
   const params = useParams();
   const location = useLocation();
-
   const userId = params.userId;
   const [userData, setUserData] = useState(null);
 
@@ -59,12 +58,9 @@ const ProfileMain = (props) => {
 
       dispatch(getUser({ userId }));
 
-      if (location.search) {
-        console.log(location.pathname + location.search);
-        localStorage.setItem("target", location.pathname + location.search);
-      }
+      localStorage.setItem("target", "/users/" + userId);
     } else {
-      localStorage.setItem("target", location.pathname);
+      localStorage.setItem("target", "/my-profile");
     }
   }, [dispatch, props.myProfile]);
 

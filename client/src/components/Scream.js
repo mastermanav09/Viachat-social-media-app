@@ -112,7 +112,7 @@ const Scream = (props) => {
   }
 
   return (
-    <Card type={SCREAM}>
+    <Card type={props.type}>
       <div className={classes.main}>
         <div className={`${classes["scream-profile-image"]}`}>
           {scream.userImageUrl ? (

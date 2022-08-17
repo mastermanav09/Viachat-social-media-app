@@ -13,7 +13,7 @@ const Home = (props) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    localStorage.setItem("target", location.pathname);
+    localStorage.setItem("target", "/");
   }, []);
 
   return (

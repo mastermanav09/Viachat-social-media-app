@@ -1,0 +1,68 @@
+@mixin message {
+  padding: 0.4rem;
+  display: block;
+  width: max-content;
+  margin: 0.2rem 0;
+  font-size: clamp(13px, 1.4vw, 16px);
+  @content;
+}
+
+@mixin time-ago {
+  font-size: clamp(10px, 1.2vw, 13px);
+  color: rgba(128, 128, 128, 0.8);
+  @content;
+}
+
+.sender {
+  margin: 0.9rem 0;
+
+  .text-block {
+    @include message() {
+      margin-left: auto;
+      border-radius: 10px 0 10px 10px;
+      background-color: rgb(239, 234, 237);
+      color: black;
+    }
+  }
+
+  .timeago {
+    @include time-ago() {
+      text-align: right;
+    }
+  }
+
+  .message-not-send-error {
+    font-size: clamp(10px, 1.2vw, 13px);
+    color: red;
+    font-weight: bold;
+    text-align: right;
+  }
+}
+
+.receiver {
+  margin: 0.9rem 0;
+  .text-block {
+    @include message() {
+      background-color: rgb(35, 98, 236);
+      color: white;
+      border-radius: 0 10px 10px 10px;
+    }
+  }
+
+  .timeago {
+    @include time-ago() {
+      text-align: left;
+    }
+
+    .message-not-send-error {
+      font-size: clamp(10px, 1.2vw, 13px);
+      color: red;
+      font-weight: bold;
+      text-align: left;
+    }
+  }
+}
+
+//   @media screen and (max-width: 480px) {
+//     padding: 0.2rem;
+//   }

@@ -266,6 +266,125 @@ export const updateProfilePhoto = createAsyncThunk(
   }
 );
 
+export const getConversations = createAsyncThunk(
+  "user/getConversations",
+  async (data, { dispatch }) => {
+    const cookies = new Cookies();
+    const token = cookies.get("upid");
+
+    try {
+      const res = await axios({
+        method: "GET",
+        url: "/api/conversation",
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      });
+
+      if (res.status !== 200 || res.statusText !== "OK") {
+        const error = new Error("Can't load conversations!");
+        throw error;
+      }
+
+      dispatch(userActions.setConversations(res.data));
+    } catch (error) {
+      if (!error.response) {
+        dispatch(uiActions.errors(error.message));
+      } else {
+        dispatch(uiActions.errors(error.response.data));
+      }
+    }
+  }
+);
+
+export const getMessages = createAsyncThunk(
+  "user/getMessages",
+  async (id, { dispatch }) => {
+    const cookies = new Cookies();
+    const token = cookies.get("upid");
+
+    try {
+      const res = await axios({
+        method: "GET",
+        url: `/api/message/${id}`,
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      });
+
+      if (res.status !== 200 || res.statusText !== "OK") {
+        const error = new Error("Can't load messages!");
+        throw error;
+      }
+
+      dispatch(userActions.setMessages(res.data));
+    } catch (error) {
+      console.log(error.response);
+
+      if (!error.response) {
+        dispatch(uiActions.errors(error.message));
+      } else {
+        dispatch(uiActions.errors(error.response.data));
+      }
+    }
+  }
+);
+
+export const addNewMessage = createAsyncThunk(
+  "user/addNewMessage",
+  async (data, { dispatch }) => {
+    const cookies = new Cookies();
+    const token = cookies.get("upid");
+    const { socket } = data;
+
+    let tempId = Math.random();
+    try {
+      dispatch(
+        userActions.addNewMessage({
+          conversationId: data.newMessage.conversationId,
+          message: {
+            _id: tempId,
+            sender: data.newMessage.sender,
+            text: data.newMessage.text,
+          },
+        })
+      );
+
+      const res = await axios({
+        method: "POST",
+        url: `/api/message/addMessage`,
+        data: data.newMessage,
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      });
+
+      if (res.status !== 201 || res.status === 404) {
+        const error = new Error();
+        throw error;
+      }
+
+      dispatch(
+        userActions.addNewMessage({
+          tempId: tempId,
+          conversationId: data.newMessage.conversationId,
+          message: res.data,
+        })
+      );
+
+      socket.emit("sendMessage", {
+        receiverId: data.newMessage.receiver,
+        text: data.newMessage.text,
+        _id: res.data._id,
+      });
+    } catch (error) {
+      if (error) {
+        data.setMessageNotSendError(tempId);
+      }
+    }
+  }
+);
+
 const userSlice = createSlice({
   name: "user",
   initialState: {
@@ -280,6 +399,8 @@ const userSlice = createSlice({
     },
     notifications: null,
     screams: [],
+    conversations: null,
+    messages: [],
   },
 
   reducers: {
@@ -383,8 +504,45 @@ const userSlice = createSlice({
       state.credentials.website = action.payload.website;
     },
 
+    setConversations(state, action) {
+      state.conversations = action.payload;
+    },
+
+    setMessages(state, action) {
+      state.messages.push(action.payload);
+    },
+
+    addNewMessage(state, action) {
+      const conversationIndex = state.messages.findIndex(
+        (message) => message.conversationId === action.payload.conversationId
+      );
+
+      if (action.payload.tempId) {
+        const messageIndex = state.messages[
+          conversationIndex
+        ].messages.findIndex(
+          (message) => message._id === action.payload.tempId
+        );
+
+        state.messages[conversationIndex].messages[messageIndex] =
+          action.payload.message;
+
+        return;
+      }
+
+      state.messages[conversationIndex].messages.push(action.payload.message);
+    },
+
     setProfilePhoto(state, action) {
       state.credentials.imageUrl = action.payload.imageUrl;
+    },
+
+    removeScream(state, action) {
+      const updatedScreams = state.screams.filter(
+        (scream) => scream._id !== action.payload.id
+      );
+
+      state.screams = updatedScreams;
     },
   },
 

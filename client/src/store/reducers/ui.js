@@ -9,6 +9,7 @@ const uiSlice = createSlice({
     showNavbarOptions: false,
     showNotifications: false,
     showChats: false,
+    showChatPanel: false,
     showPostScreamModal: false,
     showScreamModal: false,
     showProfileEditModal: false,
@@ -48,6 +49,13 @@ const uiSlice = createSlice({
 
     showChats(state, action) {
       state.showChats = action.payload || !state.showChats;
+      state.showNavbarOptions = false;
+      state.showNotifications = false;
+    },
+
+    showChatPanel(state, action) {
+      state.showChatPanel = action.payload || !state.showChatPanel;
+      state.showChats = false;
       state.showNavbarOptions = false;
       state.showNotifications = false;
     },

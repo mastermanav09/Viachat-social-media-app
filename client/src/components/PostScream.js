@@ -31,9 +31,7 @@ const PostScream = () => {
         setError(uiState.errors.errorData[0].msg);
       }
     }
-
-    dispatch(uiActions.showPostScreamModal());
-  }, [uiState.errors, uiState.showPostScreamModal, dispatch]);
+  }, [uiState.errors]);
 
   return (
     <Modal type={ADD_SCREAM}>

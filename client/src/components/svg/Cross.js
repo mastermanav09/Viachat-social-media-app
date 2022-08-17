@@ -11,6 +11,8 @@ import {
   UPDATE_PROFILE_PIC,
   SIDEBAR,
   CHATS_BAR_MOBILE,
+  ADD_SCREAM,
+  SHOW_SCREAM,
 } from "../../utils/constants";
 
 const Cross = (props) => {
@@ -25,6 +27,18 @@ const Cross = (props) => {
       height="20px"
       viewBox="0 0 94.926 94.926"
       onClick={() => {
+        dispatch(uiActions.closeModal());
+
+        if (props.type === SHOW_SCREAM) {
+          let target = localStorage.getItem("target");
+          if (target) {
+            navigate(target);
+          } else {
+            navigate("/");
+          }
+          return;
+        }
+
         if (props.type === NOTIFICATION_BAR_MOBILE) {
           dispatch(uiActions.showNotifications(false));
           return;
@@ -40,7 +54,10 @@ const Cross = (props) => {
           return;
         }
 
-        dispatch(uiActions.closeModal());
+        if (props.type === ADD_SCREAM) {
+          navigate("/");
+          return;
+        }
 
         if (uiState.showScreamIdentifier === RAND_USER_SCREAM) {
           navigate(-1);

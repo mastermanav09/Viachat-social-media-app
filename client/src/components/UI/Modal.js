@@ -11,6 +11,9 @@ import {
   PROFILE_SCREAM,
   RAND_USER_SCREAM,
   UPDATE_PROFILE_PIC,
+  SHOW_SCREAM,
+  SIDEBAR,
+  CHATS_BAR_MOBILE,
 } from "../../utils/constants";
 
 const Backdrop = (props) => {
@@ -24,6 +27,26 @@ const Backdrop = (props) => {
       onClick={() => {
         dispatch(uiActions.closeModal());
 
+        if (props.type === SHOW_SCREAM) {
+          let target = localStorage.getItem("target");
+          if (target) {
+            navigate(target);
+          } else {
+            navigate("/");
+          }
+          return;
+        }
+
+        if (props.type === CHATS_BAR_MOBILE) {
+          dispatch(uiActions.showChats(false));
+          return;
+        }
+
+        if (props.type === ADD_SCREAM) {
+          navigate("/");
+          return;
+        }
+
         if (uiState.showScreamIdentifier === PROFILE_SCREAM) {
           navigate("/my-profile");
           return;
@@ -34,7 +57,11 @@ const Backdrop = (props) => {
           return;
         }
 
-        if (props.type !== EDIT_PROFILE && props.type !== UPDATE_PROFILE_PIC) {
+        if (
+          props.type !== EDIT_PROFILE &&
+          props.type !== UPDATE_PROFILE_PIC &&
+          props.type !== SIDEBAR
+        ) {
           navigate("/");
         }
       }}

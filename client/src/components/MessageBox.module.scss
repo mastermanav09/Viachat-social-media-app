@@ -1,0 +1,85 @@
+.message-box-container {
+  height: 15%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.message-box {
+  background: white;
+  width: 100%;
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.message {
+  background-color: white;
+  width: 100%;
+  max-height: 150px;
+  border-radius: 20px;
+  display: flex;
+  padding: 0;
+  position: absolute;
+  transform-origin: 0 0;
+  box-shadow: none;
+
+  &__textarea {
+    transition: 0.4s ease;
+    background: #b2caeb3e;
+    border-color: #468af3;
+    border-radius: 20px;
+    width: calc(100% - 90px);
+    color: black;
+    padding: 8px 45px 10px 20px;
+    display: block;
+    justify-content: right;
+    outline: 0px solid transparent;
+    resize: none;
+    height: 60px;
+    max-height: 150px;
+    box-sizing: border-box;
+    overflow: hidden;
+    font-family: "Noto Sans";
+    font-size: 16px;
+
+    @media screen and (max-width: 768px) {
+      font-size: 14px;
+    }
+
+    &::placeholder {
+      color: #858585;
+    }
+  }
+
+  .submit {
+    display: flex;
+    align-items: center;
+    position: relative;
+    margin-bottom: 2px;
+  }
+
+  .submitbutton {
+    display: inline-flex;
+    padding: 0px;
+    color: blue;
+    min-width: 30px;
+    min-height: 30px;
+    right: 38px;
+    background: transparent;
+    border-radius: 100rem;
+    border: none;
+    justify-content: right;
+    position: relative;
+    cursor: pointer;
+    align-content: center;
+    transition: 0.3s ease;
+    z-index: 990;
+  }
+
+  .submitbutton:disabled,
+  .submitbutton[disabled] {
+    opacity: 0.3;
+    transition: 0.3s ease;
+    cursor: default;
+  }
+}

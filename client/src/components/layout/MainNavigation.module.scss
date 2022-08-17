@@ -67,7 +67,7 @@ $light-sky-blue: #5e91e2;
   height: 65px;
   @include display-flex-prop();
   user-select: none;
-  z-index: 99;
+  z-index: 990;
 
   svg {
     stroke: $white;
@@ -164,8 +164,8 @@ $light-sky-blue: #5e91e2;
   height: 100%;
 
   li {
-    margin: auto 4vw;
-    padding: 0.48rem 0 0.38rem 0;
+    margin: auto 3vw;
+    padding: 0.48rem 1.5rem 0.38rem 1.5rem;
     cursor: pointer;
 
     &:hover {
@@ -246,7 +246,7 @@ $light-sky-blue: #5e91e2;
   align-items: center;
   justify-content: center;
   font-size: clamp(12px, 1.6vw, 16px);
-  z-index: 999;
+  z-index: 995;
 }
 
 .options {

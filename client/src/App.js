@@ -20,6 +20,8 @@ import ScreamDisplay from "./components/ScreamDisplay";
 import Error from "./pages/Error";
 import { getScreams } from "./store/reducers/data";
 import { uiActions } from "./store/reducers/ui";
+import ChatPanel from "./components/ChatPanel";
+import ChatMessagePanel from "./components/ChatMessagePanel";
 
 function App() {
   const [socket, setSocket] = useState(null);
@@ -169,6 +171,28 @@ function App() {
               element={
                 isUserAuthenticated ? (
                   <ScreamDisplay socket={socket} />
+                ) : (
+                  <Navigate replace to="/login" />
+                )
+              }
+            />
+          </Route>
+
+          <Route
+            path="/my-profile/chats"
+            element={
+              isUserAuthenticated ? (
+                <ChatPanel socket={socket} />
+              ) : (
+                <Navigate replace to="/login" />
+              )
+            }
+          >
+            <Route
+              path="/my-profile/chats/:conversationId"
+              element={
+                isUserAuthenticated ? (
+                  <ChatMessagePanel socket={socket} />
                 ) : (
                   <Navigate replace to="/login" />
                 )

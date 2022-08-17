@@ -8,6 +8,7 @@ import Calender from "./svg/Calender";
 import WebsiteLink from "./svg/WebsiteLink";
 import { useDispatch, useSelector } from "react-redux";
 import { getUser } from "../store/reducers/user";
+import { PROFILE } from "../utils/constants";
 
 const Hero = () => {
   const userCredentials = useSelector((state) => state.user.credentials);
@@ -39,7 +40,7 @@ const Hero = () => {
   }
 
   return (
-    <Card type="profile">
+    <Card type={PROFILE}>
       <div className={classes.profile}>
         <div className={`${classes["upper-container"]}`}>
           <div className={`${classes["image-container"]}`}>

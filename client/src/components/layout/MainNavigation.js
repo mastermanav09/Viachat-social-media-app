@@ -94,7 +94,10 @@ const MainNavigation = (props) => {
 
                 <NavLink
                   to="/add-scream"
-                  onClick={() => dispatch(uiActions.showPostScreamModal())}
+                  onClick={() => {
+                    dispatch(uiActions.showPostScreamModal());
+                    dispatch(uiActions.clearBars());
+                  }}
                 >
                   <li>
                     <Add />
