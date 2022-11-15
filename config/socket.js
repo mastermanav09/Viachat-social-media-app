@@ -5,7 +5,7 @@ module.exports = {
     io = require("socket.io")(httpServer, {
       pingTimeout: 60000,
       cors: {
-        origin: "http://localhost:3000",
+        origin: process.env.HOST,
         methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
       },
     });
