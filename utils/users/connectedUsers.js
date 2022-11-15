@@ -1,3 +1,6 @@
+const User = require("../../models/user");
+const Conversation = require("../../models/conversation");
+
 const users = [];
 
 function userJoin(userId, socketId) {
@@ -18,8 +21,34 @@ function userLeave(socketId) {
   }
 }
 
-function getUsers() {
-  return users;
+async function getOnlineUsers(socket, senderId) {
+  try {
+    const conversations = await Conversation.find({
+      "members.userId": senderId,
+    });
+
+    let onlineUsers = [];
+    for (let conversation of conversations) {
+      const user1 = conversation.members[0].userId;
+      const user2 = conversation.members[1].userId;
+
+      if (
+        user1.toString() !== senderId &&
+        users.find((user) => user.userId === user1.toString())
+      ) {
+        onlineUsers.push(user1.toString());
+      } else if (
+        user2.toString() !== senderId &&
+        users.find((user) => user.userId === user2.toString())
+      ) {
+        onlineUsers.push(user2.toString());
+      }
+    }
+
+    return onlineUsers;
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 // function getRoomUsers(room) {
@@ -30,6 +59,6 @@ module.exports = {
   userJoin,
   getCurrentUser,
   userLeave,
-  getUsers,
+  getOnlineUsers,
   //   getRoomUsers,
 };

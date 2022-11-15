@@ -119,6 +119,7 @@ input[type="number"] {
   transition: all 150ms ease-out;
   font-size: 16px;
   margin-left: auto;
+  cursor: pointer;
 
   &:focus,
   &:hover {
@@ -197,14 +198,14 @@ footer {
 
 .sub-footer-part {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 1rem;
 }
 
 .validate {
   font-size: 14px;
   color: red;
-
+  text-align: left;
   @media screen and (max-width: 768px) {
     font-size: 13px;
   }

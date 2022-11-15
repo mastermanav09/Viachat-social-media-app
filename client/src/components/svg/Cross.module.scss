@@ -1,0 +1,13 @@
+.cross {
+  cursor: pointer;
+  display: inline-flex;
+  width: max-content;
+  margin-left: auto;
+  padding: 0.3rem;
+  background-color: rgb(245, 33, 33);
+  border-radius: 5px;
+
+  &:hover {
+    background-color: rgb(247, 86, 86);
+  }
+}

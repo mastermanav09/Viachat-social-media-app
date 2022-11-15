@@ -16,6 +16,7 @@ const uiSlice = createSlice({
     showUpdateProfilePictureModal: false,
     showSideBar: false,
     showScreamIdentifier: null,
+    showMessagePanelMob: false,
   },
 
   reducers: {
@@ -36,19 +37,19 @@ const uiSlice = createSlice({
     },
 
     showNavbarOptions(state, action) {
-      state.showNavbarOptions = action.payload || !state.showNavbarOptions;
+      state.showNavbarOptions = action.payload;
       state.showNotifications = false;
       state.showChats = false;
     },
 
     showNotifications(state, action) {
-      state.showNotifications = action.payload || !state.showNotifications;
+      state.showNotifications = action.payload;
       state.showNavbarOptions = false;
       state.showChats = false;
     },
 
     showChats(state, action) {
-      state.showChats = action.payload || !state.showChats;
+      state.showChats = action.payload;
       state.showNavbarOptions = false;
       state.showNotifications = false;
     },
@@ -92,6 +93,10 @@ const uiSlice = createSlice({
 
     setSideBar(state, action) {
       state.showSideBar = action.payload || !state.showSideBar;
+    },
+
+    setShowMessagePanelMob(state, action) {
+      state.showMessagePanelMob = action.payload;
     },
 
     closeModal(state, action) {

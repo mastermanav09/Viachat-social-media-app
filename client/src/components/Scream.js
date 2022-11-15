@@ -89,7 +89,6 @@ const Scream = (props) => {
       return;
     }
 
-    console.log("unlike");
     setIsInitial(false);
     setIsLikedStatus(false);
   };
@@ -104,11 +103,11 @@ const Scream = (props) => {
   };
 
   let updatedScreamBody;
-  if (scream.body.length > 80) {
-    updatedScreamBody = scream.body.slice(0, 80);
+  if (scream?.body?.length > 90) {
+    updatedScreamBody = scream?.body.slice(0, 90);
     updatedScreamBody += "...";
   } else {
-    updatedScreamBody = scream.body;
+    updatedScreamBody = scream?.body;
   }
 
   return (

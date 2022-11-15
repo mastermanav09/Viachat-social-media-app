@@ -294,6 +294,7 @@ const dataSlice = createSlice({
     currentScreamData: null,
     currentUser: null,
     currentConversation: null,
+    onlineUsers: new Set(),
   },
 
   reducers: {
@@ -314,6 +315,10 @@ const dataSlice = createSlice({
 
     setCurrentLikeStatus(state, action) {
       state.currentScreamData.likeStatus = action.payload.likeStatus;
+    },
+
+    setOnlineUsers(state, action) {
+      state.onlineUsers = action.payload;
     },
 
     nullifyCurrentScreamData(state, action) {

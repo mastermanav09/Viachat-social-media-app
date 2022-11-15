@@ -22,6 +22,8 @@
 
   @media screen and (max-width: 480px) {
     width: 100%;
+    margin: auto;
+    border: 0;
   }
 }
 
@@ -62,4 +64,8 @@
     margin: 2rem 0;
     color: rgba(116, 113, 113, 0.849);
   }
+}
+
+.close {
+  display: none;
 }

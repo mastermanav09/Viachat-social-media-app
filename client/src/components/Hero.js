@@ -26,14 +26,14 @@ const Hero = () => {
   }
 
   let address;
-  if (userCredentials.address && userCredentials.address.length > 25) {
+  if (userCredentials.address && userCredentials.address.length > 30) {
     address = userCredentials.address.slice(0, 25) + "...";
   } else {
     address = userCredentials.address;
   }
 
   let bio;
-  if (userCredentials.bio && userCredentials.bio.length > 25) {
+  if (userCredentials.bio && userCredentials.bio.length > 30) {
     bio = userCredentials.bio.slice(0, 25) + "...";
   } else {
     bio = userCredentials.bio;

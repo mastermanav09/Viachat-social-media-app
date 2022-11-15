@@ -164,8 +164,6 @@ module.exports = function (socket) {
         }
 
         if (message !== comment.body) {
-          console.log(message);
-          console.log(comment.body);
           const error = new Error("Comment contains different body!");
           error.statusCode = 422;
           throw error;

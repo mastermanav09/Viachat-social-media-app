@@ -31,6 +31,11 @@ $blue: #2666cf;
   padding: 0.8rem 0.8rem 0.8rem 1.2rem;
   width: 100%;
   max-width: 600px;
+  word-break: break-all;
+
+  .upper-body {
+    overflow: auto;
+  }
 
   .name {
     color: $blue;
@@ -49,7 +54,7 @@ $blue: #2666cf;
     word-wrap: break-word;
 
     @media screen and (max-width: 1200px) {
-      margin: 0.2rem 0;
+      margin: 2px 0;
     }
   }
 
@@ -78,7 +83,7 @@ $blue: #2666cf;
   }
 
   .actions_text {
-    font-size: clamp(12px, 1.1vw, 14px);
+    font-size: clamp(12px, 1vw, 14px);
   }
 }
 
@@ -202,8 +207,6 @@ $blue: #2666cf;
   }
 
   .actions_one span {
-    // display: flex;
-    // justify-content: space-around;
     margin: auto;
     cursor: pointer;
   }

@@ -8,7 +8,7 @@ import {
 import { RECEIVER, SENDER } from "../utils/constants";
 import classes from "./ChatMessagePanel.module.scss";
 import MessageItem from "./MessageItem";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import LoadingSpinner from "./UI/LoadingSpinner";
 import { uiActions } from "../store/reducers/ui";
 import MessageBox from "./MessageBox";
@@ -31,23 +31,31 @@ const ChatMessagePanel = (props) => {
   const { socket } = props;
   const [isLoading, setIsLoading] = useState(false);
   const [messageNotSendError, setMessageNotSendError] = useState(null);
+  const [bodyWidth, setBodyWidth] = useState(
+    window.innerWidth ||
+      document.documentElement.clientWidth ||
+      document.body.clientWidth
+  );
+
+  const navigate = useNavigate();
 
   useEffect(() => {
-    setError(null);
-    dispatch(uiActions.errorsNullify());
+    async function getMessagesHandler() {
+      setError(null);
+      dispatch(uiActions.errorsNullify());
 
-    setIsLoading(true);
-    const conversation = messages.find(
-      (message) => message.conversationId === conversationId
-    );
+      const conversation = messages.find(
+        (message) => message.conversationId === conversationId
+      );
 
-    if (conversation) {
-      setConversation(conversation);
-    } else {
-      dispatch(getMessages(conversationId));
+      if (conversation) {
+        setConversation(conversation);
+      } else {
+        await dispatch(getMessages({ conversationId, setIsLoading }));
+      }
     }
 
-    // setIsLoading(false);
+    getMessagesHandler();
   }, [dispatch, conversationId, messages, conversation]);
 
   useEffect(() => {
@@ -66,10 +74,6 @@ const ChatMessagePanel = (props) => {
       });
     });
   }, [socket]);
-
-  // useEffect(() => {
-  //   setIsLoading(false);
-  // }, [isLoading, conversation]);
 
   useEffect(() => {
     if (arrivalMessage && currentConversation?.members) {
@@ -106,7 +110,7 @@ const ChatMessagePanel = (props) => {
     };
 
     setInputText("");
-    await dispatch(
+    dispatch(
       addNewMessage({ newMessage, socket: socket, setMessageNotSendError })
     );
   };
@@ -116,10 +120,16 @@ const ChatMessagePanel = (props) => {
   }, [conversation]);
 
   return (
-    <div className={classes["chat-right-panel"]}>
+    <div
+      className={
+        bodyWidth <= 480
+          ? `${classes["chat-right-panel"]} ${classes["open"]}`
+          : `${classes["chat-right-panel"]} ${classes["close"]}`
+      }
+    >
       <div className={classes["chat-main-area"]}>
         <div className={classes["chat-area"]}>
-          {(isLoading || !conversation) && !error && (
+          {isLoading && !error && (
             <div className={classes["loader"]}>
               <LoadingSpinner />
             </div>
@@ -142,7 +152,28 @@ const ChatMessagePanel = (props) => {
             </div>
           )}
 
-          {conversation &&
+          <button
+            className={classes["back-btn"]}
+            onClick={() => navigate("/my-profile/chats/")}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              style={{ strokeWidth: "1.5" }}
+              stroke="currentColor"
+              className="w-5 h-[1.1rem]"
+            >
+              <path
+                style={{ strokeLinecap: "round", strokeLinejoin: "round" }}
+                d="M19.5 12h-15m0 0l6.75 6.75M4.5 12l6.75-6.75"
+              />
+            </svg>
+            <span>Go Back</span>
+          </button>
+
+          {!isLoading &&
+            conversation &&
             conversation.messages.map((message) => (
               <div key={message._id} ref={scrollRef}>
                 <MessageItem
@@ -155,7 +186,7 @@ const ChatMessagePanel = (props) => {
               </div>
             ))}
         </div>
-        <MessageBox addNewMessageHandler={addNewMessageHandler} />
+        {!error && <MessageBox addNewMessageHandler={addNewMessageHandler} />}
       </div>
     </div>
   );

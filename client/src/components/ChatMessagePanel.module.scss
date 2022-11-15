@@ -9,7 +9,17 @@
   padding: 0.8rem 0;
 
   @media screen and (max-width: 480px) {
-    display: none;
+    &.close {
+      display: none;
+    }
+
+    &.open {
+      position: absolute;
+      background-color: white;
+      border: 0;
+      padding-top: 0;
+      display: block;
+    }
   }
 }
 
@@ -20,11 +30,38 @@
 }
 
 .chat-area {
-  height: 85%;
+  height: 100%;
   border-top: 1px solid rgba(128, 128, 128, 0.509);
   border-bottom: 1px solid rgba(128, 128, 128, 0.508);
   overflow-y: scroll;
   padding: 0.5rem 0.8rem;
+  position: relative;
+
+  .back-btn {
+    display: none;
+
+    svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    @media screen and (max-width: 480px) {
+      display: flex;
+      position: sticky;
+      top: 0.2rem;
+      font-size: 0.65rem;
+      background-color: rgb(14, 178, 88);
+      color: white;
+      padding: 0.4rem 0.5rem;
+      border-radius: 5px;
+      align-items: center;
+      gap: 2px;
+    }
+  }
+
+  @media screen and (max-width: 480px) {
+    border-top: 0;
+  }
 }
 
 .loader {
@@ -47,5 +84,15 @@
   @media screen and (max-width: 768px) {
     width: 35px;
     height: 35px;
+  }
+}
+
+@keyframes slide-left {
+  0% {
+    transform: translateX(100%);
+  }
+
+  100% {
+    transform: translateX(0);
   }
 }

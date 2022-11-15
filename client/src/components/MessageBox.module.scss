@@ -1,5 +1,5 @@
 .message-box-container {
-  height: 15%;
+  height: 5rem;
   display: flex;
   justify-content: center;
   align-items: flex-end;
@@ -70,7 +70,6 @@
     border: none;
     justify-content: right;
     position: relative;
-    cursor: pointer;
     align-content: center;
     transition: 0.3s ease;
     z-index: 990;
@@ -78,8 +77,7 @@
 
   .submitbutton:disabled,
   .submitbutton[disabled] {
-    opacity: 0.3;
     transition: 0.3s ease;
-    cursor: default;
+    opacity: 0.3;
   }
 }

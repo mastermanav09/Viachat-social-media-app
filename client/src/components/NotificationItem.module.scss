@@ -30,7 +30,30 @@
     color: rgb(34, 34, 240);
   }
 }
+.notification-user-info {
+  word-break: normal;
+}
 
 .notification-link {
   color: #000;
+}
+
+@media screen and (max-width: 700px) {
+  .notification-item {
+    margin: 0.5rem 0.5rem;
+  }
+
+  .lower-container {
+    width: 100%;
+    font-size: clamp(12px, 2.5vw, 15px);
+  }
+  .image-container {
+    min-width: 50px;
+    min-height: 50px;
+    img {
+      min-width: 50px;
+      min-height: 50px;
+      border-radius: 50%;
+    }
+  }
 }

@@ -18,10 +18,11 @@ import Profile from "./pages/Profile";
 import PostScream from "./components/PostScream";
 import ScreamDisplay from "./components/ScreamDisplay";
 import Error from "./pages/Error";
-import { getScreams } from "./store/reducers/data";
+import { dataActions, getScreams } from "./store/reducers/data";
 import { uiActions } from "./store/reducers/ui";
 import ChatPanel from "./components/ChatPanel";
 import ChatMessagePanel from "./components/ChatMessagePanel";
+import { getConversations } from "./store/reducers/user";
 
 function App() {
   const [socket, setSocket] = useState(null);
@@ -30,6 +31,7 @@ function App() {
   const navigate = useNavigate();
   const userTokenExpiry = useSelector((state) => state.user.tokenExpiryState);
   const isUserAuthenticated = useSelector((state) => state.user.authenticated);
+  const userId = useSelector((state) => state.user.userId);
   const dispatch = useDispatch();
   const location = useLocation();
   const errors = useSelector((state) => state.ui.errors);
@@ -59,12 +61,13 @@ function App() {
           dispatch(userActions.setTokenExpiryState(decodedToken.exp));
           dispatch(getUser());
           dispatch(getScreams());
+          dispatch(getConversations());
         }
       } catch (error) {
         dispatch(uiActions.errors({ message: error.message }));
       }
     }
-  }, [token, dispatch, navigate, userTokenExpiry]);
+  }, [token, userTokenExpiry]);
 
   useEffect(() => {
     if (token) {
@@ -94,6 +97,31 @@ function App() {
       socket.emit("newUser");
     }
   }, [socket]);
+
+  useEffect(() => {
+    if (socket) {
+      socket.on("getConversation", (data) => {
+        dispatch(userActions.addNewConversation(data.conversation));
+      });
+
+      socket.on("getOnlineUsers", ({ users }) => {
+        const usersSet = new Set();
+        for (let user of users) {
+          usersSet.add(user);
+        }
+
+        dispatch(dataActions.setOnlineUsers(usersSet));
+      });
+    }
+  }, [socket, dispatch]);
+
+  useEffect(() => {
+    if (socket) {
+      socket.emit("getOnlineUsersEvent", {
+        senderId: userId,
+      });
+    }
+  }, [socket, userId]);
 
   useEffect(() => {
     if (
@@ -160,7 +188,7 @@ function App() {
             path="/my-profile"
             element={
               isUserAuthenticated ? (
-                <Profile myProfile={true} />
+                <Profile myProfile={true} socket={socket} />
               ) : (
                 <Navigate replace to="/login" />
               )
@@ -204,7 +232,7 @@ function App() {
             path={`/users/:userId`}
             element={
               isUserAuthenticated ? (
-                <Profile />
+                <Profile socket={socket} />
               ) : (
                 <Navigate replace to="/login" />
               )

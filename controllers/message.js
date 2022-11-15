@@ -15,6 +15,10 @@ exports.addMessage = async (req, res, next) => {
 
     const savedMessage = await newMessage.save();
 
+    await Conversation.findByIdAndUpdate(conversationId, {
+      recentMessage: text,
+    });
+
     res.status(201).json({
       _id: savedMessage._id,
       sender: savedMessage.sender,

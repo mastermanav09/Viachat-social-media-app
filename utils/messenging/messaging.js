@@ -13,4 +13,36 @@ module.exports = function (socket) {
       });
     }
   });
+
+  socket.on(
+    "receiveRecentMessage",
+    ({ receiverId, text, senderId, conversationId }) => {
+      const receiver = getCurrentUser(receiverId);
+      const sender = getCurrentUser(senderId);
+
+      if (receiver && receiver.socketId) {
+        io.to(receiver.socketId).emit("getRecentMessage", {
+          text,
+          conversationId,
+        });
+      }
+
+      if (sender && sender.socketId) {
+        io.to(sender.socketId).emit("getRecentMessage", {
+          text,
+          conversationId,
+        });
+      }
+    }
+  );
+
+  socket.on("addNewConversation", ({ receiverId, conversation }) => {
+    const receiver = getCurrentUser(receiverId);
+    console.log(receiverId, conversation);
+    if (receiver && receiver.socketId) {
+      io.to(receiver.socketId).emit("getConversation", {
+        conversation,
+      });
+    }
+  });
 };

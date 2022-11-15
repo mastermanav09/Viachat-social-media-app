@@ -1,7 +1,31 @@
+@mixin profile-action-buttons(
+  $backgroundColor,
+  $onHoverBackgroundColor,
+  $fontSize,
+  $mobileFontSize
+) {
+  padding: 0.5rem;
+  border-radius: 5px;
+  color: white;
+  background-color: $backgroundColor;
+  cursor: pointer;
+  font-size: $fontSize;
+
+  &:hover {
+    background-color: $onHoverBackgroundColor;
+  }
+
+  @media screen and (max-width: 768px) {
+    font-size: $mobileFontSize;
+  }
+
+  @content;
+}
+
 .profile-background {
   width: 100%;
   height: 14rem;
-  background: url("../../public/images/profile-background.webp");
+  background: url("./profile-background.webp");
   background-repeat: no-repeat;
   background-size: cover;
   object-fit: cover;
@@ -11,7 +35,7 @@
   width: 160px;
   height: 160px;
   position: relative;
-  top: 10rem;
+  top: 5rem;
   left: calc(50% - 80px);
   border-radius: 50%;
 
@@ -46,11 +70,12 @@
 
 .profile-username {
   position: relative;
-  margin: 5.5rem 0 0;
-  width: 60%;
+  margin: 5rem 0 0;
+  width: 70%;
   text-align: center;
   font-size: 2rem;
-  word-break: break-all;
+  word-wrap: break-word;
+  word-break: keep-all;
   margin-left: auto;
   margin-right: auto;
 
@@ -66,31 +91,42 @@
 }
 
 .profile-options {
-  position: absolute;
-  margin: 0.5rem 1rem;
-  font-size: clamp(10px, 5vw, 16px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 1rem 1rem;
 
-  .profile-options-inner {
+  .profile-options-first {
     display: flex;
     gap: 1rem;
     padding: 0.5rem;
     border-radius: 8px;
-    font-size: 15px;
-
-    @media screen and (max-width: 768px) {
-      font-size: 12px;
-    }
 
     .profile-option-1,
     .profile-option-2 {
-      padding: 0.5rem;
-      border-radius: 5px;
-      color: white;
-      background-color: rgba(19, 35, 72, 0.216);
-      cursor: pointer;
+      @include profile-action-buttons(
+        rgba(35, 45, 162, 0.493),
+        rgba(35, 45, 162, 0.293),
+        15px,
+        13px
+      );
+    }
+  }
 
-      &:hover {
-        background-color: rgba(33, 65, 140, 0.616);
+  .profile-options-two {
+    margin-left: auto;
+    .profile-option-3 {
+      @include profile-action-buttons(transparent, transparent, 17px, 15px) {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-size: 18px;
+
+        svg {
+          width: 22px;
+          height: 22px;
+        }
       }
     }
   }

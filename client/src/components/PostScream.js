@@ -4,7 +4,6 @@ import Modal from "./UI/Modal";
 import { useDispatch, useSelector } from "react-redux";
 import { postScream } from "../store/reducers/data";
 import { useNavigate } from "react-router-dom";
-import { uiActions } from "../store/reducers/ui";
 import { ADD_SCREAM } from "../utils/constants";
 
 const PostScream = () => {

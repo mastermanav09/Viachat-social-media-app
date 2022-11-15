@@ -14,10 +14,7 @@ const EditProfile = (props) => {
   const bioInputRef = useRef(userState.credentials.bio || null);
   const addressInputRef = useRef(userState.credentials.address || null);
   const websiteInputRef = useRef(userState.credentials.website || null);
-
-  useEffect(() => {
-    dispatch(uiActions.errorsNullify());
-  }, []);
+  const [errors, setErrors] = useState(null);
 
   const addDetailsHandler = async (e) => {
     e.preventDefault();
@@ -38,14 +35,16 @@ const EditProfile = (props) => {
         website,
         userId: props.currentUserId,
         setIsLoading,
+        setErrors,
       })
     );
   };
 
-  let errors = null;
-  if (uiState.errors) {
-    errors = uiState.errors.message || uiState.errors.errorData[0].msg;
-  }
+  // let errors = null;
+  // if (uiState.errors) {
+  //   console.log(uiState.errors);
+  //   // errors = uiState.errors.message || uiState.errors.errorData[0].msg;
+  // }
 
   return (
     <div>

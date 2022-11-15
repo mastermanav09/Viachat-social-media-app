@@ -8,7 +8,7 @@ import LoadingSpinner from "./UI/LoadingSpinner";
 import { getUser } from "../store/reducers/data";
 import Modal from "./UI/Modal";
 import EditProfile from "./EditProfile";
-import { useLocation } from "react-router-dom";
+import { userActions } from "../store/reducers/user";
 import UpdateProfilePicture from "./UpdateProfilePicture";
 import Scream from "./Scream";
 import { useState } from "react";
@@ -18,10 +18,13 @@ import {
   RAND_USER_SCREAM,
   UPDATE_PROFILE_PIC,
 } from "../utils/constants";
+import Chat from "./svg/Chat";
+import { addNewConversation } from "../store/reducers/user";
 
 const ProfileMain = (props) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { socket } = props;
   const showProfileEditModal = useSelector(
     (state) => state.ui.showProfileEditModal
   );
@@ -32,7 +35,6 @@ const ProfileMain = (props) => {
   const currentUserDataState = useSelector((state) => state.data);
 
   const params = useParams();
-  const location = useLocation();
   const userId = params.userId;
   const [userData, setUserData] = useState(null);
 
@@ -62,7 +64,7 @@ const ProfileMain = (props) => {
     } else {
       localStorage.setItem("target", "/my-profile");
     }
-  }, [dispatch, props.myProfile]);
+  }, [dispatch, props.myProfile, navigate, userId]);
 
   const showEditOptionsHandler = () => {
     if (userData.userId !== userState.userId) {
@@ -91,6 +93,10 @@ const ProfileMain = (props) => {
     return false;
   };
 
+  const createConversationHandler = () => {
+    dispatch(addNewConversation({ receiverId: userId, navigate, socket }));
+  };
+
   return (
     <>
       {showProfileEditModal && (
@@ -115,9 +121,9 @@ const ProfileMain = (props) => {
         ) : (
           <div>
             <div className={classes["profile-background"]}>
-              {userState.userId === userData.userId && (
-                <div className={classes["profile-options"]}>
-                  <div className={classes["profile-options-inner"]}>
+              <div className={classes["profile-options"]}>
+                {userState.userId === userData.userId ? (
+                  <div className={classes["profile-options-first"]}>
                     <div
                       className={classes["profile-option-1"]}
                       onClick={showEditOptionsHandler}
@@ -131,8 +137,20 @@ const ProfileMain = (props) => {
                       Update picture
                     </div>
                   </div>
-                </div>
-              )}
+                ) : (
+                  <div className={classes["profile-options-two"]}>
+                    <div
+                      className={classes["profile-option-3"]}
+                      onClick={createConversationHandler}
+                    >
+                      <span>
+                        <Chat />
+                      </span>
+                      Chat
+                    </div>
+                  </div>
+                )}
+              </div>
 
               <div className={classes["profile-img-container"]}>
                 {userData.credentials.imageUrl ? (
@@ -146,6 +164,7 @@ const ProfileMain = (props) => {
                 )}
               </div>
             </div>
+
             <div className={classes["profile-username"]}>
               {userData.credentials.name}
             </div>

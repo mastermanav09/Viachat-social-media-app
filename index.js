@@ -24,7 +24,8 @@ const notificationDeletionJob = require("./utils/schedulers/notificationDelete")
 const {
   userJoin,
   userLeave,
-  getUsers,
+  getCurrentUser,
+  getOnlineUsers,
   // getRoomUsers,
 } = require("./utils/users/connectedUsers");
 
@@ -101,12 +102,10 @@ app.use("/api/conversation", conversationRoutes);
 app.use("/api/message", messageRoues);
 
 app.use((error, req, res, next) => {
-  console.log(error);
   const status = error.statusCode || 500;
   const message = error.message || "Something went wrong!";
   const errorData = error.data;
 
-  console.log(message);
   res.status(status).json({
     message: message,
     errorData: errorData,
@@ -131,15 +130,24 @@ mongoose
     io.on("connection", async (socket) => {
       socket.on("newUser", () => {
         userJoin(socket.decodedToken.userId, socket.id);
-        io.emit("getUsers", getUsers());
       });
 
       initializeMessenger(socket);
       initializeNotifications(socket);
 
+      socket.on("getOnlineUsersEvent", async ({ senderId }) => {
+        const sender = getCurrentUser(senderId);
+
+        if (sender && sender.socketId) {
+          const onlineUsers = await getOnlineUsers(socket, senderId);
+          io.to(sender.socketId).emit("getOnlineUsers", {
+            users: onlineUsers,
+          });
+        }
+      });
+
       socket.on("disconnect", () => {
         userLeave(socket.id);
-        io.emit("getUsers", getUsers());
       });
     });
   })

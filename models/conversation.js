@@ -10,6 +10,10 @@ const conversationSchema = new Schema(
         userName: { type: String },
       },
     ],
+
+    recentMessage: {
+      type: String,
+    },
   },
   { timestamps: true }
 );

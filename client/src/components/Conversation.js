@@ -1,33 +1,57 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import classes from "./Conversation.module.scss";
-import { format } from "timeago.js";
-import { Link, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { uiActions } from "../store/reducers/ui";
 import { dataActions } from "../store/reducers/data";
 import { useParams } from "react-router-dom";
+import { userActions } from "../store/reducers/user";
 
 const Conversation = (props) => {
   const dispatch = useDispatch();
-  const { user } = props;
+  const { user, conversation } = props;
+  const [recentMessage, setRecentMessage] = useState(
+    conversation?.recentMessage || ""
+  );
+  const { socket } = props;
+  const params = useParams();
+
   const manageChats = () => {
     dispatch(uiActions.closeModal());
   };
-  const params = useParams();
 
   useEffect(() => {
-    if (props.conversation._id === params.conversationId) {
-      dispatch(dataActions.setcurrentConversation(props.conversation));
+    socket.on("getRecentMessage", (data) => {
+      if (data?.conversationId === conversation._id) {
+        setRecentMessage(data.text);
+        dispatch(
+          userActions.updateConversation({
+            conversationId: data.conversationId,
+            text: data.text,
+          })
+        );
+      }
+    });
+  }, [socket, conversation._id, dispatch]);
+
+  useEffect(() => {
+    if (conversation._id === params.conversationId) {
+      dispatch(dataActions.setcurrentConversation(conversation));
     }
   }, [params.conversationId, dispatch]);
 
+  // console.log(conversation);
   return (
     <NavLink
-      to={`/my-profile/chats/${props.conversationId}`}
+      to={`/my-profile/chats/${conversation._id}`}
       // onClick={() => {
       //   manageChats();
       // }}
-      className={classes["chat-link"]}
+      className={(navData) => {
+        return navData.isActive
+          ? `${classes.isActive} ${classes.chat}`
+          : `${classes.isInActive} ${classes.chat}`;
+      }}
     >
       <div className={`${classes["chat-item"]}`}>
         <div className={`${classes["image-container"]}`}>
@@ -44,10 +68,13 @@ const Conversation = (props) => {
               referrerPolicy="no-referrer"
             />
           )}
+
+          {props.isOnline && <div className={classes["online-badge"]} />}
         </div>
 
         <div className={`${classes["lower-container"]}`}>
           <p className={`${classes["user-name"]}`}>{user.userName}</p>
+          <div className={classes["recent-message"]}>{recentMessage}</div>
         </div>
       </div>
     </NavLink>

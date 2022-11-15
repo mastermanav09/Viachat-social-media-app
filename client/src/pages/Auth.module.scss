@@ -19,13 +19,15 @@ button {
   font-family: inherit;
   font-size: inherit;
   line-height: inherit;
-  cursor: pointer;
   border: none;
   outline: none;
   background: none;
   text-decoration: none;
 }
 
+a {
+  cursor: pointer;
+}
 img {
   display: block;
   width: 100%;

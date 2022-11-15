@@ -1,12 +1,12 @@
 import React from "react";
 import classes from "./Chats.module.scss";
-import { useDispatch, useSelector } from "react-redux";
-import { CHATS_BAR_MOBILE } from "../utils/constants";
-import Cross from "./svg/Cross";
-import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
-const Chats = () => {
+import ConversationsList from "./ConversationsList";
+
+const Chats = (props) => {
   const uiState = useSelector((state) => state.ui);
+  const { socket } = props;
 
   return (
     <div
@@ -15,12 +15,13 @@ const Chats = () => {
         uiState.showChats ? classes["open"] : classes["close"],
       ].join(" ")}
     >
-      <div className={classes["close"]}>
+      <div className={classes["chats-wrapper"]}>
+        {/* <div className={classes["close"]}>
         <Cross type={CHATS_BAR_MOBILE} />
+      </div> */}
+
+        <ConversationsList socket={socket} />
       </div>
-      <Link to="/my-profile/chats" className={`${classes["chats-wrapper"]}`}>
-        GOLA
-      </Link>
     </div>
   );
 };

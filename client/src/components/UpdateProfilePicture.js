@@ -10,16 +10,13 @@ const UpdateProfilePicture = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [image, setImage] = useState(userState.credentials.imageUrl);
   const [isNewImageSelected, setIsNewImageSelected] = useState(false);
+  const [errors, setErrors] = useState(null);
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(uiActions.errorsNullify());
-  }, []);
 
   const addProfilePhotoHandler = async (e) => {
     e.preventDefault();
 
-    dispatch(uiActions.errorsNullify());
+    setErrors(null);
     setIsLoading(true);
 
     const formData = new FormData();
@@ -29,7 +26,7 @@ const UpdateProfilePicture = (props) => {
     }
 
     formData.append("currentUserId", props.currentUserId);
-    dispatch(updateProfilePhoto({ formData, setIsLoading }));
+    dispatch(updateProfilePhoto({ formData, setIsLoading, setErrors }));
   };
 
   const imageHandler = (e) => {
@@ -88,9 +85,7 @@ const UpdateProfilePicture = (props) => {
         </div>
         <div className={classes["footer"]}>
           <div className={classes["sub-footer-part"]}>
-            {uiState.errors && (
-              <p className={classes.validate}>{uiState.errors}</p>
-            )}
+            {errors && <p className={classes.validate}>{errors}</p>}
 
             <button type="submit" className={classes["save-btn"]}>
               {isLoading ? (

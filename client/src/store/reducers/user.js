@@ -3,6 +3,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { uiActions } from "./ui";
 import { dataActions } from "./data";
+import toast from "toastify";
 
 export const auth = createAsyncThunk(
   "user/auth",
@@ -192,7 +193,13 @@ export const addUserDetails = createAsyncThunk(
       const res = await axios({
         method: "PUT",
         url: `/api/user/updateProfile`,
-        data: userData,
+        data: {
+          age: userData.age,
+          bio: userData.bio,
+          address: userData.address,
+          website: userData.website,
+          userId: userData.userId,
+        },
         headers: {
           Authorization: "Bearer " + token,
         },
@@ -207,10 +214,10 @@ export const addUserDetails = createAsyncThunk(
       userData.setIsLoading(false);
       dispatch(uiActions.closeModal());
     } catch (error) {
-      if (!error.response) {
-        dispatch(uiActions.errors(error.message));
+      if (error.response?.data?.errorData[0].msg) {
+        userData.setErrors(error.response.data.errorData[0].msg);
       } else {
-        dispatch(uiActions.errors(error.response.data));
+        userData.setErrors(error.message);
       }
 
       userData.setIsLoading(false);
@@ -256,12 +263,71 @@ export const updateProfilePhoto = createAsyncThunk(
       dispatch(uiActions.closeModal());
     } catch (error) {
       if (!error.response) {
-        dispatch(uiActions.errors(error.message));
+        userData.setErrors(error.message);
       } else {
-        dispatch(uiActions.errors(error.response.data));
+        userData.setErrors(error.response.data);
       }
 
       userData.setIsLoading(false);
+    }
+  }
+);
+
+export const addNewConversation = createAsyncThunk(
+  "user/addNewConversation",
+  async (data, { dispatch, getState }) => {
+    const cookies = new Cookies();
+    const token = cookies.get("upid");
+    const { navigate, socket } = data;
+
+    const state = getState();
+    const userState = state.user;
+    const { userId, conversations } = userState;
+
+    let conversationIndex = conversations.findIndex((conversation) => {
+      return (
+        (conversation.members[0].userId === data.receiverId ||
+          conversation.members[1].userId === data.receiverId) &&
+        (conversation.members[0].userId === userId ||
+          conversation.members[1].userId === userId)
+      );
+    });
+
+    let conversation = conversations[conversationIndex];
+
+    if (conversation) {
+      navigate(`/my-profile/chats/${conversation._id}`);
+      return;
+    }
+
+    try {
+      const res = await axios({
+        method: "POST",
+        url: `/api/conversation/add`,
+        data: { receiverId: data.receiverId },
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      });
+
+      conversation = res.data.conversation;
+      const exists = res.data.exists;
+
+      dispatch(userActions.addNewConversation(conversation));
+      navigate(`/my-profile/chats/${conversation._id}`);
+
+      if (!exists) {
+        socket.emit("addNewConversation", {
+          conversation,
+          receiverId: data.receiverId,
+        });
+      }
+    } catch (error) {
+      // if (!error.response) {
+      //   toast.error(error.response);
+      // } else {
+      //   toast.error(error.response.data);
+      // }
     }
   }
 );
@@ -299,14 +365,16 @@ export const getConversations = createAsyncThunk(
 
 export const getMessages = createAsyncThunk(
   "user/getMessages",
-  async (id, { dispatch }) => {
+  async (data, { dispatch }) => {
     const cookies = new Cookies();
     const token = cookies.get("upid");
 
     try {
+      data.setIsLoading(true);
+
       const res = await axios({
         method: "GET",
-        url: `/api/message/${id}`,
+        url: `/api/message/${data.conversationId}`,
         headers: {
           Authorization: "Bearer " + token,
         },
@@ -318,9 +386,8 @@ export const getMessages = createAsyncThunk(
       }
 
       dispatch(userActions.setMessages(res.data));
+      data.setIsLoading(false);
     } catch (error) {
-      console.log(error.response);
-
       if (!error.response) {
         dispatch(uiActions.errors(error.message));
       } else {
@@ -376,6 +443,13 @@ export const addNewMessage = createAsyncThunk(
         receiverId: data.newMessage.receiver,
         text: data.newMessage.text,
         _id: res.data._id,
+      });
+
+      socket.emit("receiveRecentMessage", {
+        conversationId: data.newMessage.conversationId,
+        receiverId: data.newMessage.receiver,
+        senderId: data.newMessage.sender,
+        text: data.newMessage.text,
       });
     } catch (error) {
       if (error) {
@@ -531,6 +605,21 @@ const userSlice = createSlice({
       }
 
       state.messages[conversationIndex].messages.push(action.payload.message);
+    },
+
+    addNewConversation(state, action) {
+      state.conversations.unshift(action.payload);
+    },
+
+    updateConversation(state, action) {
+      const conversationIndex = state.conversations.findIndex(
+        (conversation) => conversation._id === action.payload.conversationId
+      );
+
+      if (conversationIndex !== -1) {
+        state.conversations[conversationIndex].recentMessage =
+          action.payload.text;
+      }
     },
 
     setProfilePhoto(state, action) {

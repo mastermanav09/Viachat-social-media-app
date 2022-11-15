@@ -2,6 +2,10 @@
   height: 9rem;
   overflow-y: auto;
 
+  @media screen and (max-width: 480px) {
+    height: 7.5rem;
+  }
+
   &::-webkit-scrollbar {
     width: 6px;
     background-color: #f5f5f5;

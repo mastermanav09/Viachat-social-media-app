@@ -8,6 +8,7 @@ import Home from "../svg/Home";
 import NotificationsBell from "../svg/NotificationsBell";
 import { userActions } from "../../store/reducers/user";
 import { SIDEBAR_MOBILE } from "../../utils/constants";
+import Message from "../svg/Message";
 
 const Sidebar = (props) => {
   const uiState = useSelector((state) => state.ui);
@@ -81,8 +82,10 @@ const Sidebar = (props) => {
                             <img src="/images/no-img.png" alt="profile-icon" />
                           )}
                         </div>
-                        <div>
-                          <strong>{userCredentials.username}</strong>
+                        <div className={classes["details"]}>
+                          <strong className={classes["username"]}>
+                            {userCredentials.username}
+                          </strong>
                           <div>See your profile</div>
                         </div>
                       </div>
@@ -93,16 +96,18 @@ const Sidebar = (props) => {
 
               <div className={classes["navigation-block"]}>
                 <ul className={classes["links"]}>
-                  <NavLink to="/" onClick={navigateActionHandler}>
-                    <li
-                      className={[
+                  <NavLink
+                    to="/"
+                    onClick={navigateActionHandler}
+                    className={(navData) =>
+                      [
                         classes["link"],
-                        !uiState.showSideBar ? classes["active"] : "",
-                      ].join(" ")}
-                    >
-                      Home
-                      <Home />
-                    </li>
+                        navData.isActive ? classes.active : classes.inactive,
+                      ].join(" ")
+                    }
+                  >
+                    Home
+                    <Home />
                   </NavLink>
 
                   <li
@@ -115,6 +120,20 @@ const Sidebar = (props) => {
                     Notifications
                     <NotificationsBell />
                   </li>
+
+                  <NavLink
+                    to="/my-profile/chats"
+                    onClick={navigateActionHandler}
+                    className={(navData) =>
+                      [
+                        classes["link"],
+                        navData.isActive ? classes.active : classes.inactive,
+                      ].join(" ")
+                    }
+                  >
+                    Chats
+                    <Message />
+                  </NavLink>
                 </ul>
               </div>
 

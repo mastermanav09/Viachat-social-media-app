@@ -6,7 +6,7 @@ const Profile = (props) => {
   return (
     <>
       <Outlet />
-      <ProfileMain myProfile={props.myProfile} socket={props.myProfile} />
+      <ProfileMain myProfile={props.myProfile} socket={props.socket} />
     </>
   );
 };

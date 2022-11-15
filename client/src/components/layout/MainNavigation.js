@@ -60,20 +60,30 @@ const MainNavigation = (props) => {
   const manageNotifications = () => {
     setUnreadNotifications(null);
     dispatch(userActions.setNotificationsMarked());
-    dispatch(uiActions.showNotifications());
+
+    dispatch(uiActions.showNotifications(true));
     dispatch(markNotificationsRead());
   };
 
   const manageChats = () => {
-    dispatch(uiActions.showChats());
+    dispatch(uiActions.showChats(true));
   };
+
+  let updatedUsername;
+
+  if (userCredentials?.username?.length > 12) {
+    updatedUsername = userCredentials.username.slice(0, 12);
+    updatedUsername += "...";
+  } else {
+    updatedUsername = userCredentials?.username;
+  }
 
   return (
     <>
       <nav
         className={`${classes.navbar} ${classes["navbar-dark"]} ${classes["bg-blue"]}`}
       >
-        <Link to="/" style={{ textDecoration: "none" }}>
+        <Link to="/" style={{ textDecoration: "none", marginRight: "1rem" }}>
           <div className={`${classes["main-head"]}`}>
             <img src="/Viachat.png" className={classes.logo} alt="logo" />
             <h2 className={`${classes["nav-brand"]}`}>
@@ -86,22 +96,30 @@ const MainNavigation = (props) => {
           <ul className={`${classes["nav-mid-list"]}`}>
             {userState.authenticated && (
               <>
-                <NavLink to="/">
-                  <li>
-                    <Home />
-                  </li>
+                <NavLink
+                  to="/"
+                  className={(navData) =>
+                    navData.isActive
+                      ? `${classes["nav-mid-list-link"]} ${classes.active}`
+                      : `${classes["nav-mid-list-link"]}`
+                  }
+                >
+                  <Home />
                 </NavLink>
 
                 <NavLink
                   to="/add-scream"
+                  className={(navData) =>
+                    navData.isActive
+                      ? `${classes["nav-mid-list-link"]} ${classes.active}`
+                      : `${classes["nav-mid-list-link"]}`
+                  }
                   onClick={() => {
                     dispatch(uiActions.showPostScreamModal());
                     dispatch(uiActions.clearBars());
                   }}
                 >
-                  <li>
-                    <Add />
-                  </li>
+                  <Add />
                 </NavLink>
               </>
             )}
@@ -112,7 +130,14 @@ const MainNavigation = (props) => {
           <ul className={`${classes["nav-list"]}`}>
             {userState.authenticated && (
               <>
-                <Link to="/my-profile">
+                <NavLink
+                  to="/my-profile"
+                  className={(navData) => {
+                    return navData.isActive
+                      ? classes["my-profile-link"] + " " + classes.active
+                      : `${classes["my-profile-link"]}`;
+                  }}
+                >
                   <li>
                     <div className={`${classes["profile-icon"]}`}>
                       {userCredentials.imageUrl ? (
@@ -129,10 +154,10 @@ const MainNavigation = (props) => {
                           alt="profile-icon"
                         />
                       )}
-                      <span>{userCredentials.username}</span>
+                      <span>{updatedUsername}</span>
                     </div>
                   </li>
-                </Link>
+                </NavLink>
                 <li>
                   {unreadNotifications && unreadNotifications.length !== 0 && (
                     <div className={classes["unread-notification-icon"]}>
@@ -171,7 +196,7 @@ const MainNavigation = (props) => {
                       classes["navbar-actions-icon"],
                       uiState.showNavbarOptions ? classes.active : "",
                     ].join(" ")}
-                    onClick={() => dispatch(uiActions.showNavbarOptions())}
+                    onClick={() => dispatch(uiActions.showNavbarOptions(true))}
                   >
                     <DownsideArrow />
                   </div>
@@ -206,10 +231,18 @@ const MainNavigation = (props) => {
 
       <Sidebar socket={socket} manageNotifications={manageNotifications} />
 
+      {uiState.showNotifications && userState.authenticated && (
+        <Notifications socket={props.socket} />
+      )}
+
+      {uiState.showChats && userState.authenticated && (
+        <Chats socket={props.socket} />
+      )}
+
       {uiState.showNavbarOptions && userState.authenticated && (
         <div className={classes.options}>
           <div className={`${classes["options-wrapper"]}`}>
-            <Link
+            <NavLink
               to="/my-profile"
               onClick={() => dispatch(uiActions.clearBars())}
             >
@@ -225,12 +258,12 @@ const MainNavigation = (props) => {
                     <img src="/images/no-img.png" alt="profile-icon" />
                   )}
                 </div>
-                <div>
+                <div className={classes["details"]}>
                   <strong>{userCredentials.username}</strong>
                   <div>See your profile</div>
                 </div>
               </div>
-            </Link>
+            </NavLink>
 
             <hr />
 
@@ -245,14 +278,6 @@ const MainNavigation = (props) => {
             </div>
           </div>
         </div>
-      )}
-
-      {uiState.showNotifications && userState.authenticated && (
-        <Notifications socket={props.socket} />
-      )}
-
-      {uiState.showChats && userState.authenticated && (
-        <Chats socket={props.socket} />
       )}
     </>
   );
