@@ -4,6 +4,7 @@ import { format } from "timeago.js";
 import Delete from "./svg/Delete";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteComment } from "../store/reducers/data";
+import { Link } from "react-router-dom";
 
 const CommentItem = (props) => {
   const { comment } = props;
@@ -40,7 +41,7 @@ const CommentItem = (props) => {
 
       <div className={`${classes["lower-container"]}`}>
         <div className={`${classes["comment-user-info"]}`}>
-          <div>{comment.username}</div>
+          <Link to={`/users/${comment.userHandle}`}>{comment.username}</Link>
         </div>
         <div className={classes.timeago}>{format(comment.createdAt)}</div>
         <div className={classes["comment-body"]}>{comment.body}</div>
