@@ -4,21 +4,14 @@
   "description": "A social media app that allows users to have conversations, share ideas and create web content.",
   "main": "index.js",
   "engines": {
-    "node": "16.13.0"
+    "node": "18.12.1"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon index.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/mastermanav09/viachat.git"
+    "start": "node index.js"
   },
   "author": "mastermanav",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/mastermanav09/viachat/issues"
-  },
   "dependencies": {
     "@thream/socketio-jwt": "^2.2.1",
     "bcryptjs": "^2.4.3",
