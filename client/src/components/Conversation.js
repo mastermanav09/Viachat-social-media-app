@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import classes from "./Conversation.module.scss";
 import { NavLink } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { uiActions } from "../store/reducers/ui";
 import { dataActions } from "../store/reducers/data";
 import { useParams } from "react-router-dom";

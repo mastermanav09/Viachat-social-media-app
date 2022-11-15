@@ -122,7 +122,7 @@ module.exports = function (socket) {
 
         const userNotifications = await Notification.find({
           recipient: receiverId,
-        });
+        }).sort({ createdAt: -1 });
 
         io.to(receiver.socketId).emit("getNotifications", {
           notifications: userNotifications,
@@ -264,7 +264,7 @@ module.exports = function (socket) {
 
           const userNotifications = await Notification.find({
             recipient: receiverId,
-          });
+          }).sort({ createdAt: -1 });
 
           io.to(receiver.socketId).emit("getNotifications", {
             notifications: userNotifications,
@@ -294,7 +294,7 @@ module.exports = function (socket) {
 
       const notifications = await Notification.find({
         recipient: socket.decodedToken.userId,
-      });
+      }).sort({ createdAt: -1 });
 
       io.to(receiver.socketId).emit("getNotifications", {
         notifications: notifications,

@@ -1,12 +1,8 @@
 import React from "react";
-import { useState, useEffect } from "react";
 import classes from "./Chats.module.scss";
-import { useSelector, useDispatch } from "react-redux";
-import { CHATS_BAR_MOBILE } from "../utils/constants";
-import Cross from "./svg/Cross";
+import { useSelector } from "react-redux";
 import LoadingSpinner from "./UI/LoadingSpinner";
 import Conversation from "./Conversation";
-import { userActions } from "../store/reducers/user";
 
 const ConversationsList = (props) => {
   const userConversations = useSelector((state) => state.user.conversations);

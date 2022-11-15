@@ -28,7 +28,7 @@ const MainNavigation = (props) => {
     if (userState.tokenExpiryState * 1000 < Date.now()) {
       navigate("/login", { replace: true });
     }
-  }, []);
+  }, [userState.tokenExpiryState]);
 
   const authHandler = () => {
     dispatch(uiActions.errorsNullify());
@@ -55,18 +55,18 @@ const MainNavigation = (props) => {
         dispatch(userActions.getNotifications(data.notifications));
       });
     }
-  }, [socket]);
+  }, [dispatch, socket]);
 
   const manageNotifications = () => {
     setUnreadNotifications(null);
     dispatch(userActions.setNotificationsMarked());
 
-    dispatch(uiActions.showNotifications(true));
+    dispatch(uiActions.showNotifications());
     dispatch(markNotificationsRead());
   };
 
   const manageChats = () => {
-    dispatch(uiActions.showChats(true));
+    dispatch(uiActions.showChats());
   };
 
   let updatedUsername;

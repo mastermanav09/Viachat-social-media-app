@@ -10,7 +10,6 @@ import classes from "./ChatMessagePanel.module.scss";
 import MessageItem from "./MessageItem";
 import { useNavigate, useParams } from "react-router-dom";
 import LoadingSpinner from "./UI/LoadingSpinner";
-import { uiActions } from "../store/reducers/ui";
 import MessageBox from "./MessageBox";
 
 const ChatMessagePanel = (props) => {
@@ -42,7 +41,6 @@ const ChatMessagePanel = (props) => {
   useEffect(() => {
     async function getMessagesHandler() {
       setError(null);
-      dispatch(uiActions.errorsNullify());
 
       const conversation = messages.find(
         (message) => message.conversationId === conversationId
@@ -51,7 +49,7 @@ const ChatMessagePanel = (props) => {
       if (conversation) {
         setConversation(conversation);
       } else {
-        await dispatch(getMessages({ conversationId, setIsLoading }));
+        dispatch(getMessages({ conversationId, setIsLoading }));
       }
     }
 

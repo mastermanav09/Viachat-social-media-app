@@ -67,7 +67,7 @@ function App() {
         dispatch(uiActions.errors({ message: error.message }));
       }
     }
-  }, [token, userTokenExpiry]);
+  }, [dispatch, navigate, token, userTokenExpiry]);
 
   useEffect(() => {
     if (token) {

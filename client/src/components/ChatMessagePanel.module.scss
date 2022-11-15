@@ -24,22 +24,18 @@
 }
 
 .chat-header {
-  background-color: rgba(214, 235, 248, 0.8);
-  backdrop-filter: blur(1px);
-  width: 100%;
-  padding: 0.4rem 0.5rem;
-  position: absolute;
-  z-index: 10;
+  display: none;
 
-  .back-btn {
-    display: none;
+  @media screen and (max-width: 480px) {
+    display: block;
+    background-color: rgba(214, 235, 248, 0.8);
+    backdrop-filter: blur(1px);
+    width: 100%;
+    padding: 0.4rem 0.5rem;
+    position: absolute;
+    z-index: 10;
 
-    svg {
-      width: 20px;
-      height: 20px;
-    }
-
-    @media screen and (max-width: 480px) {
+    .back-btn {
       display: flex;
       position: sticky;
       top: 0.2rem;
@@ -50,6 +46,11 @@
       border-radius: 50%;
       align-items: center;
       gap: 2px;
+
+      svg {
+        width: 20px;
+        height: 20px;
+      }
     }
   }
 }
@@ -62,14 +63,14 @@
 
 .chat-area {
   height: 100%;
-  border-top: 1px solid rgba(128, 128, 128, 0.509);
   border-bottom: 1px solid rgba(128, 128, 128, 0.508);
   overflow-y: scroll;
-  padding: 2rem 0.8rem 0.5rem;
+  padding: 0.5rem 0.8rem;
   position: relative;
 
   @media screen and (max-width: 480px) {
     border-top: 0;
+    padding: 2rem 0.8rem 0.5rem;
   }
 }
 

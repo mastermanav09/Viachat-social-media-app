@@ -352,6 +352,7 @@ $light-sky-blue: #5e91e2;
     height: 20px;
     background-repeat: no-repeat;
     display: inline-block;
+    filter: invert(40%) sepia(6%) hue-rotate(185deg);
     -webkit-filter: invert(40%) sepia(6%) hue-rotate(185deg);
   }
 

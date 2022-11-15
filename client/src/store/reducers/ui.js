@@ -37,19 +37,19 @@ const uiSlice = createSlice({
     },
 
     showNavbarOptions(state, action) {
-      state.showNavbarOptions = action.payload;
+      state.showNavbarOptions = !state.showNavbarOptions;
       state.showNotifications = false;
       state.showChats = false;
     },
 
     showNotifications(state, action) {
-      state.showNotifications = action.payload;
+      state.showNotifications = !state.showNotifications;
       state.showNavbarOptions = false;
       state.showChats = false;
     },
 
     showChats(state, action) {
-      state.showChats = action.payload;
+      state.showChats = !state.showChats;
       state.showNavbarOptions = false;
       state.showNotifications = false;
     },
