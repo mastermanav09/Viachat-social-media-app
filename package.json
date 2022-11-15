@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "A social media app that allows users to have conversations, share ideas and create web content.",
   "main": "index.js",
-  "type": "module",
   "engines": {
     "node": "16.13.0"
   },
