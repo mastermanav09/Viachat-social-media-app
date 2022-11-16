@@ -46,16 +46,14 @@ app.use((req, res, next) => {
   next();
 });
 
-if (process.env.NODE_ENV !== "production") {
-  const accessLogStream = fs.createWriteStream(
-    path.join(__dirname, "access.log"),
-    {
-      flags: "a",
-    }
-  );
+const accessLogStream = fs.createWriteStream(
+  path.join(__dirname, "access.log"),
+  {
+    flags: "a",
+  }
+);
 
-  app.use(morgan("dev", { stream: accessLogStream }));
-}
+app.use(morgan("combined", { stream: accessLogStream }));
 
 app.use(express.json());
 app.use(passport.initialize());
