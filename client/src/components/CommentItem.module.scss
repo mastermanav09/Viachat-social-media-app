@@ -23,7 +23,10 @@
 
   .comment-user-info {
     font-size: clamp(11px, 3vw, 15px);
-    color: #2666cf;
+
+    a {
+      color: #2666cf;
+    }
   }
 
   .timeago {

@@ -23,7 +23,7 @@ const ChatMessagePanel = (props) => {
   const currentConversation = useSelector(
     (state) => state.data.currentConversation
   );
-
+  const [username, setUsername] = useState(null);
   const [arrivalMessage, setArrivalMessage] = useState(null);
   const [error, setError] = useState(null);
   const errors = useSelector((state) => state.ui.errors);
@@ -62,7 +62,17 @@ const ChatMessagePanel = (props) => {
     if (errors) {
       setError("Conversation not found!");
     }
-  }, [errors]);
+
+    let username = "";
+
+    if (currentConversation?.members[0].userId === userId) {
+      username = currentConversation?.members[1].username;
+    } else {
+      username = currentConversation?.members[0].username;
+    }
+
+    setUsername(username);
+  }, [errors, userId, currentConversation]);
 
   useEffect(() => {
     socket.on("getMessage", (data) => {
@@ -96,10 +106,10 @@ const ChatMessagePanel = (props) => {
 
     let receiverUserId;
 
-    if (currentConversation.members[0].userId === userId) {
-      receiverUserId = currentConversation.members[1].userId;
+    if (currentConversation?.members[0].userId === userId) {
+      receiverUserId = currentConversation?.members[1].userId;
     } else {
-      receiverUserId = currentConversation.members[0].userId;
+      receiverUserId = currentConversation?.members[0].userId;
     }
 
     const newMessage = {
@@ -127,6 +137,26 @@ const ChatMessagePanel = (props) => {
           : `${classes["chat-right-panel"]} ${classes["close"]}`
       }
     >
+      <div className={classes["chat-header"]}>
+        <button
+          className={classes["back-btn"]}
+          onClick={() => navigate("/my-profile/chats/")}
+        >
+          <svg
+            fill="none"
+            viewBox="0 0 24 24"
+            style={{ strokeWidth: "1.5" }}
+            stroke="currentColor"
+            className="w-5 h-[1.1rem]"
+          >
+            <path
+              style={{ strokeLinecap: "round", strokeLinejoin: "round" }}
+              d="M19.5 12h-15m0 0l6.75 6.75M4.5 12l6.75-6.75"
+            />
+          </svg>
+        </button>
+        <div className={classes["chat-username"]}>{username}</div>
+      </div>
       <div className={classes["chat-main-area"]}>
         <div className={classes["chat-area"]}>
           {isLoading && !error && (
@@ -151,26 +181,6 @@ const ChatMessagePanel = (props) => {
               <p className={classes["error-message"]}>{error}</p>
             </div>
           )}
-
-          <button
-            className={classes["back-btn"]}
-            onClick={() => navigate("/my-profile/chats/")}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              style={{ strokeWidth: "1.5" }}
-              stroke="currentColor"
-              className="w-5 h-[1.1rem]"
-            >
-              <path
-                style={{ strokeLinecap: "round", strokeLinejoin: "round" }}
-                d="M19.5 12h-15m0 0l6.75 6.75M4.5 12l6.75-6.75"
-              />
-            </svg>
-            <span>Go Back</span>
-          </button>
 
           {!isLoading &&
             conversation &&

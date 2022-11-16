@@ -23,6 +23,37 @@
   }
 }
 
+.chat-header {
+  background-color: rgba(214, 235, 248, 0.8);
+  backdrop-filter: blur(1px);
+  width: 100%;
+  padding: 0.4rem 0.5rem;
+  position: absolute;
+  z-index: 10;
+
+  .back-btn {
+    display: none;
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    @media screen and (max-width: 480px) {
+      display: flex;
+      position: sticky;
+      top: 0.2rem;
+      font-size: 0.65rem;
+      background-color: rgba(129, 218, 171, 1);
+      color: white;
+      padding: 0.3rem 0.3rem;
+      border-radius: 50%;
+      align-items: center;
+      gap: 2px;
+    }
+  }
+}
+
 .chat-main-area {
   height: 100%;
   display: flex;
@@ -34,30 +65,8 @@
   border-top: 1px solid rgba(128, 128, 128, 0.509);
   border-bottom: 1px solid rgba(128, 128, 128, 0.508);
   overflow-y: scroll;
-  padding: 0.5rem 0.8rem;
+  padding: 2rem 0.8rem 0.5rem;
   position: relative;
-
-  .back-btn {
-    display: none;
-
-    svg {
-      width: 22px;
-      height: 22px;
-    }
-
-    @media screen and (max-width: 480px) {
-      display: flex;
-      position: sticky;
-      top: 0.2rem;
-      font-size: 0.65rem;
-      background-color: rgb(14, 178, 88);
-      color: white;
-      padding: 0.4rem 0.5rem;
-      border-radius: 5px;
-      align-items: center;
-      gap: 2px;
-    }
-  }
 
   @media screen and (max-width: 480px) {
     border-top: 0;
