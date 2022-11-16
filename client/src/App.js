@@ -70,27 +70,35 @@ function App() {
   }, [dispatch, navigate, token, userTokenExpiry]);
 
   useEffect(() => {
-    if (token) {
-      const socket = io.connect("/", {
-        auth: { token: `Bearer ${token}` },
-      });
+    async function initializeSocket() {
+      if (token) {
+        const socket = io.connect(process.env.HOST, {
+          auth: { token: `Bearer ${token}` },
+        });
 
-      socket.on("connect_error", (error) => {
-        dispatch(userActions.logout());
-        localStorage.clear("target");
+        socket.on("connect", () => {
+          console.log("Successfully connected!");
+        });
 
-        if (!errors) {
-          dispatch(
-            uiActions.errors({
-              message: "Couldn't connect to the server!",
-            })
-          );
-        }
-      });
+        socket.on("connect_error", (error) => {
+          dispatch(userActions.logout());
+          localStorage.clear("target");
 
-      setSocket(socket);
+          if (!errors) {
+            dispatch(
+              uiActions.errors({
+                message: "Couldn't connect to the server!",
+              })
+            );
+          }
+        });
+
+        setSocket(socket);
+      }
     }
-  }, [token, dispatch]);
+
+    initializeSocket();
+  }, []);
 
   useEffect(() => {
     if (socket) {
