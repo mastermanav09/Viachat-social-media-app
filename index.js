@@ -122,9 +122,12 @@ mongoose
     useUnifiedTopology: true,
   })
   .then((result) => {
-    const server = app.listen(process.env.PORT || 3001);
+    const server = require("http").Server(app);
     const io = require("./config/socket").init(server);
 
+    server.listen(process.env.PORT || 3001, () => {
+      console.log(`Listening on ${process.env.PORT || 3001}`);
+    });
     io.use(
       authorize({
         secret: jwtSecret.secret,
