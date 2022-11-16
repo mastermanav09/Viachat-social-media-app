@@ -2,9 +2,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useOutlet } from "react-router-dom";
 import { uiActions } from "../store/reducers/ui";
-
 import classes from "./ChatPanel.module.scss";
-
 import ConversationsList from "./ConversationsList";
 
 const ChatPanel = (props) => {

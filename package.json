@@ -8,7 +8,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "start": "nodemon index.js"
   },
   "repository": {
     "type": "git",
@@ -16,9 +16,6 @@
   },
   "author": "mastermanav",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/mastermanav09/viachat/issues"
-  },
   "dependencies": {
     "@thream/socketio-jwt": "^2.2.1",
     "bcryptjs": "^2.4.3",

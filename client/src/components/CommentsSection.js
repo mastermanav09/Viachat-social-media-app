@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { addComment } from "../store/reducers/data";
 import CommentList from "./CommentList";
 import classes from "./CommentSection.module.scss";
-import LoadingSpinner from "./UI/LoadingSpinner";
 
 const CommentsSection = (props) => {
   const [bodyInput, setBodyInput] = useState("");

@@ -66,7 +66,7 @@ router.get(
       );
 
       res.cookie("upid", token);
-      res.redirect("http://localhost:3000/");
+      res.redirect(301, process.env.HOST);
     } catch (error) {
       if (!error.statusCode) {
         error.statusCode = 500;

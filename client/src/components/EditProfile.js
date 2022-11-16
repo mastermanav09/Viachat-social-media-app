@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import classes from "./EditProfile.module.scss";
 import { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,7 +8,6 @@ import { uiActions } from "../store/reducers/ui";
 const EditProfile = (props) => {
   const userState = useSelector((state) => state.user);
   const dispatch = useDispatch();
-  const uiState = useSelector((state) => state.ui);
   const [isLoading, setIsLoading] = useState(false);
   const ageInputRef = useRef(userState.credentials.age || null);
   const bioInputRef = useRef(userState.credentials.bio || null);
@@ -39,12 +38,6 @@ const EditProfile = (props) => {
       })
     );
   };
-
-  // let errors = null;
-  // if (uiState.errors) {
-  //   console.log(uiState.errors);
-  //   // errors = uiState.errors.message || uiState.errors.errorData[0].msg;
-  // }
 
   return (
     <div>

@@ -16,10 +16,6 @@ const Chats = (props) => {
       ].join(" ")}
     >
       <div className={classes["chats-wrapper"]}>
-        {/* <div className={classes["close"]}>
-        <Cross type={CHATS_BAR_MOBILE} />
-      </div> */}
-
         <ConversationsList socket={socket} />
       </div>
     </div>
