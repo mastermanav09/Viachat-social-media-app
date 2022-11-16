@@ -112,6 +112,13 @@ app.use((error, req, res, next) => {
   });
 });
 
+if (process.env.NODE_ENV === "production") {
+  app.get("/", (req, res) => {
+    app.use(express.static(path.join(__dirname, "client", "build")));
+    res.sendFile(path.join(__dirname, "client", "build", "index.html"));
+  });
+}
+
 mongoose
   .connect(process.env.MONGO_URL, {
     useNewUrlParser: true,

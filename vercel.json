@@ -2,5 +2,5 @@
   "version": 2,
   "name": "viachat-social-media-app",
   "builds": [{ "src": "./index.js", "use": "@vercel/node" }],
-  "routes": [{ "src": "/(.*)", "dest": "/" }]
+  "routes": [{ "src": "/.*", "dest": "index.js" }]
 }
