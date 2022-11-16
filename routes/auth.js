@@ -66,7 +66,7 @@ router.get(
       );
 
       res.cookie("upid", token);
-      res.redirect(process.env.HOST);
+      res.redirect("/");
     } catch (error) {
       if (!error.statusCode) {
         error.statusCode = 500;

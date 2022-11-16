@@ -74,9 +74,11 @@ module.exports = function (socket) {
 
           const newNotification = await notification.save();
 
-          io.to(receiver.socketId).emit("getNewNotification", {
-            notification: newNotification,
-          });
+          if (receiver) {
+            io.to(receiver.socketId).emit("getNewNotification", {
+              notification: newNotification,
+            });
+          }
         }
       }
     } catch (error) {
@@ -124,9 +126,11 @@ module.exports = function (socket) {
           recipient: receiverId,
         }).sort({ createdAt: -1 });
 
-        io.to(receiver.socketId).emit("getNotifications", {
-          notifications: userNotifications,
-        });
+        if (receiver) {
+          io.to(receiver.socketId).emit("getNotifications", {
+            notifications: userNotifications,
+          });
+        }
       }
     } catch (error) {
       console.log(error);
@@ -208,10 +212,12 @@ module.exports = function (socket) {
 
           await notification.save();
 
-          io.to(receiver.socketId).emit("getNewNotification", {
-            message: "Commented on your scream.",
-            notification: notification,
-          });
+          if (receiver) {
+            io.to(receiver.socketId).emit("getNewNotification", {
+              message: "Commented on your scream.",
+              notification: notification,
+            });
+          }
         }
       } catch (error) {
         console.log(error);
@@ -266,9 +272,11 @@ module.exports = function (socket) {
             recipient: receiverId,
           }).sort({ createdAt: -1 });
 
-          io.to(receiver.socketId).emit("getNotifications", {
-            notifications: userNotifications,
-          });
+          if (receiver) {
+            io.to(receiver.socketId).emit("getNotifications", {
+              notifications: userNotifications,
+            });
+          }
         }
       } catch (error) {
         console.log(error);
@@ -296,9 +304,11 @@ module.exports = function (socket) {
         recipient: socket.decodedToken.userId,
       }).sort({ createdAt: -1 });
 
-      io.to(receiver.socketId).emit("getNotifications", {
-        notifications: notifications,
-      });
+      if (receiver) {
+        io.to(receiver.socketId).emit("getNotifications", {
+          notifications: notifications,
+        });
+      }
     } catch (error) {
       console.log(error);
     }
