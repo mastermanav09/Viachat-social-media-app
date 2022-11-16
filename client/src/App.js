@@ -80,19 +80,19 @@ function App() {
           console.log("Successfully connected!");
         });
 
-        socket.on("connect_error", (error) => {
-          console.log("Error socket");
-          dispatch(userActions.logout());
-          localStorage.clear("target");
+        // socket.on("connect_error", (error) => {
+        //   console.log("Error socket");
+        //   dispatch(userActions.logout());
+        //   localStorage.clear("target");
 
-          if (!errors) {
-            dispatch(
-              uiActions.errors({
-                message: "Couldn't connect to the server!",
-              })
-            );
-          }
-        });
+        //   if (!errors) {
+        //     dispatch(
+        //       uiActions.errors({
+        //         message: "Couldn't connect to the server!",
+        //       })
+        //     );
+        //   }
+        // });
 
         setSocket(socket);
       }
