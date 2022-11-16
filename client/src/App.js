@@ -71,7 +71,7 @@ function App() {
 
   useEffect(() => {
     if (token) {
-      const socket = io.connect(process.env.HOST, {
+      const socket = io.connect("/", {
         auth: { token: `Bearer ${token}` },
       });
 
