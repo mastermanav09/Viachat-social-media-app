@@ -75,17 +75,19 @@
   white-space: nowrap;
 }
 
+.isInActive {
+  .chat-item {
+    &:hover {
+      border-radius: 10px;
+      background-color: rgba(206, 224, 255, 0.7);
+    }
+  }
+}
+
 .isActive {
   .chat-item {
     border-radius: 10px;
     background-color: #518ef17f !important;
-  }
-}
-
-.isInActive {
-  &:hover {
-    border-radius: 10px;
-    background-color: rgba(206, 224, 255, 0.7);
   }
 }
 

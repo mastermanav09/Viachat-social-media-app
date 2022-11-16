@@ -16,9 +16,6 @@
   },
   "author": "mastermanav",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/mastermanav09/viachat/issues"
-  },
   "dependencies": {
     "@thream/socketio-jwt": "^2.2.1",
     "bcryptjs": "^2.4.3",
@@ -35,7 +32,7 @@
     "passport-google-oauth20": "^2.0.0",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
-    "socket.io": "^4.4.1",
+    "socket.io": "^4.5.3",
     "toastify": "^2.0.1",
     "uuid": "^8.3.2"
   },

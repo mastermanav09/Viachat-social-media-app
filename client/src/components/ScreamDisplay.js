@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getScream } from "../store/reducers/data";
 import { useParams } from "react-router-dom";
 import ShowScream from "./ShowScream";
 import { uiActions } from "../store/reducers/ui";

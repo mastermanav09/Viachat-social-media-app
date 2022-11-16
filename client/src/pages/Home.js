@@ -3,13 +3,11 @@ import classes from "./Home.module.scss";
 import ScreamsList from "../components/ScreamsList";
 import Hero from "../components/Hero";
 import { NavLink, Outlet } from "react-router-dom";
-import { useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { uiActions } from "../store/reducers/ui";
 import Add from "../components/svg/Add";
 
 const Home = (props) => {
-  const location = useLocation();
   const dispatch = useDispatch();
 
   useEffect(() => {

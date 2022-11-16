@@ -51,14 +51,13 @@ const ConversationsList = (props) => {
           const isOnline = onlineUsers.has(receiverUser.userId);
 
           return (
-            <div key={conversation._id} className={classes["chat-link-item"]}>
-              <Conversation
-                isOnline={isOnline}
-                conversation={conversation}
-                user={receiverUser}
-                socket={socket}
-              />
-            </div>
+            <Conversation
+              key={conversation._id}
+              isOnline={isOnline}
+              conversation={conversation}
+              user={receiverUser}
+              socket={socket}
+            />
           );
         });
     }

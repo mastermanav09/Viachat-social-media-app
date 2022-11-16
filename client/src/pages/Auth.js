@@ -20,7 +20,7 @@ const Auth = () => {
   const [validationData, setValidationData] = useState(null);
 
   const googleAuthHandler = () => {
-    window.open("http://localhost:8080/api/auth/google", "_self");
+    window.open("/api/auth/google", "_self");
   };
 
   const switchAuthHandler = () => {
@@ -78,7 +78,7 @@ const Auth = () => {
       authUrl = "/api/auth/signup";
     }
 
-    await dispatch(auth({ authData, authUrl, navigate }));
+    dispatch(auth({ authData, authUrl, navigate }));
   };
 
   useEffect(() => {

@@ -8,7 +8,6 @@ import LoadingSpinner from "./UI/LoadingSpinner";
 import { getUser } from "../store/reducers/data";
 import Modal from "./UI/Modal";
 import EditProfile from "./EditProfile";
-import { userActions } from "../store/reducers/user";
 import UpdateProfilePicture from "./UpdateProfilePicture";
 import Scream from "./Scream";
 import { useState } from "react";

@@ -16,10 +16,6 @@ const Conversation = (props) => {
   const { socket } = props;
   const params = useParams();
 
-  const manageChats = () => {
-    dispatch(uiActions.closeModal());
-  };
-
   useEffect(() => {
     socket.on("getRecentMessage", (data) => {
       if (data?.conversationId === conversation._id) {
@@ -40,13 +36,9 @@ const Conversation = (props) => {
     }
   }, [params.conversationId, dispatch]);
 
-  // console.log(conversation);
   return (
     <NavLink
       to={`/my-profile/chats/${conversation._id}`}
-      // onClick={() => {
-      //   manageChats();
-      // }}
       className={(navData) => {
         return navData.isActive
           ? `${classes.isActive} ${classes.chat}`
