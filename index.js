@@ -18,7 +18,6 @@ const fs = require("fs");
 const jwt = require("jsonwebtoken");
 const jwtSecret = require("./config/jwt.config");
 const { authorize } = require("@thream/socketio-jwt");
-const morgan = require("morgan");
 const notificationDeletionJob = require("./utils/schedulers/notificationDelete");
 
 const {
@@ -45,15 +44,6 @@ app.use((req, res, next) => {
   }
   next();
 });
-
-const accessLogStream = fs.createWriteStream(
-  path.join(__dirname, "access.log"),
-  {
-    flags: "a",
-  }
-);
-
-app.use(morgan("combined", { stream: accessLogStream }));
 
 app.use(express.json());
 app.use(passport.initialize());
