@@ -15,7 +15,6 @@ import { useNavigate } from "react-router-dom";
 import {
   PROFILE_SCREAM,
   RAND_USER_SCREAM,
-  SCREAM,
   SHOW_SCREAM,
 } from "../utils/constants";
 

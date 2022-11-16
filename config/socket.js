@@ -3,12 +3,12 @@ let io;
 module.exports = {
   init: (httpServer) => {
     io = require("socket.io")(httpServer, {
-      pingTimeout: 60000,
       cors: {
         origin: process.env.HOST,
         methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
       },
     });
+
     return io;
   },
 

@@ -3,7 +3,6 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { uiActions } from "./ui";
 import { dataActions } from "./data";
-import toast from "toastify";
 
 export const auth = createAsyncThunk(
   "user/auth",

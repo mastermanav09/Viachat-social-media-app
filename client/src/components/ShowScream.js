@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Modal from "./UI/Modal";
 import classes from "./ShowScream.module.scss";
-
 import LoadingSpinner from "./UI/LoadingSpinner";
 import ScreamInfo from "./ScreamInfo";
 import { getScream } from "../store/reducers/data";

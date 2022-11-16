@@ -46,14 +46,16 @@ app.use((req, res, next) => {
   next();
 });
 
-const accessLogStream = fs.createWriteStream(
-  path.join(__dirname, "access.log"),
-  {
-    flags: "a",
-  }
-);
+if (process.env.NODE_ENV !== "production") {
+  const accessLogStream = fs.createWriteStream(
+    path.join(__dirname, "access.log"),
+    {
+      flags: "a",
+    }
+  );
 
-app.use(morgan("dev", { stream: accessLogStream }));
+  app.use(morgan("dev", { stream: accessLogStream }));
+}
 
 app.use(express.json());
 app.use(passport.initialize());
@@ -112,12 +114,20 @@ app.use((error, req, res, next) => {
   });
 });
 
+// ------------------ DEPLOYMENT -----------------------
+
+const __dirname1 = path.resolve();
+
 if (process.env.NODE_ENV === "production") {
-  app.get("/", (req, res) => {
-    app.use(express.static(path.join(__dirname, "client", "build")));
-    res.sendFile(path.join(__dirname, "client", "build", "index.html"));
+  app.use(express.static(path.join(__dirname1, "/client/build")));
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname1, "client", "build", "index.html"));
   });
+} else {
+  res.send("API is Running Successfully!");
 }
+
+// ------------------ DEPLOYMENT -----------------------
 
 mongoose
   .connect(process.env.MONGO_URL, {

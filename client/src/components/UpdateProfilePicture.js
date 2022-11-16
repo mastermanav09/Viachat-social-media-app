@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { uiActions } from "../store/reducers/ui";
 import { updateProfilePhoto } from "../store/reducers/user";
@@ -6,7 +6,6 @@ import classes from "./UpdateProfilePicture.module.scss";
 
 const UpdateProfilePicture = (props) => {
   const userState = useSelector((state) => state.user);
-  const uiState = useSelector((state) => state.ui);
   const [isLoading, setIsLoading] = useState(false);
   const [image, setImage] = useState(userState.credentials.imageUrl);
   const [isNewImageSelected, setIsNewImageSelected] = useState(false);

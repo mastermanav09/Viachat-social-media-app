@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
-import Cookies from "universal-cookie";
 import { useRef } from "react";
 import classes from "./Auth.module.scss";
 import Google from "../components/svg/Google";
@@ -19,7 +17,6 @@ const Auth = () => {
   const dispatch = useDispatch();
   const uiState = useSelector((state) => state.ui);
   const navigate = useNavigate();
-  const userState = useSelector((state) => state.user);
   const [validationData, setValidationData] = useState(null);
 
   const googleAuthHandler = () => {
@@ -81,7 +78,7 @@ const Auth = () => {
       authUrl = "/api/auth/signup";
     }
 
-    await dispatch(auth({ authData, authUrl, navigate }));
+    dispatch(auth({ authData, authUrl, navigate }));
   };
 
   useEffect(() => {
