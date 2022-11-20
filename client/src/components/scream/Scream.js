@@ -1,23 +1,23 @@
 import React, { useState, useEffect } from "react";
-import Card from "./UI/Card";
+import Card from "../UI/Card";
 import classes from "./Scream.module.scss";
-import Comment from "./svg/Comment";
+import Comment from "../svg/Comment";
 import { Link } from "react-router-dom";
-import Like from "./svg/Like";
+import Like from "../svg/Like";
 import { format } from "timeago.js";
 import { useDispatch, useSelector } from "react-redux";
-import { likeScream, unlikeScream } from "../store/reducers/user";
-import Delete from "./svg/Delete";
-import { deleteScream, getScream } from "../store/reducers/data";
-import Expand from "./svg/Expand";
-import { uiActions } from "../store/reducers/ui";
+import { likeScream, unlikeScream } from "../../store/reducers/user";
+import Delete from "../svg/Delete";
+import { deleteScream, getScream } from "../../store/reducers/data";
+import Expand from "../svg/Expand";
+import { uiActions } from "../../store/reducers/ui";
 import { useNavigate } from "react-router-dom";
 import {
   PROFILE_SCREAM,
   RAND_USER_SCREAM,
   SHOW_SCREAM,
-} from "../utils/constants";
-import linkValidation from "../utils/linkValidation";
+} from "../../utils/constants";
+import linkValidation from "../../utils/linkValidation";
 
 const Scream = (props) => {
   const { scream } = props;
@@ -92,15 +92,6 @@ const Scream = (props) => {
     setIsInitial(false);
     setIsLikedStatus(false);
   };
-  const setShowScreamIdentifierHandler = () => {
-    if (props.type === PROFILE_SCREAM) {
-      dispatch(uiActions.setShowScreamIdentifier(props.type));
-    } else if (props.type === RAND_USER_SCREAM) {
-      dispatch(uiActions.setShowScreamIdentifier(props.type));
-    } else {
-      dispatch(uiActions.setShowScreamIdentifier(SHOW_SCREAM));
-    }
-  };
 
   let updatedScreamBody;
   if (scream?.body?.length > 90) {
@@ -165,8 +156,6 @@ const Scream = (props) => {
                         }/scream/${scream._id}`
                   }
                   onClick={() => {
-                    setShowScreamIdentifierHandler();
-                    dispatch(uiActions.showScreamModal());
                     dispatch(
                       getScream({
                         id: scream._id,
@@ -192,10 +181,6 @@ const Scream = (props) => {
                       }/scream/${scream._id}`
                 }
                 style={{ cursor: "pointer" }}
-                onClick={() => {
-                  setShowScreamIdentifierHandler();
-                  dispatch(uiActions.showScreamModal());
-                }}
               >
                 <Expand />
               </Link>
@@ -213,10 +198,6 @@ const Scream = (props) => {
                     }/scream/${scream._id}`
               }
               style={{ cursor: "pointer" }}
-              onClick={() => {
-                setShowScreamIdentifierHandler();
-                dispatch(uiActions.showScreamModal());
-              }}
             >
               <Expand />
             </Link>

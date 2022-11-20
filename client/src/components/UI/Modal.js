@@ -3,23 +3,19 @@ import ReactDOM from "react-dom";
 import classes from "./Modal.module.scss";
 import Cross from "../svg/Cross";
 import { uiActions } from "../../store/reducers/ui";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
   ADD_SCREAM,
   EDIT_PROFILE,
-  PROFILE_SCREAM,
-  RAND_USER_SCREAM,
   UPDATE_PROFILE_PIC,
   SHOW_SCREAM,
-  SIDEBAR,
-  CHATS_BAR_MOBILE,
+  RAND_USER_SCREAM,
 } from "../../utils/constants";
 
 const Backdrop = (props) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const uiState = useSelector((state) => state.ui);
 
   return (
     <div
@@ -27,7 +23,12 @@ const Backdrop = (props) => {
       onClick={() => {
         dispatch(uiActions.closeModal());
 
-        if (props.type === SHOW_SCREAM) {
+        if (props.type === UPDATE_PROFILE_PIC || props.type === EDIT_PROFILE) {
+          navigate("/my-profile");
+          return;
+        }
+
+        if (props.type === SHOW_SCREAM || props.type === RAND_USER_SCREAM) {
           let target = localStorage.getItem("target");
           if (target) {
             navigate(target);
@@ -37,32 +38,9 @@ const Backdrop = (props) => {
           return;
         }
 
-        if (props.type === CHATS_BAR_MOBILE) {
-          dispatch(uiActions.showChats(false));
-          return;
-        }
-
         if (props.type === ADD_SCREAM) {
           navigate("/");
           return;
-        }
-
-        if (uiState.showScreamIdentifier === PROFILE_SCREAM) {
-          navigate("/my-profile");
-          return;
-        }
-
-        if (uiState.showScreamIdentifier === RAND_USER_SCREAM) {
-          navigate(-1);
-          return;
-        }
-
-        if (
-          props.type !== EDIT_PROFILE &&
-          props.type !== UPDATE_PROFILE_PIC &&
-          props.type !== SIDEBAR
-        ) {
-          navigate("/");
         }
       }}
     ></div>

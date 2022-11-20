@@ -126,8 +126,6 @@ exports.login = async (req, res, next) => {
       }
     );
 
-    console.log(token);
-
     res.status(200).json({
       message: "Logged in successfully!",
       token: token,

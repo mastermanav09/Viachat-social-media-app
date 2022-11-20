@@ -51,7 +51,7 @@ $important-color: #f42866;
   padding: 0 1rem;
 
   @media screen and (max-width: 768px) {
-    margin: 1rem 0;
+    margin: 0.8rem 0;
   }
 }
 
@@ -72,7 +72,7 @@ $important-color: #f42866;
 
 .form-label,
 .form-input {
-  font-size: clamp(13px, 2vw, 18px);
+  font-size: clamp(15px, 2vw, 18px);
   display: block;
   width: 100%;
 }
@@ -95,11 +95,13 @@ $important-color: #f42866;
 
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
+  appearance: none;
   -webkit-appearance: none;
   margin: 0;
 }
 
 input[type="number"] {
+  appearance: textfield;
   -moz-appearance: textfield;
 }
 
@@ -128,10 +130,6 @@ input[type="number"] {
 
   @media screen and (max-width: 768px) {
     font-size: 14px;
-  }
-
-  @media screen and (max-width: 480px) {
-    font-size: 12px;
   }
 }
 

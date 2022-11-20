@@ -1,15 +1,15 @@
 import React, { useEffect } from "react";
 import classes from "./Hero.module.scss";
-import SkeletonProfile from "./UI/skeletons/SkeletonProfile";
-import Card from "./UI/Card";
+import SkeletonProfile from "../UI/skeletons/SkeletonProfile";
+import Card from "../UI/Card";
 import { Link } from "react-router-dom";
-import Location from "./svg/Location";
-import Calender from "./svg/Calender";
-import WebsiteLink from "./svg/WebsiteLink";
+import Location from "../svg/Location";
+import Calender from "../svg/Calender";
+import WebsiteLink from "../svg/WebsiteLink";
 import { useDispatch, useSelector } from "react-redux";
-import { getUser } from "../store/reducers/user";
-import { PROFILE } from "../utils/constants";
-import linkValidation from "../utils/linkValidation";
+import { getUser } from "../../store/reducers/user";
+import { PROFILE } from "../../utils/constants";
+import linkValidation from "../../utils/linkValidation";
 
 const Hero = () => {
   const userCredentials = useSelector((state) => state.user.credentials);

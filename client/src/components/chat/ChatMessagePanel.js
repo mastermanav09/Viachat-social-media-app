@@ -4,13 +4,13 @@ import {
   addNewMessage,
   getMessages,
   userActions,
-} from "../store/reducers/user";
-import { RECEIVER, SENDER } from "../utils/constants";
+} from "../../store/reducers/user";
+import { RECEIVER, SENDER } from "../../utils/constants";
 import classes from "./ChatMessagePanel.module.scss";
-import MessageItem from "./MessageItem";
+import MessageItem from "./message/MessageItem";
 import { useNavigate, useParams } from "react-router-dom";
-import LoadingSpinner from "./UI/LoadingSpinner";
-import MessageBox from "./MessageBox";
+import LoadingSpinner from "../UI/LoadingSpinner";
+import MessageBox from "./message/MessageBox";
 
 const ChatMessagePanel = (props) => {
   const dispatch = useDispatch();

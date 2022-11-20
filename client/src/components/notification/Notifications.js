@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
 import classes from "./Notifications.module.scss";
 import NotificationItem from "./NotificationItem";
-import LoadingSpinner from "./UI/LoadingSpinner";
+import LoadingSpinner from "../UI/LoadingSpinner";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import Cross from "./svg/Cross";
-import { NOTIFICATION_BAR_MOBILE } from "../utils/constants";
+import Cross from "../svg/Cross";
+import { NOTIFICATION_BAR_MOBILE } from "../../utils/constants";
 
 const Notifications = (props) => {
   const uiState = useSelector((state) => state.ui);

@@ -15,13 +15,13 @@ import jwtDecode from "jwt-decode";
 import { useSelector, useDispatch } from "react-redux";
 import { getUser, userActions } from "./store/reducers/user";
 import Profile from "./pages/Profile";
-import PostScream from "./components/PostScream";
-import ScreamDisplay from "./components/ScreamDisplay";
+import PostScream from "../src/components/scream/PostScream";
+import ScreamDisplay from "../src/components/scream/ScreamDisplay";
 import Error from "./pages/Error";
 import { dataActions, getScreams } from "./store/reducers/data";
 import { uiActions } from "./store/reducers/ui";
-import ChatPanel from "./components/ChatPanel";
-import ChatMessagePanel from "./components/ChatMessagePanel";
+import ChatPanel from "../src/components/chat/ChatPanel";
+import ChatMessagePanel from "../src/components/chat/ChatMessagePanel";
 import { getConversations } from "./store/reducers/user";
 
 function App() {
@@ -70,7 +70,7 @@ function App() {
       localStorage.clear("target");
       navigate("/login", { replace: true });
     }
-  }, [dispatch, navigate, token, userTokenExpiry]);
+  }, []);
 
   useEffect(() => {
     async function initializeSocket() {
@@ -79,22 +79,18 @@ function App() {
           auth: { token: `Bearer ${token}` },
         });
 
-        socket.on("connect", () => {
-          console.log("Successfully connected!");
-        });
-
         socket.on("connect_error", (error) => {
           console.log("Error socket");
-          // dispatch(userActions.logout());
-          // localStorage.clear("target");
+          dispatch(userActions.logout());
+          localStorage.clear("target");
 
-          // if (!errors) {
-          //   dispatch(
-          //     uiActions.errors({
-          //       message: "Couldn't connect to the server!",
-          //     })
-          //   );
-          // }
+          if (!errors) {
+            dispatch(
+              uiActions.errors({
+                message: "Couldn't connect to the server!",
+              })
+            );
+          }
         });
 
         setSocket(socket);

@@ -2,24 +2,24 @@ import React from "react";
 import { useEffect } from "react";
 import classes from "./ProfileMain.module.scss";
 import { useNavigate, useParams } from "react-router-dom";
-import { uiActions } from "../store/reducers/ui";
+import { uiActions } from "../../store/reducers/ui";
 import { useDispatch, useSelector } from "react-redux";
-import LoadingSpinner from "./UI/LoadingSpinner";
-import { getUser } from "../store/reducers/data";
-import Modal from "./UI/Modal";
+import LoadingSpinner from "../UI/LoadingSpinner";
+import { getUser } from "../../store/reducers/data";
+import Modal from "../UI/Modal";
 import EditProfile from "./EditProfile";
 import UpdateProfilePicture from "./UpdateProfilePicture";
-import Scream from "./Scream";
+import Scream from "../scream/Scream";
 import { useState } from "react";
 import {
   EDIT_PROFILE,
   PROFILE_SCREAM,
   RAND_USER_SCREAM,
   UPDATE_PROFILE_PIC,
-} from "../utils/constants";
-import Chat from "./svg/Chat";
-import { addNewConversation } from "../store/reducers/user";
-import linkValidation from "../utils/linkValidation";
+} from "../../utils/constants";
+import Chat from "../svg/Chat";
+import { addNewConversation } from "../../store/reducers/user";
+import linkValidation from "../../utils/linkValidation";
 
 const ProfileMain = (props) => {
   const dispatch = useDispatch();
@@ -44,12 +44,7 @@ const ProfileMain = (props) => {
     } else {
       setUserData(currentUserDataState.currentUser);
     }
-  }, [
-    currentUserDataState,
-    currentUserDataState.currentUser,
-    props.myProfile,
-    userState,
-  ]);
+  }, [currentUserDataState.currentUser, props.myProfile, userState, dispatch]);
 
   useEffect(() => {
     if (!props.myProfile) {
@@ -59,12 +54,11 @@ const ProfileMain = (props) => {
       }
 
       dispatch(getUser({ userId }));
-
       localStorage.setItem("target", "/users/" + userId);
     } else {
       localStorage.setItem("target", "/my-profile");
     }
-  }, [dispatch, props.myProfile, navigate, userId]);
+  }, [dispatch, props.myProfile, userId]);
 
   const showEditOptionsHandler = () => {
     if (userData.userId !== userState.userId) {
@@ -177,7 +171,10 @@ const ProfileMain = (props) => {
 
             <div className={classes["profile-main"]}>
               <div className={classes["my-screams-block"]}>
-                My Screams
+                {props.myProfile
+                  ? "My"
+                  : userData.credentials.name.split(" ").shift() + "'s"}{" "}
+                Screams
                 <div className={classes["divider"]} />
                 <div className={classes["screams"]}>
                   {userData.screams.length === 0 ? (

@@ -1,5 +1,5 @@
 import React from "react";
-import classes from "../Scream.module.scss";
+import classes from "./Comment.module.scss";
 
 const Comment = () => {
   return (

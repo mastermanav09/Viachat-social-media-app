@@ -1,7 +1,7 @@
 import React from "react";
-import classes from "./Chats.module.scss";
+import classes from "./ConversationList.module.scss";
 import { useSelector } from "react-redux";
-import LoadingSpinner from "./UI/LoadingSpinner";
+import LoadingSpinner from "../../UI/LoadingSpinner";
 import Conversation from "./Conversation";
 
 const ConversationsList = (props) => {

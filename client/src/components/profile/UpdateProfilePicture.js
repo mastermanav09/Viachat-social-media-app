@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { uiActions } from "../store/reducers/ui";
-import { updateProfilePhoto } from "../store/reducers/user";
-import linkValidation from "../utils/linkValidation";
+import { uiActions } from "../../store/reducers/ui";
+import { updateProfilePhoto } from "../../store/reducers/user";
+import linkValidation from "../../utils/linkValidation";
 import classes from "./UpdateProfilePicture.module.scss";
 
 const UpdateProfilePicture = (props) => {

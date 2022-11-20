@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
-import Modal from "./UI/Modal";
+import Modal from "../UI/Modal";
 import classes from "./ShowScream.module.scss";
-import LoadingSpinner from "./UI/LoadingSpinner";
+import LoadingSpinner from "../UI/LoadingSpinner";
 import ScreamInfo from "./ScreamInfo";
-import { getScream } from "../store/reducers/data";
+import { getScream } from "../../store/reducers/data";
 import { useDispatch, useSelector } from "react-redux";
-import { SHOW_SCREAM } from "../utils/constants";
+import { SHOW_SCREAM } from "../../utils/constants";
 
 const ShowScream = (props) => {
   const screamData = useSelector((state) => state.data.currentScreamData);

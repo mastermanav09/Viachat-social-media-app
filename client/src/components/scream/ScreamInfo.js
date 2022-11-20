@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useMemo } from "react";
-import Like from "./svg/Like";
+import Like from "../svg/Like";
 import { Link, useNavigate } from "react-router-dom";
-import Comment from "./svg/Comment";
+import Comment from "../svg/Comment";
 import { useDispatch, useSelector } from "react-redux";
 import { format } from "timeago.js";
 import classes from "./ScreamInfo.module.scss";
-import { likeScream, unlikeScream } from "../store/reducers/user";
-import CommentsSection from "./CommentsSection";
-import linkValidation from "../utils/linkValidation";
+import { likeScream, unlikeScream } from "../../store/reducers/user";
+import CommentsSection from "../comment/CommentsSection";
+import linkValidation from "../../utils/linkValidation";
 
 const ScreamInfo = (props) => {
   const dispatch = useDispatch();

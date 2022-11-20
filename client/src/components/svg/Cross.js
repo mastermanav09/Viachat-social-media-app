@@ -19,14 +19,14 @@ import {
 const Cross = (props) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const uiState = useSelector((state) => state.ui);
+
   return (
     <span
       className={classes["cross"]}
       onClick={() => {
         dispatch(uiActions.closeModal());
 
-        if (props.type === SHOW_SCREAM) {
+        if (props.type === SHOW_SCREAM || props.type === RAND_USER_SCREAM) {
           let target = localStorage.getItem("target");
           if (target) {
             navigate(target);
@@ -36,42 +36,23 @@ const Cross = (props) => {
           return;
         }
 
-        if (props.type === NOTIFICATION_BAR_MOBILE) {
-          dispatch(uiActions.showNotifications(false));
-          return;
-        }
-
-        if (props.type === CHATS_BAR_MOBILE) {
-          dispatch(uiActions.showChats(false));
-          return;
-        }
-
-        if (props.type === SIDEBAR_MOBILE) {
-          dispatch(uiActions.setSideBar());
-          return;
-        }
-
         if (props.type === ADD_SCREAM) {
           navigate("/");
           return;
         }
 
-        if (uiState.showScreamIdentifier === RAND_USER_SCREAM) {
-          navigate(-1);
-          return;
-        }
-
-        if (uiState.showScreamIdentifier === PROFILE_SCREAM) {
+        if (props.type === UPDATE_PROFILE_PIC || props.type === EDIT_PROFILE) {
           navigate("/my-profile");
           return;
         }
 
-        if (
-          props.type !== EDIT_PROFILE &&
-          props.type !== UPDATE_PROFILE_PIC &&
-          props.type !== SIDEBAR
-        ) {
-          navigate("/");
+        if (props.type === NOTIFICATION_BAR_MOBILE) {
+          dispatch(uiActions.showNotifications(false));
+          return;
+        }
+
+        if (props.type === SIDEBAR_MOBILE) {
+          dispatch(uiActions.setSideBar(false));
         }
       }}
     >

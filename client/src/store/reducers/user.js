@@ -22,7 +22,6 @@ export const auth = createAsyncThunk(
         cookies.remove("upid");
       }
 
-      console.log(res.data.token);
       cookies.set("upid", res.data.token);
       dispatch(userSlice.actions.authenticated());
       dispatch(getUser());

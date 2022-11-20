@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import classes from "./EditProfile.module.scss";
 import { useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addUserDetails } from "../store/reducers/user";
-import { uiActions } from "../store/reducers/ui";
+import { addUserDetails } from "../../store/reducers/user";
+import { uiActions } from "../../store/reducers/ui";
 
 const EditProfile = (props) => {
   const userState = useSelector((state) => state.user);

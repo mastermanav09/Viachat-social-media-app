@@ -1,5 +1,5 @@
 import React from "react";
-import classes from "../Scream.module.scss";
+import classes from "./Like.module.scss";
 
 const Like = (props) => {
   return (
@@ -9,7 +9,6 @@ const Like = (props) => {
       data-prefix="fal"
       data-icon="heart"
       role="img"
-      xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 512 512"
       className={`${classes.like}`}
       onClick={props.onClick}

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import classes from "./PostScream.module.scss";
-import Modal from "./UI/Modal";
+import Modal from "../UI/Modal";
 import { useDispatch, useSelector } from "react-redux";
-import { postScream } from "../store/reducers/data";
+import { postScream } from "../../store/reducers/data";
 import { useNavigate } from "react-router-dom";
-import { ADD_SCREAM } from "../utils/constants";
+import { ADD_SCREAM } from "../../utils/constants";
 
 const PostScream = () => {
   const [bodyInput, setBodyInput] = useState("");

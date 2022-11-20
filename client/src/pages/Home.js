@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import classes from "./Home.module.scss";
-import ScreamsList from "../components/ScreamsList";
-import Hero from "../components/Hero";
+import ScreamsList from "../components/scream/ScreamsList";
+import Hero from "../components/profile/Hero";
 import { NavLink, Outlet } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { uiActions } from "../store/reducers/ui";

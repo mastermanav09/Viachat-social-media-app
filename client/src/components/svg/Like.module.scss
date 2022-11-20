@@ -1,0 +1,10 @@
+.like {
+  width: 1rem;
+  margin: 0 0.45rem;
+  cursor: pointer;
+
+  @media screen and (max-width: 700px) {
+    width: 0.9rem;
+    cursor: pointer;
+  }
+}

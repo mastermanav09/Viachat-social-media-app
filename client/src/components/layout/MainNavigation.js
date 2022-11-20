@@ -7,13 +7,13 @@ import { userActions } from "../../store/reducers/user";
 import { uiActions } from "../../store/reducers/ui";
 import { DownsideArrow } from "../svg/DownsideArrow";
 import NotificationsBell from "../svg/NotificationsBell";
-import Notifications from "../Notifications";
+import Notifications from "../notification/Notifications";
 import Home from "../svg/Home";
 import Add from "../svg/Add";
 import { markNotificationsRead } from "../../store/reducers/user";
 import HamburgerIcon from "../UI/Hamburger";
 import Message from "../svg/Message";
-import Chats from "../Chats";
+import Chats from "../chat/Chats";
 import linkValidation from "../../utils/linkValidation";
 
 const MainNavigation = (props) => {

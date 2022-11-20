@@ -1,0 +1,9 @@
+.expand {
+  width: 17px;
+  height: 17px;
+
+  @media screen and (max-width: 1024px) {
+    width: 16px;
+    height: 16px;
+  }
+}

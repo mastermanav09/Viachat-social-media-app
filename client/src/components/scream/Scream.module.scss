@@ -87,22 +87,6 @@ $blue: #2666cf;
   }
 }
 
-.actions_one span .like {
-  width: 1rem;
-  margin: 0 0.45rem;
-  cursor: pointer;
-}
-
-.actions_one span .comment {
-  margin: 0 0.6rem;
-  cursor: pointer;
-
-  @media screen and (max-width: 800px) {
-    // width: 1.1rem;
-    height: max-content;
-  }
-}
-
 .actions-two {
   display: flex;
   flex-direction: column;
@@ -130,16 +114,6 @@ $blue: #2666cf;
 
   @media screen and (max-width: 700px) {
     display: none;
-  }
-}
-
-.expand {
-  width: 17px;
-  height: 17px;
-
-  @media screen and (max-width: 1024px) {
-    width: 16px;
-    height: 16px;
   }
 }
 
@@ -208,16 +182,6 @@ $blue: #2666cf;
 
   .actions_one span {
     margin: auto;
-    cursor: pointer;
-  }
-
-  .actions_one span .like {
-    width: 0.9rem;
-    cursor: pointer;
-  }
-
-  .actions_one span .comment {
-    width: 1.2rem;
     cursor: pointer;
   }
 

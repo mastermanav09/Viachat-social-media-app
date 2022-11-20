@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import classes from "./ScreamsList.module.scss";
-import SkeletonScream from "./UI/skeletons/SkeletonScream";
+import SkeletonScream from "../UI/skeletons/SkeletonScream";
 import Scream from "./Scream";
 import { useSelector, useDispatch } from "react-redux";
-import { getScreams } from "../store/reducers/data";
+import { getScreams } from "../../store/reducers/data";
 import { useNavigate } from "react-router-dom";
-import { HOME_SCREAM } from "../utils/constants";
+import { HOME_SCREAM } from "../../utils/constants";
 
 const ScreamsList = (props) => {
   const dispatch = useDispatch();

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addComment } from "../store/reducers/data";
+import { addComment } from "../../store/reducers/data";
 import CommentList from "./CommentList";
 import classes from "./CommentSection.module.scss";
 

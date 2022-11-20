@@ -1,11 +1,11 @@
 import React from "react";
 import classes from "./CommentItem.module.scss";
 import { format } from "timeago.js";
-import Delete from "./svg/Delete";
+import Delete from "../svg/Delete";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteComment } from "../store/reducers/data";
+import { deleteComment } from "../../store/reducers/data";
 import { Link } from "react-router-dom";
-import linkValidation from "../utils/linkValidation";
+import linkValidation from "../../utils/linkValidation";
 
 const CommentItem = (props) => {
   const { comment } = props;

@@ -11,11 +11,9 @@ const uiSlice = createSlice({
     showChats: false,
     showChatPanel: false,
     showPostScreamModal: false,
-    showScreamModal: false,
     showProfileEditModal: false,
     showUpdateProfilePictureModal: false,
     showSideBar: false,
-    showScreamIdentifier: null,
     showMessagePanelMob: false,
   },
 
@@ -43,7 +41,7 @@ const uiSlice = createSlice({
     },
 
     showNotifications(state, action) {
-      state.showNotifications = !state.showNotifications;
+      state.showNotifications = action.payload || !state.showNotifications;
       state.showNavbarOptions = false;
       state.showChats = false;
     },
@@ -69,21 +67,11 @@ const uiSlice = createSlice({
 
     showPostScreamModal(state, action) {
       state.showPostScreamModal = true;
-      state.showScreamModal = false;
-    },
-
-    showScreamModal(state, action) {
-      state.showScreamModal = true;
-      state.showPostScreamModal = false;
     },
 
     showProfileEditModal(state, action) {
       state.showProfileEditModal = true;
       state.showUpdateProfilePictureModal = false;
-    },
-
-    setShowScreamIdentifier(state, action) {
-      state.showScreamIdentifier = action.payload;
     },
 
     showUpdateProfilePictureModal(state, action) {
@@ -100,11 +88,9 @@ const uiSlice = createSlice({
     },
 
     closeModal(state, action) {
-      state.showScreamModal = false;
       state.showPostScreamModal = false;
       state.showProfileEditModal = false;
       state.showUpdateProfilePictureModal = false;
-      state.showNotifications = false;
       state.showChats = false;
     },
   },

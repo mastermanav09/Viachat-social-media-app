@@ -1,5 +1,5 @@
 import React from "react";
-import classes from "../../components/Scream.module.scss";
+import classes from "./Expand.module.scss";
 
 const Expand = (props) => {
   return (
