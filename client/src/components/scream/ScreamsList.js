@@ -22,15 +22,14 @@ const ScreamsList = (props) => {
   }, []);
 
   useEffect(() => {
-    if (!dataState.screams) {
-      dispatch(getScreams());
-      if (uiState.errors) {
-        if (!uiState.errors.errorData) {
-          setErrors("Something went wrong.");
-        }
+    dispatch(getScreams());
+
+    if (uiState.errors) {
+      if (!uiState.errors.errorData) {
+        setErrors("Something went wrong.");
       }
     }
-  }, [dispatch, uiState.errors]);
+  }, []);
 
   if (!dataState.screams) {
     let content;

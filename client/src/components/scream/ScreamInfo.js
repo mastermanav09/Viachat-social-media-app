@@ -18,17 +18,12 @@ const ScreamInfo = (props) => {
   const navigate = useNavigate();
 
   const userId = useSelector((state) => state.user.userId);
-  const userTokenExpiry = useSelector((state) => state.user.tokenExpiryState);
+
   const [isLikedStatus, setIsLikedStatus] = useState(scream.likeStatus);
   const [disabled, setDisabled] = useState(false);
   const { socket } = props;
 
   useEffect(() => {
-    if (userTokenExpiry * 1000 < Date.now()) {
-      navigate("/login", { replace: true });
-      return;
-    }
-
     if (initial === true) {
       return;
     }
@@ -72,7 +67,6 @@ const ScreamInfo = (props) => {
     scream._id,
     scream.userHandle,
     socket,
-    userTokenExpiry,
     navigate,
   ]);
 

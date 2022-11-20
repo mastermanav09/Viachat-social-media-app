@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useLayoutEffect } from "react";
 import { io } from "socket.io-client";
 import Cookies from "universal-cookie";
 import {
@@ -11,66 +11,31 @@ import {
 import Layout from "./components/layout/Layout";
 import Auth from "./pages/Auth";
 import Home from "./pages/Home";
-import jwtDecode from "jwt-decode";
 import { useSelector, useDispatch } from "react-redux";
-import { getUser, userActions } from "./store/reducers/user";
+import { auth, userActions } from "./store/reducers/user";
 import Profile from "./pages/Profile";
 import PostScream from "../src/components/scream/PostScream";
 import ScreamDisplay from "../src/components/scream/ScreamDisplay";
 import Error from "./pages/Error";
-import { dataActions, getScreams } from "./store/reducers/data";
+import { dataActions } from "./store/reducers/data";
 import { uiActions } from "./store/reducers/ui";
 import ChatPanel from "../src/components/chat/ChatPanel";
 import ChatMessagePanel from "../src/components/chat/ChatMessagePanel";
-import { getConversations } from "./store/reducers/user";
 
 function App() {
   const [socket, setSocket] = useState(null);
   const cookies = new Cookies();
   const token = cookies.get("upid");
   const navigate = useNavigate();
-  const userTokenExpiry = useSelector((state) => state.user.tokenExpiryState);
   const isUserAuthenticated = useSelector((state) => state.user.authenticated);
   const userId = useSelector((state) => state.user.userId);
   const dispatch = useDispatch();
   const location = useLocation();
   const errors = useSelector((state) => state.ui.errors);
 
-  useEffect(() => {
-    if (token) {
-      let decodedToken;
-      try {
-        decodedToken = jwtDecode(token);
-
-        if (!decodedToken) {
-          dispatch(userActions.logout());
-          localStorage.clear("target");
-          navigate("/login", { replace: true });
-        }
-
-        if (decodedToken.exp * 1000 < Date.now()) {
-          const error = new Error();
-          error.message = "Session Expired! Please login again.";
-          throw error;
-        } else {
-          dispatch(userActions.authenticated(decodedToken.userId));
-          dispatch(userActions.setTokenExpiryState(decodedToken.exp));
-          dispatch(getUser());
-          dispatch(getScreams());
-          dispatch(getConversations());
-        }
-      } catch (error) {
-        navigate("/login", { replace: true });
-        dispatch(userActions.logout());
-        localStorage.clear("target");
-        dispatch(uiActions.errors({ message: error.message }));
-      }
-    } else {
-      dispatch(userActions.logout());
-      localStorage.clear("target");
-      navigate("/login", { replace: true });
-    }
-  }, [token, userTokenExpiry]);
+  useLayoutEffect(() => {
+    dispatch(auth({ navigate }));
+  }, [dispatch]);
 
   useEffect(() => {
     async function initializeSocket() {

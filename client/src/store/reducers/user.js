@@ -2,7 +2,8 @@ import Cookies from "universal-cookie";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { uiActions } from "./ui";
-import { dataActions } from "./data";
+import { dataActions, getScreams } from "./data";
+import jwtDecode from "jwt-decode";
 
 export const auth = createAsyncThunk(
   "user/auth",
@@ -11,6 +12,28 @@ export const auth = createAsyncThunk(
 
     dispatch(uiActions.errorsNullify());
     dispatch(uiActions.setLoader());
+
+    let existingToken = cookies.get("upid");
+    if (existingToken) {
+      let decodedToken = jwtDecode(existingToken);
+
+      if (decodedToken) {
+        dispatch(userActions.authenticated(decodedToken.userId));
+        dispatch(userActions.setTokenExpiryState(decodedToken.exp));
+        dispatch(getUser());
+        dispatch(getScreams());
+        dispatch(getConversations());
+      } else {
+        dispatch(uiActions.setLoader());
+        dispatch(userActions.logout());
+        localStorage.clear("target");
+        userData.navigate("/login", { replace: true });
+      }
+
+      dispatch(uiActions.setLoader());
+      return;
+    }
+
     try {
       const res = await axios({
         method: "POST",
@@ -18,15 +41,20 @@ export const auth = createAsyncThunk(
         data: userData.authData,
       });
 
-      if (cookies.get("upid")) {
-        cookies.remove("upid");
+      if (res.data.token) {
+        const token = res.data.token;
+        cookies.set("upid", token);
+
+        let decodedToken = jwtDecode(token);
+
+        dispatch(userActions.authenticated(decodedToken.userId));
+        dispatch(userActions.setTokenExpiryState(decodedToken.exp));
+        dispatch(getUser());
+        dispatch(getScreams());
+        dispatch(getConversations());
+
+        userData.navigate("/", { replace: true });
       }
-
-      cookies.set("upid", res.data.token);
-      dispatch(userSlice.actions.authenticated());
-      dispatch(getUser());
-
-      userData.navigate("/", { replace: true });
     } catch (error) {
       const token = cookies.get("upid");
       if (token) {

@@ -10,13 +10,7 @@ import { likeScream, unlikeScream } from "../../store/reducers/user";
 import Delete from "../svg/Delete";
 import { deleteScream, getScream } from "../../store/reducers/data";
 import Expand from "../svg/Expand";
-import { uiActions } from "../../store/reducers/ui";
-import { useNavigate } from "react-router-dom";
-import {
-  PROFILE_SCREAM,
-  RAND_USER_SCREAM,
-  SHOW_SCREAM,
-} from "../../utils/constants";
+import { PROFILE_SCREAM, RAND_USER_SCREAM } from "../../utils/constants";
 import linkValidation from "../../utils/linkValidation";
 
 const Scream = (props) => {
@@ -24,12 +18,10 @@ const Scream = (props) => {
   const dispatch = useDispatch();
 
   const userId = useSelector((state) => state.user.userId);
-  const userTokenExpiry = useSelector((state) => state.user.tokenExpiryState);
   const [isLikedStatus, setIsLikedStatus] = useState(props.isLikedScream);
   const [initial, setIsInitial] = useState(true);
   const [likeCount, setLikeCount] = useState(scream.likeCount);
   const { socket } = props;
-  const navigate = useNavigate();
 
   useEffect(() => {
     setLikeCount(scream.likeCount);
@@ -41,11 +33,6 @@ const Scream = (props) => {
   }, [props.isLikedScream]);
 
   useEffect(() => {
-    if (userTokenExpiry * 1000 < Date.now()) {
-      navigate("/login", { replace: true });
-      return;
-    }
-
     if (initial === true) {
       return;
     }
