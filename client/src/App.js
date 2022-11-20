@@ -70,7 +70,7 @@ function App() {
       localStorage.clear("target");
       navigate("/login", { replace: true });
     }
-  }, []);
+  }, [token, userTokenExpiry]);
 
   useEffect(() => {
     async function initializeSocket() {
