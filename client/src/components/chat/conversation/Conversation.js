@@ -49,11 +49,7 @@ const Conversation = (props) => {
         <div className={`${classes["image-container"]}`}>
           {user.userImageUrl ? (
             <img
-              src={
-                linkValidation(user.userImageUrl)
-                  ? user.userImageUrl
-                  : process.env.REACT_APP_ENDPOINT + "/" + user.userImageUrl
-              }
+              src={user.userImageUrl}
               alt="profile-icon"
               referrerPolicy="no-referrer"
             />

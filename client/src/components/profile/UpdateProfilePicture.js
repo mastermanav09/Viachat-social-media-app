@@ -8,11 +8,7 @@ import classes from "./UpdateProfilePicture.module.scss";
 const UpdateProfilePicture = (props) => {
   const userState = useSelector((state) => state.user);
   const [isLoading, setIsLoading] = useState(false);
-  const [image, setImage] = useState(
-    linkValidation(userState.credentials.imageUrl)
-      ? userState.credentials.imageUrl
-      : process.env.REACT_APP_ENDPOINT + "/" + userState.credentials.imageUrl
-  );
+  const [image, setImage] = useState(userState.credentials.imageUrl);
   const [isNewImageSelected, setIsNewImageSelected] = useState(false);
   const [errors, setErrors] = useState(null);
   const dispatch = useDispatch();

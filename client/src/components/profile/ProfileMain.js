@@ -149,13 +149,7 @@ const ProfileMain = (props) => {
               <div className={classes["profile-img-container"]}>
                 {userData.credentials.imageUrl ? (
                   <img
-                    src={
-                      linkValidation(userData.credentials.imageUrl)
-                        ? userData.credentials.imageUrl
-                        : process.env.REACT_APP_ENDPOINT +
-                          "/" +
-                          userData.credentials.imageUrl
-                    }
+                    src={userData.credentials.imageUrl}
                     alt="profile-pic"
                     referrerPolicy="no-referrer"
                   />

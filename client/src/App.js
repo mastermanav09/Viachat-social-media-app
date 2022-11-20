@@ -40,7 +40,7 @@ function App() {
   useEffect(() => {
     async function initializeSocket() {
       if (token) {
-        const socket = io.connect(process.env.REACT_APP_ENDPOINT, {
+        const socket = io.connect("/", {
           auth: { token: `Bearer ${token}` },
         });
 

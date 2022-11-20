@@ -26,7 +26,7 @@ const PostScream = () => {
 
   useEffect(() => {
     if (uiState.errors) {
-      if (uiState.errors.errorData[0].param === "body") {
+      if (uiState?.errors?.errorData[0].param === "body") {
         setError(uiState.errors.errorData[0].msg);
       }
     }

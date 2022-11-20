@@ -31,11 +31,7 @@ const CommentItem = (props) => {
       <div className={`${classes["image-container"]}`}>
         {comment.userImageUrl ? (
           <img
-            src={
-              linkValidation(comment.userImageUrl)
-                ? comment.userImageUrl
-                : process.env.REACT_APP_ENDPOINT + "/" + comment.userImageUrl
-            }
+            src={comment.userImageUrl}
             alt="profile-icon"
             referrerPolicy="no-referrer"
           />

@@ -143,13 +143,7 @@ const MainNavigation = (props) => {
                     <div className={`${classes["profile-icon"]}`}>
                       {userCredentials.imageUrl ? (
                         <img
-                          src={
-                            linkValidation(userCredentials.imageUrl)
-                              ? userCredentials.imageUrl
-                              : process.env.REACT_APP_ENDPOINT +
-                                "/" +
-                                userCredentials.imageUrl
-                          }
+                          src={userCredentials.imageUrl}
                           referrerPolicy="no-referrer"
                           className="profile-img"
                           alt="profile-icon"
@@ -257,13 +251,7 @@ const MainNavigation = (props) => {
                 <div className={`${classes["image-container"]}`}>
                   {userCredentials.imageUrl ? (
                     <img
-                      src={
-                        linkValidation(userCredentials.imageUrl)
-                          ? userCredentials.imageUrl
-                          : process.env.REACT_APP_ENDPOINT +
-                            "/" +
-                            userCredentials.imageUrl
-                      }
+                      src={userCredentials.imageUrl}
                       referrerPolicy="no-referrer"
                       alt="profile-icon"
                     />

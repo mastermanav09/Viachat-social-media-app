@@ -83,7 +83,7 @@ export const getUser = createAsyncThunk(
     try {
       const res = await axios({
         method: "GET",
-        url: process.env.REACT_APP_ENDPOINT + "/api/user/getUserDetails",
+        url: "/api/user/getUserDetails",
         headers: {
           Authorization: "Bearer " + token,
         },
@@ -115,7 +115,7 @@ export const likeScream = createAsyncThunk(
     try {
       const res = await axios({
         method: "GET",
-        url: process.env.REACT_APP_ENDPOINT + `/api/scream/${data.id}/like`,
+        url: `/api/scream/${data.id}/like`,
         headers: {
           Authorization: "Bearer " + token,
         },
@@ -155,7 +155,7 @@ export const unlikeScream = createAsyncThunk(
     try {
       const res = await axios({
         method: "GET",
-        url: process.env.REACT_APP_ENDPOINT + `/api/scream/${data.id}/unlike`,
+        url: `/api/scream/${data.id}/unlike`,
         headers: {
           Authorization: "Bearer " + token,
         },
@@ -193,7 +193,7 @@ export const markNotificationsRead = createAsyncThunk(
     try {
       const res = await axios({
         method: "POST",
-        url: process.env.REACT_APP_ENDPOINT + `/api/user/markNotificationRead`,
+        url: `/api/user/markNotificationRead`,
         data: {},
         headers: {
           Authorization: "Bearer " + token,
@@ -219,7 +219,7 @@ export const addUserDetails = createAsyncThunk(
     try {
       const res = await axios({
         method: "PUT",
-        url: process.env.REACT_APP_ENDPOINT + `/api/user/updateProfile`,
+        url: `/api/user/updateProfile`,
         data: {
           age: userData.age,
           bio: userData.bio,
@@ -260,16 +260,13 @@ export const updateProfilePhoto = createAsyncThunk(
     const state = getState();
 
     try {
-      const result = await fetch(
-        process.env.REACT_APP_ENDPOINT + "/api/user/updateProfilePhoto",
-        {
-          method: "PUT",
-          headers: {
-            Authorization: "Bearer " + token,
-          },
-          body: userData.formData,
-        }
-      );
+      const result = await fetch("/api/user/updateProfilePhoto", {
+        method: "PUT",
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+        body: userData.formData,
+      });
 
       const data = await result.json();
 
@@ -333,7 +330,7 @@ export const addNewConversation = createAsyncThunk(
     try {
       const res = await axios({
         method: "POST",
-        url: process.env.REACT_APP_ENDPOINT + `/api/conversation/add`,
+        url: `/api/conversation/add`,
         data: { receiverId: data.receiverId },
         headers: {
           Authorization: "Bearer " + token,
@@ -371,7 +368,7 @@ export const getConversations = createAsyncThunk(
     try {
       const res = await axios({
         method: "GET",
-        url: process.env.REACT_APP_ENDPOINT + "/api/conversation",
+        url: "/api/conversation",
         headers: {
           Authorization: "Bearer " + token,
         },
@@ -404,9 +401,7 @@ export const getMessages = createAsyncThunk(
 
       const res = await axios({
         method: "GET",
-        url:
-          process.env.REACT_APP_ENDPOINT +
-          `/api/message/${data.conversationId}`,
+        url: `/api/message/${data.conversationId}`,
         headers: {
           Authorization: "Bearer " + token,
         },
@@ -451,7 +446,7 @@ export const addNewMessage = createAsyncThunk(
 
       const res = await axios({
         method: "POST",
-        url: process.env.REACT_APP_ENDPOINT + `/api/message/addMessage`,
+        url: `/api/message/addMessage`,
         data: data.newMessage,
         headers: {
           Authorization: "Bearer " + token,

@@ -23,13 +23,7 @@ const NotificationItem = (props) => {
       <div className={`${classes["notification-item"]}`}>
         <div className={`${classes["image-container"]}`}>
           <img
-            src={
-              linkValidation(notification.userImageUrl)
-                ? notification.userImageUrl
-                : process.env.REACT_APP_ENDPOINT +
-                  "/" +
-                  notification.userImageUrl
-            }
+            src={notification.userImageUrl}
             alt="profile-icon"
             referrerPolicy="no-referrer"
           />

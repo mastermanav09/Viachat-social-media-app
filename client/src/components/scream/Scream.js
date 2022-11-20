@@ -94,11 +94,7 @@ const Scream = (props) => {
         <div className={`${classes["scream-profile-image"]}`}>
           {scream.userImageUrl ? (
             <img
-              src={
-                linkValidation(scream.userImageUrl)
-                  ? scream.userImageUrl
-                  : process.env.REACT_APP_ENDPOINT + "/" + scream.userImageUrl
-              }
+              src={scream.userImageUrl}
               alt="profile-icon"
               referrerPolicy="no-referrer"
             />
