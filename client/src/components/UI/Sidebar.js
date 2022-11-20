@@ -9,6 +9,7 @@ import NotificationsBell from "../svg/NotificationsBell";
 import { userActions } from "../../store/reducers/user";
 import { SIDEBAR_MOBILE } from "../../utils/constants";
 import Message from "../svg/Message";
+import linkValidation from "../../utils/linkValidation";
 
 const Sidebar = (props) => {
   const uiState = useSelector((state) => state.ui);
@@ -74,7 +75,13 @@ const Sidebar = (props) => {
                         <div className={`${classes["image-container"]}`}>
                           {userCredentials.imageUrl ? (
                             <img
-                              src={userCredentials.imageUrl}
+                              src={
+                                linkValidation(userCredentials.imageUrl)
+                                  ? userCredentials.imageUrl
+                                  : process.env.REACT_APP_ENDPOINT +
+                                    "/" +
+                                    userCredentials.imageUrl
+                              }
                               referrerPolicy="no-referrer"
                               alt="profile-icon"
                             />

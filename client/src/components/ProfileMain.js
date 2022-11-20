@@ -19,6 +19,7 @@ import {
 } from "../utils/constants";
 import Chat from "./svg/Chat";
 import { addNewConversation } from "../store/reducers/user";
+import linkValidation from "../utils/linkValidation";
 
 const ProfileMain = (props) => {
   const dispatch = useDispatch();
@@ -154,7 +155,13 @@ const ProfileMain = (props) => {
               <div className={classes["profile-img-container"]}>
                 {userData.credentials.imageUrl ? (
                   <img
-                    src={userData.credentials.imageUrl}
+                    src={
+                      linkValidation(userData.credentials.imageUrl)
+                        ? userData.credentials.imageUrl
+                        : process.env.REACT_APP_ENDPOINT +
+                          "/" +
+                          userData.credentials.imageUrl
+                    }
                     alt="profile-pic"
                     referrerPolicy="no-referrer"
                   />

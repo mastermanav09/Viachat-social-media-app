@@ -8,16 +8,8 @@ import Cross from "./svg/Cross";
 import { NOTIFICATION_BAR_MOBILE } from "../utils/constants";
 
 const Notifications = (props) => {
-  const userTokenExpiry = useSelector((state) => state.user.tokenExpiryState);
   const uiState = useSelector((state) => state.ui);
   const notifications = useSelector((state) => state.user.notifications);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (userTokenExpiry * 1000 < Date.now()) {
-      navigate("/login", { replace: true });
-    }
-  }, []);
 
   if (!notifications) {
     return (

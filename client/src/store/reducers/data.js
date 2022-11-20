@@ -14,7 +14,7 @@ export const getScreams = createAsyncThunk(
     dispatch(uiActions.setLoader());
 
     axios
-      .get("/api/scream/screams", {
+      .get(process.env.REACT_APP_ENDPOINT + "/api/scream/screams", {
         headers: {
           Authorization: "Bearer " + token,
         },
@@ -50,7 +50,7 @@ export const postScream = createAsyncThunk(
 
     try {
       const res = await axios({
-        url: `/api/scream/create`,
+        url: process.env.REACT_APP_ENDPOINT + `/api/scream/create`,
         method: "POST",
         data: {
           body: body.bodyInput,
@@ -91,11 +91,14 @@ export const deleteScream = createAsyncThunk(
     try {
       dispatch(dataSlice.actions.deleteUserScream(data));
       dispatch(userActions.removeScream(data));
-      const res = await axios.delete(`/api/scream/${data.id}/delete`, {
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-      });
+      const res = await axios.delete(
+        process.env.REACT_APP_ENDPOINT + `/api/scream/${data.id}/delete`,
+        {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        }
+      );
 
       if (res.status !== 200 || res.statusText !== "OK") {
         const error = new Error("Unauthorized!");
@@ -125,11 +128,14 @@ export const getScream = createAsyncThunk(
     dispatch(dataSlice.actions.nullifyCurrentScreamData());
 
     try {
-      const res = await axios.get(`/api/scream/${data.id}`, {
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-      });
+      const res = await axios.get(
+        process.env.REACT_APP_ENDPOINT + `/api/scream/${data.id}`,
+        {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        }
+      );
 
       if (res.status !== 200 || res.statusText !== "OK") {
         const error = new Error("Unauthorized!");
@@ -169,7 +175,8 @@ export const addComment = createAsyncThunk(
 
     try {
       const res = await axios.post(
-        `/api/scream/${data.screamId}/addComment`,
+        process.env.REACT_APP_ENDPOINT +
+          `/api/scream/${data.screamId}/addComment`,
         {
           body: data.body,
         },
@@ -223,7 +230,8 @@ export const deleteComment = createAsyncThunk(
       );
 
       const res = await axios.delete(
-        `/api/scream/${data.userHandle}/${data.screamId}/${data.commentId}/deleteComment`,
+        process.env.REACT_APP_ENDPOINT +
+          `/api/scream/${data.userHandle}/${data.screamId}/${data.commentId}/deleteComment`,
         {
           headers: {
             Authorization: "Bearer " + token,
@@ -263,11 +271,14 @@ export const getUser = createAsyncThunk(
     dispatch(uiActions.setLoader());
 
     try {
-      const res = await axios.get(`/api/user/${data.userId}`, {
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-      });
+      const res = await axios.get(
+        process.env.REACT_APP_ENDPOINT + `/api/user/${data.userId}`,
+        {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        }
+      );
 
       if (res.status !== 200 || res.statusText !== "OK") {
         const error = new Error("Unauthorized!");

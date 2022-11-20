@@ -9,6 +9,7 @@ import WebsiteLink from "./svg/WebsiteLink";
 import { useDispatch, useSelector } from "react-redux";
 import { getUser } from "../store/reducers/user";
 import { PROFILE } from "../utils/constants";
+import linkValidation from "../utils/linkValidation";
 
 const Hero = () => {
   const userCredentials = useSelector((state) => state.user.credentials);
@@ -46,7 +47,13 @@ const Hero = () => {
           <div className={`${classes["image-container"]}`}>
             {userCredentials.imageUrl ? (
               <img
-                src={userCredentials.imageUrl}
+                src={
+                  linkValidation(userCredentials.imageUrl)
+                    ? userCredentials.imageUrl
+                    : process.env.REACT_APP_ENDPOINT +
+                      "/" +
+                      userCredentials.imageUrl
+                }
                 referrerPolicy="no-referrer"
                 alt="profile-pic"
               />

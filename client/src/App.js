@@ -43,19 +43,15 @@ function App() {
         decodedToken = jwtDecode(token);
 
         if (!decodedToken) {
-          const error = new Error("Something went wrong!");
-          throw error;
+          dispatch(userActions.logout());
+          localStorage.clear("target");
+          navigate("/login", { replace: true });
         }
 
         if (decodedToken.exp * 1000 < Date.now()) {
-          navigate("/login", { replace: true });
-          dispatch(userActions.logout());
-          localStorage.clear("target");
-          dispatch(
-            uiActions.errors({
-              message: "Session Expired! Please login again.",
-            })
-          );
+          const error = new Error();
+          error.message = "Session Expired! Please login again.";
+          throw error;
         } else {
           dispatch(userActions.authenticated(decodedToken.userId));
           dispatch(userActions.setTokenExpiryState(decodedToken.exp));
@@ -64,15 +60,22 @@ function App() {
           dispatch(getConversations());
         }
       } catch (error) {
+        navigate("/login", { replace: true });
+        dispatch(userActions.logout());
+        localStorage.clear("target");
         dispatch(uiActions.errors({ message: error.message }));
       }
+    } else {
+      dispatch(userActions.logout());
+      localStorage.clear("target");
+      navigate("/login", { replace: true });
     }
   }, [dispatch, navigate, token, userTokenExpiry]);
 
   useEffect(() => {
     async function initializeSocket() {
       if (token) {
-        const socket = io.connect(process.env.HOST, {
+        const socket = io.connect(process.env.REACT_APP_ENDPOINT, {
           auth: { token: `Bearer ${token}` },
         });
 
@@ -80,19 +83,19 @@ function App() {
           console.log("Successfully connected!");
         });
 
-        // socket.on("connect_error", (error) => {
-        //   console.log("Error socket");
-        //   dispatch(userActions.logout());
-        //   localStorage.clear("target");
+        socket.on("connect_error", (error) => {
+          console.log("Error socket");
+          // dispatch(userActions.logout());
+          // localStorage.clear("target");
 
-        //   if (!errors) {
-        //     dispatch(
-        //       uiActions.errors({
-        //         message: "Couldn't connect to the server!",
-        //       })
-        //     );
-        //   }
-        // });
+          // if (!errors) {
+          //   dispatch(
+          //     uiActions.errors({
+          //       message: "Couldn't connect to the server!",
+          //     })
+          //   );
+          // }
+        });
 
         setSocket(socket);
       }

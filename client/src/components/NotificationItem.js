@@ -4,6 +4,7 @@ import { format } from "timeago.js";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { uiActions } from "../store/reducers/ui";
+import linkValidation from "../utils/linkValidation";
 
 const NotificationItem = (props) => {
   const { notification } = props;
@@ -22,7 +23,13 @@ const NotificationItem = (props) => {
       <div className={`${classes["notification-item"]}`}>
         <div className={`${classes["image-container"]}`}>
           <img
-            src={notification.userImageUrl}
+            src={
+              linkValidation(notification.userImageUrl)
+                ? notification.userImageUrl
+                : process.env.REACT_APP_ENDPOINT +
+                  "/" +
+                  notification.userImageUrl
+            }
             alt="profile-icon"
             referrerPolicy="no-referrer"
           />

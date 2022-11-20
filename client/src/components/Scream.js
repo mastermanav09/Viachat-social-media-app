@@ -17,6 +17,7 @@ import {
   RAND_USER_SCREAM,
   SHOW_SCREAM,
 } from "../utils/constants";
+import linkValidation from "../utils/linkValidation";
 
 const Scream = (props) => {
   const { scream } = props;
@@ -115,7 +116,11 @@ const Scream = (props) => {
         <div className={`${classes["scream-profile-image"]}`}>
           {scream.userImageUrl ? (
             <img
-              src={scream.userImageUrl}
+              src={
+                linkValidation(scream.userImageUrl)
+                  ? scream.userImageUrl
+                  : process.env.REACT_APP_ENDPOINT + "/" + scream.userImageUrl
+              }
               alt="profile-icon"
               referrerPolicy="no-referrer"
             />

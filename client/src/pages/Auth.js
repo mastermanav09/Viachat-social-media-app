@@ -20,7 +20,7 @@ const Auth = () => {
   const [validationData, setValidationData] = useState(null);
 
   const googleAuthHandler = () => {
-    window.open("/api/auth/google", "_self");
+    window.open(process.env.REACT_APP_ENDPOINT + "/api/auth/google", "_self");
   };
 
   const switchAuthHandler = () => {
@@ -73,9 +73,9 @@ const Auth = () => {
 
     let authUrl;
     if (uiState.isAuthLogin) {
-      authUrl = "/api/auth/login";
+      authUrl = process.env.REACT_APP_ENDPOINT + "/api/auth/login";
     } else {
-      authUrl = "/api/auth/signup";
+      authUrl = process.env.REACT_APP_ENDPOINT + "/api/auth/signup";
     }
 
     dispatch(auth({ authData, authUrl, navigate }));

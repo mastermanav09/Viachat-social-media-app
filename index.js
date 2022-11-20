@@ -125,8 +125,8 @@ mongoose
     const server = require("http").Server(app);
     const io = require("./config/socket").init(server);
 
-    server.listen(process.env.PORT || 3001, () => {
-      console.log(`Listening on ${process.env.PORT || 3001}`);
+    server.listen(process.env.PORT || 3000, () => {
+      console.log(`Listening on ${process.env.PORT || 3000}`);
     });
     io.use(
       authorize({

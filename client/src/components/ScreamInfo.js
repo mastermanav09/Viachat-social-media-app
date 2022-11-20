@@ -7,6 +7,7 @@ import { format } from "timeago.js";
 import classes from "./ScreamInfo.module.scss";
 import { likeScream, unlikeScream } from "../store/reducers/user";
 import CommentsSection from "./CommentsSection";
+import linkValidation from "../utils/linkValidation";
 
 const ScreamInfo = (props) => {
   const dispatch = useDispatch();
@@ -98,7 +99,11 @@ const ScreamInfo = (props) => {
       <div>
         <div className={classes["profile"]}>
           <img
-            src={scream.userImageUrl}
+            src={
+              linkValidation(scream.userImageUrl)
+                ? scream.userImageUrl
+                : process.env.REACT_APP_ENDPOINT + "/" + scream.userImageUrl
+            }
             alt="profile-pic"
             referrerPolicy="no-referrer"
           />

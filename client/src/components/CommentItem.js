@@ -5,6 +5,7 @@ import Delete from "./svg/Delete";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteComment } from "../store/reducers/data";
 import { Link } from "react-router-dom";
+import linkValidation from "../utils/linkValidation";
 
 const CommentItem = (props) => {
   const { comment } = props;
@@ -30,7 +31,11 @@ const CommentItem = (props) => {
       <div className={`${classes["image-container"]}`}>
         {comment.userImageUrl ? (
           <img
-            src={comment.userImageUrl}
+            src={
+              linkValidation(comment.userImageUrl)
+                ? comment.userImageUrl
+                : process.env.REACT_APP_ENDPOINT + "/" + comment.userImageUrl
+            }
             alt="profile-icon"
             referrerPolicy="no-referrer"
           />
