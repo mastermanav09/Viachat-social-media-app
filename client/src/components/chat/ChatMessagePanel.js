@@ -73,14 +73,16 @@ const ChatMessagePanel = (props) => {
   }, [errors, userId, currentConversation]);
 
   useEffect(() => {
-    socket.on("getMessage", (data) => {
-      setArrivalMessage({
-        _id: data._id,
-        sender: data.senderId,
-        text: data.text,
-        createdAt: Date.now(),
+    if (socket) {
+      socket.on("getMessage", (data) => {
+        setArrivalMessage({
+          _id: data._id,
+          sender: data.senderId,
+          text: data.text,
+          createdAt: Date.now(),
+        });
       });
-    });
+    }
   }, [socket]);
 
   useEffect(() => {

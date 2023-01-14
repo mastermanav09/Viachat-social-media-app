@@ -5,7 +5,6 @@ import { useDispatch } from "react-redux";
 import { dataActions } from "../../../store/reducers/data";
 import { useParams } from "react-router-dom";
 import { userActions } from "../../../store/reducers/user";
-import linkValidation from "../../../utils/linkValidation";
 
 const Conversation = (props) => {
   const dispatch = useDispatch();
@@ -17,17 +16,19 @@ const Conversation = (props) => {
   const params = useParams();
 
   useEffect(() => {
-    socket.on("getRecentMessage", (data) => {
-      if (data?.conversationId === conversation._id) {
-        setRecentMessage(data.text);
-        dispatch(
-          userActions.updateConversation({
-            conversationId: data.conversationId,
-            text: data.text,
-          })
-        );
-      }
-    });
+    if (socket) {
+      socket.on("getRecentMessage", (data) => {
+        if (data?.conversationId === conversation._id) {
+          setRecentMessage(data.text);
+          dispatch(
+            userActions.updateConversation({
+              conversationId: data.conversationId,
+              text: data.text,
+            })
+          );
+        }
+      });
+    }
   }, [socket, conversation._id, dispatch]);
 
   useEffect(() => {

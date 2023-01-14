@@ -19,7 +19,6 @@ const jwt = require("jsonwebtoken");
 const jwtSecret = require("./config/jwt.config");
 const { authorize } = require("@thream/socketio-jwt");
 const notificationDeletionJob = require("./utils/schedulers/notificationDelete");
-
 const {
   userJoin,
   userLeave,
@@ -27,6 +26,8 @@ const {
   getOnlineUsers,
   // getRoomUsers,
 } = require("./utils/users/connectedUsers");
+
+const PORT = process.env.PORT || 3001;
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -104,11 +105,14 @@ app.use((error, req, res, next) => {
 
 // ------------------ DEPLOYMENT -----------------------
 
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "./client/build")));
+if (
+  process.env.NODE_ENV === "production" ||
+  process.env.NODE_ENV === "staging"
+) {
+  app.use(express.static("client/build"));
   app.get("*", (req, res) => {
     res.sendFile(
-      path.join(__dirname, "./client/build/index.html"),
+      path.join(__dirname, "client", "build", "index.html"),
       function (err) {
         res.status(500).send(err);
       }
@@ -126,8 +130,8 @@ mongoose
     const server = require("http").Server(app);
     const io = require("./config/socket").init(server);
 
-    server.listen(process.env.PORT || 3000, () => {
-      console.log(`Listening on ${process.env.PORT || 3000}`);
+    server.listen(PORT, () => {
+      console.log(`Listening on ${PORT}`);
     });
     io.use(
       authorize({
