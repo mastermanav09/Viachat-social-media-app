@@ -30,7 +30,14 @@ const {
 const PORT = process.env.PORT || 3001;
 
 app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
+  const allowedOrigins = ["https://viachat.onrender.com"];
+  const origin = req.headers.origin;
+
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  }
+
+  res.setHeader("Access-Control-Allow-Origin", [,]);
   res.setHeader(
     "Access-Control-Allow-Methods",
     "OPTIONS, GET, POST, PUT, DELETE, PATCH"
@@ -102,24 +109,6 @@ app.use((error, req, res, next) => {
     errorData: errorData,
   });
 });
-
-// ------------------ DEPLOYMENT -----------------------
-
-// if (
-//   process.env.NODE_ENV === "production" ||
-//   process.env.NODE_ENV === "staging"
-// ) {
-//   app.use(express.static("client/build"));
-//   app.get("*", (req, res) => {
-//     res.sendFile(
-//       path.join(__dirname, "client", "build", "index.html"),
-//       function (err) {
-//         res.status(500).send(err);
-//       }
-//     );
-//   });
-// }
-// ------------------ DEPLOYMENT -----------------------
 
 mongoose
   .connect(process.env.MONGO_URL, {
