@@ -5,6 +5,8 @@ import { uiActions } from "./ui";
 import { dataActions, getScreams } from "./data";
 import jwtDecode from "jwt-decode";
 
+axios.defaults.baseURL = "https://viachat.onrender.com";
+
 export const auth = createAsyncThunk(
   "user/auth",
   async (userData, { dispatch }) => {

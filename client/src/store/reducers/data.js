@@ -4,6 +4,8 @@ import { uiActions } from "./ui";
 import axios from "axios";
 import { userActions } from "./user";
 
+axios.defaults.baseURL = "https://viachat.onrender.com";
+
 export const getScreams = createAsyncThunk(
   "data/getScreams",
   (data, { dispatch }) => {
