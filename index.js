@@ -30,14 +30,8 @@ const {
 const PORT = process.env.PORT || 3001;
 
 app.use((req, res, next) => {
-  const allowedOrigins = ["https://viachat.onrender.com"];
-  const origin = req.headers.origin;
+  res.setHeader("Access-Control-Allow-Origin", "*");
 
-  if (allowedOrigins.includes(origin)) {
-    res.setHeader("Access-Control-Allow-Origin", origin);
-  }
-
-  res.setHeader("Access-Control-Allow-Origin", [,]);
   res.setHeader(
     "Access-Control-Allow-Methods",
     "OPTIONS, GET, POST, PUT, DELETE, PATCH"
@@ -83,6 +77,8 @@ app.use(
   "*/assets/profileImages",
   express.static(path.join(__dirname, "assets/profileImages"))
 );
+
+app.use(express.static(path.join(__dirname, "./client/build")));
 
 app.use(
   multer({
