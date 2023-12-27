@@ -20,7 +20,7 @@ const Auth = () => {
   const [validationData, setValidationData] = useState(null);
 
   const googleAuthHandler = () => {
-    window.open("/api/auth/google", "_self");
+    window.open(`${process.env.REACT_APP_BASE_URL}/api/auth/google`, "_self");
   };
 
   const switchAuthHandler = () => {

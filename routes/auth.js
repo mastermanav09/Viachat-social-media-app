@@ -14,7 +14,7 @@ router.get(
 
 router.get(
   "/google/callback",
-  passport.authenticate("google"),
+  passport.authenticate("google", { failureRedirect: "/login" }),
   async function (req, res, next) {
     let user = {
       credentials: {
@@ -66,7 +66,7 @@ router.get(
       );
 
       res.cookie("upid", token);
-      res.redirect("/");
+      res.redirect(process.env.BASE_URL);
     } catch (error) {
       if (!error.statusCode) {
         error.statusCode = 500;

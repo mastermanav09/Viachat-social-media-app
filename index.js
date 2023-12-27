@@ -105,20 +105,20 @@ app.use((error, req, res, next) => {
 
 // ------------------ DEPLOYMENT -----------------------
 
-if (
-  process.env.NODE_ENV === "production" ||
-  process.env.NODE_ENV === "staging"
-) {
-  app.use(express.static("client/build"));
-  app.get("*", (req, res) => {
-    res.sendFile(
-      path.join(__dirname, "client", "build", "index.html"),
-      function (err) {
-        res.status(500).send(err);
-      }
-    );
-  });
-}
+// if (
+//   process.env.NODE_ENV === "production" ||
+//   process.env.NODE_ENV === "staging"
+// ) {
+//   app.use(express.static("client/build"));
+//   app.get("*", (req, res) => {
+//     res.sendFile(
+//       path.join(__dirname, "client", "build", "index.html"),
+//       function (err) {
+//         res.status(500).send(err);
+//       }
+//     );
+//   });
+// }
 // ------------------ DEPLOYMENT -----------------------
 
 mongoose
