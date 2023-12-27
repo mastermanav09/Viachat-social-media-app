@@ -93,11 +93,23 @@ app.use(
 
 notificationDeletionJob();
 
+app.use("/", require("./routes/root"));
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/scream", screamRoutes);
 app.use("/api/conversation", conversationRoutes);
 app.use("/api/message", messageRoues);
+
+app.all("*", (req, res) => {
+  res.status(404);
+  if (req.accepts("html")) {
+    res.sendFile(path.join(__dirname, "views", "404.html"));
+  } else if (req.accepts("json")) {
+    res.json({ message: "404 Not Found" });
+  } else {
+    res.type("txt").send("404 Not Found");
+  }
+});
 
 app.use((error, req, res, next) => {
   const status = error.statusCode || 500;
