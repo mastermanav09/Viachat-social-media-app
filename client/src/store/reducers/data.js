@@ -4,15 +4,13 @@ import { uiActions } from "./ui";
 import axios from "axios";
 import { userActions } from "./user";
 
-axios.defaults.baseURL = process.env.REACT_APP_BASE_URL;
-
 export const getScreams = createAsyncThunk(
   "data/getScreams",
   async (data, { dispatch }) => {
     const cookies = new Cookies();
     const token = cookies.get("upid");
 
-    // dispatch(uiActions.errorsNullify());
+    dispatch(uiActions.errorsNullify());
     dispatch(uiActions.setLoader());
 
     try {

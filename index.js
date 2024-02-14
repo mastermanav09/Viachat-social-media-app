@@ -98,15 +98,6 @@ app.use("/api/scream", screamRoutes);
 app.use("/api/conversation", conversationRoutes);
 app.use("/api/message", messageRoues);
 
-app.get("*", async (req, res) => {
-  res.sendFile(
-    path.join(__dirname, "client", "build", "index.html"),
-    function (err) {
-      res.status(500).send(err);
-    }
-  );
-});
-
 app.use((error, req, res, next) => {
   const status = error.statusCode || 500;
   const message = error.message || "Something went wrong!";

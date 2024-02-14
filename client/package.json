@@ -2,7 +2,6 @@
   "name": "viachat-social-media-app",
   "version": "0.1.0",
   "private": true,
-  "homepage": ".",
   "dependencies": {
     "@fvilers/disable-react-devtools": "^1.3.0",
     "@reduxjs/toolkit": "^1.7.2",
@@ -58,6 +57,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "proxy": "http://localhost:8800"
+  }
 }
