@@ -78,6 +78,8 @@ app.use(
   express.static(path.join(__dirname, "assets", "profileImages"))
 );
 
+app.use(express.static("assets"));
+
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "client", "build")));
 }
