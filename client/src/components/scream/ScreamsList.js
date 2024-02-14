@@ -9,7 +9,7 @@ import { HOME_SCREAM } from "../../utils/constants";
 
 const ScreamsList = (props) => {
   const dispatch = useDispatch();
-  const uiState = useSelector((state) => state.ui);
+  // const uiState = useSelector((state) => state.ui);
   const screams = useSelector((state) => state.data.screams);
   const userState = useSelector((state) => state.user);
   const [errors, setErrors] = useState(null);
@@ -21,6 +21,7 @@ const ScreamsList = (props) => {
   //   }
   // }, []);
 
+  console.log(screams);
   useEffect(() => {
     dispatch(getScreams());
 
