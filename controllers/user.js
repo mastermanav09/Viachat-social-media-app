@@ -45,7 +45,7 @@ exports.updateProfilePhoto = async (req, res, next) => {
     if (
       req.body.oldPath &&
       !isLink &&
-      req.body.oldPath !== "assets/profileImages/no-img.png" &&
+      req.body.oldPath !== "/client/public/assets/profileImages/no-img.png" &&
       req.body.oldPath.split("/")[2] !== "no-img.png"
     ) {
       const res = await clearImage(req.body.oldPath);

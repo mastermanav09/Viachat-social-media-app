@@ -65,7 +65,7 @@ const fileFilter = (req, file, cb) => {
 
 const fileStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "assets/profileImages");
+    cb(null, "/client/public/assets/profileImages");
   },
 
   filename: (req, file, cb) => {
@@ -77,6 +77,17 @@ app.use(
   "*/assets/profileImages",
   express.static(path.join(__dirname, "aassets", "profileImages"))
 );
+
+const __dirname1 = path.resolve();
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname1, "/client/build")));
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname1, "client", "build", "index.html"));
+  });
+} else {
+  res.send("API is Running Successfully!");
+}
 
 app.use(
   multer({
