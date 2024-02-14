@@ -5,13 +5,13 @@ import { uiActions } from "./ui";
 import { dataActions, getScreams } from "./data";
 import jwtDecode from "jwt-decode";
 
-axios.defaults.baseURL = "https://viachat-server.onrender.com";
-
+axios.defaults.baseURL = process.env.REACT_APP_BASE_URL;
 export const auth = createAsyncThunk(
   "user/auth",
   async (userData, { dispatch }) => {
     const cookies = new Cookies();
 
+    console.log(process.env.REACT_APP_BASE_URL);
     dispatch(uiActions.errorsNullify());
     dispatch(uiActions.setLoader());
 

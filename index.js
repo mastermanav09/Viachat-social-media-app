@@ -27,7 +27,7 @@ const {
   // getRoomUsers,
 } = require("./utils/users/connectedUsers");
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 8800;
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -78,7 +78,10 @@ app.use(
   express.static(path.join(__dirname, "assets/profileImages"))
 );
 
-app.use(express.static(path.join(__dirname, "./client/build")));
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "client", "build")));
+}
+// app.use(express.static(path.join(__dirname, "./client/build")));
 
 app.use(
   multer({
