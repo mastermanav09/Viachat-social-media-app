@@ -272,7 +272,7 @@ export const updateProfilePhoto = createAsyncThunk(
 
       const data = await result.json();
 
-      if (result.status !== 200 || !result.ok) {
+      if (result.status !== 200) {
         const error = new Error("Some error occured!");
         if (data.message) {
           error.message = data.message;
@@ -280,7 +280,6 @@ export const updateProfilePhoto = createAsyncThunk(
 
         throw error;
       }
-
       dispatch(userActions.setProfilePhoto(data));
       userData.setIsLoading(false);
       dispatch(
