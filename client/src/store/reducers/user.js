@@ -91,11 +91,11 @@ export const getUser = createAsyncThunk(
         },
       });
 
+      console.log("USer", res);
       if (res.status !== 200 || res.statusText !== "OK") {
         const error = new Error("Can't load screams!");
         throw error;
       }
-
       dispatch(userSlice.actions.setUserData(res.data));
     } catch (error) {
       if (!error.response) {
