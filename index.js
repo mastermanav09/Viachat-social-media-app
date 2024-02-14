@@ -65,7 +65,7 @@ const fileFilter = (req, file, cb) => {
 
 const fileStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "/assets/profileImages");
+    cb(null, "/client/public/assets/profileImages");
   },
 
   filename: (req, file, cb) => {
@@ -73,12 +73,7 @@ const fileStorage = multer.diskStorage({
   },
 });
 
-app.use(
-  "*/assets/profileImages",
-  express.static(path.join(__dirname, "assets", "profileImages"))
-);
-
-app.use(express.static("assets"));
+app.use(express.static(path.join(__dirname, "client", "public")));
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "client", "build")));
