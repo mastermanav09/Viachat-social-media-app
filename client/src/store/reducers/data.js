@@ -24,7 +24,7 @@ export const getScreams = createAsyncThunk(
         },
       });
 
-      if (res.status !== 200 || res.statusText !== "OK") {
+      if (res.status !== 200) {
         const error = new Error("Can't load screams!");
         throw error;
       }
@@ -63,7 +63,7 @@ export const postScream = createAsyncThunk(
         },
       });
 
-      if (res.status !== 201 || res.statusText !== "Created") {
+      if (res.status !== 201) {
         const error = new Error("Unauthorized!");
         throw error;
       }
@@ -100,7 +100,7 @@ export const deleteScream = createAsyncThunk(
         },
       });
 
-      if (res.status !== 200 || res.statusText !== "OK") {
+      if (res.status !== 200) {
         const error = new Error("Unauthorized!");
         throw error;
       }
@@ -134,7 +134,7 @@ export const getScream = createAsyncThunk(
         },
       });
 
-      if (res.status !== 200 || res.statusText !== "OK") {
+      if (res.status !== 200) {
         const error = new Error("Unauthorized!");
         throw error;
       }
@@ -183,7 +183,7 @@ export const addComment = createAsyncThunk(
         }
       );
 
-      if (res.status !== 201 || res.statusText !== "Created") {
+      if (res.status !== 201) {
         const error = new Error("Unauthorized!");
         throw error;
       }
@@ -234,7 +234,7 @@ export const deleteComment = createAsyncThunk(
         }
       );
 
-      if (res.status !== 200 || res.statusText !== "OK") {
+      if (res.status !== 200) {
         const error = new Error("Unauthorized!");
         throw error;
       }
@@ -272,7 +272,7 @@ export const getUser = createAsyncThunk(
         },
       });
 
-      if (res.status !== 200 || res.statusText !== "OK") {
+      if (res.status !== 200) {
         const error = new Error("Unauthorized!");
         throw error;
       }

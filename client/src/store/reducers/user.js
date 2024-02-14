@@ -92,7 +92,7 @@ export const getUser = createAsyncThunk(
       });
 
       console.log("USer", res);
-      if (res.status !== 200 || res.statusText !== "OK") {
+      if (res.status !== 200) {
         const error = new Error("Can't load screams!");
         throw error;
       }
@@ -123,7 +123,7 @@ export const likeScream = createAsyncThunk(
         },
       });
 
-      if (res.status !== 200 || res.statusText !== "OK") {
+      if (res.status !== 200) {
         const error = new Error("Can't load screams!");
         throw error;
       }
@@ -163,7 +163,7 @@ export const unlikeScream = createAsyncThunk(
         },
       });
 
-      if (res.status !== 200 || res.statusText !== "OK") {
+      if (res.status !== 200) {
         const error = new Error("Can't load screams!");
         throw error;
       }
@@ -202,7 +202,7 @@ export const markNotificationsRead = createAsyncThunk(
         },
       });
 
-      if (res.status !== 200 || res.statusText !== "OK") {
+      if (res.status !== 200) {
         const error = new Error("Some error occured!");
         throw error;
       }
@@ -234,7 +234,7 @@ export const addUserDetails = createAsyncThunk(
         },
       });
 
-      if (res.status !== 200 || res.statusText !== "OK") {
+      if (res.status !== 200) {
         const error = new Error("Some error occured!");
         throw error;
       }
@@ -376,7 +376,7 @@ export const getConversations = createAsyncThunk(
         },
       });
 
-      if (res.status !== 200 || res.statusText !== "OK") {
+      if (res.status !== 200) {
         const error = new Error("Can't load conversations!");
         throw error;
       }
@@ -409,7 +409,7 @@ export const getMessages = createAsyncThunk(
         },
       });
 
-      if (res.status !== 200 || res.statusText !== "OK") {
+      if (res.status !== 200) {
         const error = new Error("Can't load messages!");
         throw error;
       }
