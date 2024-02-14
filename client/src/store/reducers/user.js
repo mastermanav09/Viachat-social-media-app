@@ -6,6 +6,7 @@ import { dataActions, getScreams } from "./data";
 import jwtDecode from "jwt-decode";
 
 axios.defaults.baseURL = process.env.REACT_APP_BASE_URL;
+
 export const auth = createAsyncThunk(
   "user/auth",
   async (userData, { dispatch }) => {
