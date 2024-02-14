@@ -75,7 +75,9 @@ const fileStorage = multer.diskStorage({
 
 app.use(
   "*/assets/profileImages",
-  express.static(path.join(__dirname, "aassets", "profileImages"))
+  express.static(
+    path.join(__dirname, "client", "public", "assets", "profileImages")
+  )
 );
 
 if (process.env.NODE_ENV === "production") {
