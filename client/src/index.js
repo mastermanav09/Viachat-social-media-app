@@ -8,7 +8,7 @@ import store from "./store/index";
 import { disableReactDevTools } from "@fvilers/disable-react-devtools";
 
 if (process.env.NODE_ENV === "production") {
-  disableReactDevTools();
+  // disableReactDevTools();
 }
 
 ReactDOM.render(

@@ -12,7 +12,7 @@ export const getScreams = createAsyncThunk(
     const cookies = new Cookies();
     const token = cookies.get("upid");
 
-    dispatch(uiActions.errorsNullify());
+    // dispatch(uiActions.errorsNullify());
     dispatch(uiActions.setLoader());
 
     axios
@@ -26,7 +26,7 @@ export const getScreams = createAsyncThunk(
           const error = new Error("Can't load screams!");
           throw error;
         }
-
+        console.log(res.data);
         dispatch(dataSlice.actions.setScreams(res.data));
       })
       .catch((error) => {
@@ -332,7 +332,7 @@ const dataSlice = createSlice({
     },
 
     setScreams(state, action) {
-      state.screams = [...action.payload.screams];
+      state.screams = action.payload.screams;
     },
 
     increamentLike(state, action) {
