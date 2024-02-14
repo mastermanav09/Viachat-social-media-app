@@ -5,6 +5,7 @@ import { useDispatch } from "react-redux";
 import { dataActions } from "../../../store/reducers/data";
 import { useParams } from "react-router-dom";
 import { userActions } from "../../../store/reducers/user";
+import linkValidation from "../../../utils/linkValidation";
 
 const Conversation = (props) => {
   const dispatch = useDispatch();
@@ -50,7 +51,11 @@ const Conversation = (props) => {
         <div className={`${classes["image-container"]}`}>
           {user.userImageUrl ? (
             <img
-              src={user.userImageUrl}
+              src={
+                linkValidation(user.userImageUrl)
+                  ? user.userImageUrl
+                  : "/" + user.userImageUrl
+              }
               alt="profile-icon"
               referrerPolicy="no-referrer"
             />

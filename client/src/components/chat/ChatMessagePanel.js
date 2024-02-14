@@ -175,7 +175,7 @@ const ChatMessagePanel = (props) => {
             >
               <img
                 className={classes["error-message-img"]}
-                src="/images/convo-not-found.png"
+                src="/images/conversation-not-found.png"
                 alt="img"
               />
               <p className={classes["error-message"]}>{error}</p>
