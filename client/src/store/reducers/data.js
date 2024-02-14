@@ -4,8 +4,6 @@ import { uiActions } from "./ui";
 import axios from "axios";
 import { userActions } from "./user";
 
-axios.defaults.baseURL = process.env.REACT_APP_BASE_URL;
-
 export const getScreams = createAsyncThunk(
   "data/getScreams",
   (data, { dispatch }) => {
