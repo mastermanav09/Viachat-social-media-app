@@ -78,9 +78,57 @@ app.use(
   express.static(path.join(__dirname, "assets/profileImages"))
 );
 
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "client", "build")));
-}
+// app.get("*/*.js", (req, res) => {
+//   const urlParts = req.url.split("/");
+//   res.sendFile(
+//     path.join(
+//       __dirname + "/../client/build/static/js/" + urlParts[urlParts.length - 1]
+//     )
+//   );
+// });
+// Serve .cssfiles from css staic folder
+// app.get("*/*.css", (req, res) => {
+//   const urlParts = req.url.split("/");
+//   res.sendFile(
+//     path.join(
+//       __dirname + "/../client/build/static/css/" + urlParts[urlParts.length - 1]
+//     )
+//   );
+// });
+// app.get("*/*.css.map", (req, res) => {
+//   const urlParts = req.url.split("/");
+//   res.sendFile(
+//     path.join(
+//       __dirname + "/../client/build/static/css/" + urlParts[urlParts.length - 1]
+//     )
+//   );
+// });
+// // Serve images files from media staic folder
+// app.get("*/*.(jpg|svg|png|woff|woff2)", (req, res) => {
+//   const urlParts = req.url.split("/");
+//   res.sendFile(
+//     path.join(
+//       __dirname +
+//         "/../client/build/static/media/" +
+//         urlParts[urlParts.length - 1]
+//     )
+//   );
+// });
+
+// app.all("*", (req, res) => {
+//   res.status(404);
+//   if (req.accepts("html")) {
+//     res.sendFile(path.join(__dirname, "views", "404.html"));
+//   } else if (req.accepts("json")) {
+//     res.json({ message: "404 Not Found" });
+//   } else {
+//     res.type("txt").send("404 Not Found");
+//   }
+// });
+
+// if (process.env.NODE_ENV === "production") {
+//   app.use(express.static(path.join(__dirname, "client", "build")));
+// }
 // app.use(express.static(path.join(__dirname, "./client/build")));
 
 app.use(
@@ -98,17 +146,6 @@ app.use("/api/user", userRoutes);
 app.use("/api/scream", screamRoutes);
 app.use("/api/conversation", conversationRoutes);
 app.use("/api/message", messageRoues);
-
-app.all("*", (req, res) => {
-  res.status(404);
-  if (req.accepts("html")) {
-    res.sendFile(path.join(__dirname, "views", "404.html"));
-  } else if (req.accepts("json")) {
-    res.json({ message: "404 Not Found" });
-  } else {
-    res.type("txt").send("404 Not Found");
-  }
-});
 
 app.use((error, req, res, next) => {
   const status = error.statusCode || 500;

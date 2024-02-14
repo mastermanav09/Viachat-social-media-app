@@ -9,10 +9,9 @@ import Add from "../components/svg/Add";
 
 const Home = (props) => {
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    localStorage.setItem("target", "/");
-  }, []);
+  // useEffect(() => {
+  //   localStorage.setItem("target", "/");
+  // }, []);
 
   return (
     <>

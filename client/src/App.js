@@ -109,6 +109,7 @@ function App() {
     }
   }, []);
 
+  console.log(isUserAuthenticated);
   return (
     <>
       <Layout socket={socket}>

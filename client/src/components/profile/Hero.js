@@ -9,7 +9,6 @@ import WebsiteLink from "../svg/WebsiteLink";
 import { useDispatch, useSelector } from "react-redux";
 import { getUser } from "../../store/reducers/user";
 import { PROFILE } from "../../utils/constants";
-import linkValidation from "../../utils/linkValidation";
 
 const Hero = () => {
   const userCredentials = useSelector((state) => state.user.credentials);
@@ -20,7 +19,7 @@ const Hero = () => {
     if (Object.keys(userCredentials).length === 0) {
       dispatch(getUser());
     }
-  }, [dispatch]);
+  }, [dispatch, userCredentials]);
 
   if (Object.keys(userCredentials).length === 0) {
     return <SkeletonProfile />;
