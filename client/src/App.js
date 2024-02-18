@@ -37,66 +37,66 @@ function App() {
     dispatch(auth({ navigate }));
   }, [dispatch]);
 
-  // useEffect(() => {
-  //   async function initializeSocket() {
-  //     if (token) {
-  //       const socket = io.connect("/", {
-  //         auth: { token: `Bearer ${token}` },
-  //       });
+  useEffect(() => {
+    async function initializeSocket() {
+      if (token) {
+        const socket = io.connect("/", {
+          auth: { token: `Bearer ${token}` },
+        });
 
-  //       // const socket = io.connect();
+        // const socket = io.connect();
 
-  //       socket.on("connect_error", (error) => {
-  //         console.log("Error socket");
-  //         dispatch(userActions.logout());
-  //         localStorage.clear("target");
+        socket.on("connect_error", (error) => {
+          console.log("Error socket");
+          dispatch(userActions.logout());
+          localStorage.clear("target");
 
-  //         if (!errors) {
-  //           dispatch(
-  //             uiActions.errors({
-  //               message: "Couldn't connect to the server!",
-  //             })
-  //           );
-  //         }
-  //       });
+          if (!errors) {
+            dispatch(
+              uiActions.errors({
+                message: "Couldn't connect to the server!",
+              })
+            );
+          }
+        });
 
-  //       setSocket(socket);
-  //     }
-  //   }
+        setSocket(socket);
+      }
+    }
 
-  //   initializeSocket();
-  // }, []);
+    initializeSocket();
+  }, []);
 
-  // useEffect(() => {
-  //   if (socket) {
-  //     socket.emit("newUser");
-  //   }
-  // }, [socket]);
+  useEffect(() => {
+    if (socket) {
+      socket.emit("newUser");
+    }
+  }, [socket]);
 
-  // useEffect(() => {
-  //   if (socket) {
-  //     socket.on("getConversation", (data) => {
-  //       dispatch(userActions.addNewConversation(data.conversation));
-  //     });
+  useEffect(() => {
+    if (socket) {
+      socket.on("getConversation", (data) => {
+        dispatch(userActions.addNewConversation(data.conversation));
+      });
 
-  //     socket.on("getOnlineUsers", ({ users }) => {
-  //       const usersSet = new Set();
-  //       for (let user of users) {
-  //         usersSet.add(user);
-  //       }
+      socket.on("getOnlineUsers", ({ users }) => {
+        const usersSet = new Set();
+        for (let user of users) {
+          usersSet.add(user);
+        }
 
-  //       dispatch(dataActions.setOnlineUsers(usersSet));
-  //     });
-  //   }
-  // }, [socket, dispatch]);
+        dispatch(dataActions.setOnlineUsers(usersSet));
+      });
+    }
+  }, [socket, dispatch]);
 
-  // useEffect(() => {
-  //   if (socket) {
-  //     socket.emit("getOnlineUsersEvent", {
-  //       senderId: userId,
-  //     });
-  //   }
-  // }, [socket, userId]);
+  useEffect(() => {
+    if (socket) {
+      socket.emit("getOnlineUsersEvent", {
+        senderId: userId,
+      });
+    }
+  }, [socket, userId]);
 
   useEffect(() => {
     if (
