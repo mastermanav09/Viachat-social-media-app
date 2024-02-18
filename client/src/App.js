@@ -40,11 +40,11 @@ function App() {
   useEffect(() => {
     async function initializeSocket() {
       if (token) {
-        const socket = io.connect("/", {
-          auth: { token: `Bearer ${token}` },
-        });
+        // const socket = io.connect("/", {
+        //   auth: { token: `Bearer ${token}` },
+        // });
 
-        // const socket = io.connect();
+        const socket = io.connect();
 
         socket.on("connect_error", (error) => {
           console.log("Error socket");
