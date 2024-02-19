@@ -4,7 +4,6 @@ import { format } from "timeago.js";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { uiActions } from "../../store/reducers/ui";
-import linkValidation from "../../utils/linkValidation";
 
 const NotificationItem = (props) => {
   const { notification } = props;
@@ -15,7 +14,7 @@ const NotificationItem = (props) => {
     <Link
       to={`/${username}/scream/${notification.screamId}`}
       onClick={() => {
-        dispatch(uiActions.showScreamModal());
+        dispatch(uiActions.showPostScreamModal());
         dispatch(uiActions.clearBars());
       }}
       className={classes["notification-link"]}

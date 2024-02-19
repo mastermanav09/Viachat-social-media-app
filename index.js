@@ -24,6 +24,7 @@ const {
   userLeave,
   getCurrentUser,
   getOnlineUsers,
+  updateOnlineUsers,
   // getRoomUsers,
 } = require("./utils/users/connectedUsers");
 
@@ -140,8 +141,16 @@ mongoose
     );
 
     io.on("connection", async (socket) => {
-      socket.on("newUser", () => {
+      socket.on("newUser", async ({ senderId }) => {
         userJoin(socket.decodedToken.userId, socket.id);
+        const sender = getCurrentUser(senderId);
+
+        // if (sender && sender.socketId) {
+        //   const onlineUsers = await updateOnlineUsers(socket, senderId);
+        //   io.to(sender.socketId).emit("updateOnlineUser", {
+        //     users: onlineUsers,
+        //   });
+        // }
       });
 
       initializeMessenger(socket);
@@ -149,7 +158,6 @@ mongoose
 
       socket.on("getOnlineUsersEvent", async ({ senderId }) => {
         const sender = getCurrentUser(senderId);
-
         if (sender && sender.socketId) {
           const onlineUsers = await getOnlineUsers(socket, senderId);
           io.to(sender.socketId).emit("getOnlineUsers", {
@@ -159,6 +167,10 @@ mongoose
       });
 
       socket.on("disconnect", () => {
+        userLeave(socket.id);
+      });
+
+      socket.on("disconnectUserWhenLogout", () => {
         userLeave(socket.id);
       });
     });

@@ -16,6 +16,7 @@ const Sidebar = (props) => {
   const dispatch = useDispatch();
   const userCredentials = useSelector((state) => state.user.credentials);
   const userState = useSelector((state) => state.user);
+  const { socket } = props;
 
   const navigateActionHandler = () => {
     dispatch(uiActions.setSideBar(false));
@@ -26,6 +27,12 @@ const Sidebar = (props) => {
     dispatch(uiActions.errorsNullify());
     dispatch(uiActions.switchAuth());
     dispatch(uiActions.setSideBar(false));
+  };
+
+  const logoutHandler = () => {
+    socket.emit("disconnectUserWhenLogout");
+    navigateActionHandler();
+    dispatch(userActions.logout());
   };
 
   return (
@@ -140,13 +147,7 @@ const Sidebar = (props) => {
 
               <div className={classes["actions-block"]}>
                 <ul>
-                  <li
-                    className={classes["link"]}
-                    onClick={() => {
-                      navigateActionHandler();
-                      dispatch(userActions.logout());
-                    }}
-                  >
+                  <li className={classes["link"]} onClick={logoutHandler}>
                     Log Out
                     <div>
                       <i data-visualcompletion="css-img"></i>

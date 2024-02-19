@@ -70,6 +70,11 @@ const MainNavigation = (props) => {
     dispatch(uiActions.showChats());
   };
 
+  const logoutHandler = () => {
+    socket.emit("disconnectUserWhenLogout");
+    dispatch(userActions.logout());
+  };
+
   let updatedUsername;
 
   if (userCredentials?.username?.length > 12) {
@@ -268,10 +273,7 @@ const MainNavigation = (props) => {
 
             <hr />
 
-            <div
-              className={`${classes["logout-btn"]}`}
-              onClick={() => dispatch(userActions.logout())}
-            >
+            <div className={`${classes["logout-btn"]}`} onClick={logoutHandler}>
               <button>Logout</button>
               <div>
                 <i data-visualcompletion="css-img"></i>

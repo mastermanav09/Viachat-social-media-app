@@ -8,7 +8,7 @@ import { auth } from "../store/reducers/user";
 import { uiActions } from "../store/reducers/ui";
 import { useNavigate } from "react-router-dom";
 
-const Auth = () => {
+const Auth = (props) => {
   const emailInputRef = useRef();
   const passwordInputRef = useRef();
   const confirmPasswordInputRef = useRef();
@@ -18,6 +18,7 @@ const Auth = () => {
   const uiState = useSelector((state) => state.ui);
   const navigate = useNavigate();
   const [validationData, setValidationData] = useState(null);
+  const { socket } = props;
 
   const googleAuthHandler = () => {
     window.open(`${process.env.REACT_APP_BASE_URL}/api/auth/google`, "_self");
@@ -78,7 +79,7 @@ const Auth = () => {
       authUrl = "/api/auth/signup";
     }
 
-    dispatch(auth({ authData, authUrl, navigate }));
+    dispatch(auth({ authData, authUrl, navigate, socket }));
   };
 
   useEffect(() => {
