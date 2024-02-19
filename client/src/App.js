@@ -39,32 +39,6 @@ function App() {
   }, [dispatch, navigate, socket]);
 
   useEffect(() => {
-<<<<<<< HEAD
-    async function initializeSocket() {
-      if (token) {
-        const socket = io.connect("/", {
-          auth: { token: `Bearer ${token}` },
-        });
-
-        // const socket = io.connect();
-
-        socket.on("connect_error", (error) => {
-          console.log("Error socket");
-          dispatch(userActions.logout());
-          localStorage.clear("target");
-
-          if (!errors) {
-            dispatch(
-              uiActions.errors({
-                message: "Couldn't connect to the server!",
-              })
-            );
-          }
-        });
-
-        setSocket(socket);
-      }
-=======
     if (token) {
       const socket = io.connect("http://localhost:8800", {
         auth: { token: `Bearer ${token}` },
@@ -73,7 +47,6 @@ function App() {
       // auth: { token: `Bearer ${token}` },
       // });
       setSocket(socket);
->>>>>>> fdae1e4 (fix: socket connection)
     }
     // function onConnect() {
     //   setIsConnected(true);
