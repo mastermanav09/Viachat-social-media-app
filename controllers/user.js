@@ -15,8 +15,7 @@ exports.updateProfilePhoto = async (req, res, next) => {
     });
   }
 
-  let user,
-    isLink = false;
+  req.file.path = req.file.path.split("public")[1].replaceAll("\\", "/");
 
   try {
     if (req.user.userId !== req.body.currentUserId) {
@@ -26,53 +25,59 @@ exports.updateProfilePhoto = async (req, res, next) => {
     }
 
     if (!req.body.oldPath) {
-      const error = new Error("Something went wrong.");
+      const error = new Error("Can't find image old path.");
       error.statusCode = 404;
       throw error;
     }
 
-    user = await User.findById(req.user.userId);
+    const user = await User.findById(req.user.userId);
+    const clearOldPath =
+      "client\\" + "public\\" + req.body.oldPath.replaceAll("/", "\\");
+
     if (!user) {
       const error = new Error("User not found.");
       error.statusCode = 404;
       throw error;
     }
 
+    let isLink = false;
     if (user.provider === "google") {
       isLink = linkValidation(user.credentials.imageUrl);
     }
 
     if (
-      req.body.oldPath &&
       !isLink &&
-      req.body.oldPath !== "assets/profileImages/no-img.png" &&
-      req.body.oldPath.split("/")[2] !== "no-img.png"
+      req.body.oldPath &&
+      req.body.oldPath !== "/assets/profileImages/no-img.png"
     ) {
-      const res = await clearImage(req.body.oldPath);
+      const oldPathSplitArr = req.body.oldPath.split("/");
+      if (oldPathSplitArr[oldPathSplitArr.length - 1] !== "no-img.png") {
+        await clearImage(clearOldPath);
+      }
     }
 
-    user.credentials.imageUrl = req.file.path.replaceAll("\\", "/");
+    user.credentials.imageUrl = req.file.path;
     await user.save();
 
     await Notification.updateMany(
       {
         sender: req.user.userId,
       },
-      { userImageUrl: req.file.path.replaceAll("\\", "/") }
+      { userImageUrl: req.file.path }
     );
 
     await Comment.updateMany(
       {
         userHandle: req.user.userId,
       },
-      { userImageUrl: req.file.path.replaceAll("\\", "/") }
+      { userImageUrl: req.file.path }
     );
 
     await Scream.updateMany(
       {
         userHandle: req.user.userId,
       },
-      { userImageUrl: req.file.path.replaceAll("\\", "/") }
+      { userImageUrl: req.file.path }
     );
 
     res.status(200).json({
@@ -81,7 +86,7 @@ exports.updateProfilePhoto = async (req, res, next) => {
     });
   } catch (error) {
     if (!isLink) {
-      await clearImage(req.file.path.replaceAll("\\", "/"));
+      await clearImage(clearOldPath);
     }
 
     if (!error.message) {

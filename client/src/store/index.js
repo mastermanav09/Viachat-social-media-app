@@ -16,8 +16,6 @@ const store = configureStore({
         ignoreActions: ["./reducers/user.js/addUserDetails"],
       },
     }).concat(),
-
-  devTools: false,
 });
 
 export default store;

@@ -39,7 +39,7 @@ exports.signup = async (req, res, next) => {
 
     const newUser = new User({
       credentials: {
-        imageUrl: "assets/profileImages/no-img.png",
+        imageUrl: "/assets/profileImages/no-img.png",
         username: username,
         name: name,
         email: email,

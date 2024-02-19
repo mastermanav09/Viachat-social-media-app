@@ -5,6 +5,8 @@ import { uiActions } from "./ui";
 import { dataActions, getScreams } from "./data";
 import jwtDecode from "jwt-decode";
 
+axios.defaults.baseURL = process.env.REACT_APP_BASE_URL;
+
 export const auth = createAsyncThunk(
   "user/auth",
   async (userData, { dispatch }) => {
@@ -90,11 +92,11 @@ export const getUser = createAsyncThunk(
         },
       });
 
-      if (res.status !== 200 || res.statusText !== "OK") {
+      console.log("USer", res);
+      if (res.status !== 200) {
         const error = new Error("Can't load screams!");
         throw error;
       }
-
       dispatch(userSlice.actions.setUserData(res.data));
     } catch (error) {
       if (!error.response) {
@@ -122,7 +124,7 @@ export const likeScream = createAsyncThunk(
         },
       });
 
-      if (res.status !== 200 || res.statusText !== "OK") {
+      if (res.status !== 200) {
         const error = new Error("Can't load screams!");
         throw error;
       }
@@ -162,7 +164,7 @@ export const unlikeScream = createAsyncThunk(
         },
       });
 
-      if (res.status !== 200 || res.statusText !== "OK") {
+      if (res.status !== 200) {
         const error = new Error("Can't load screams!");
         throw error;
       }
@@ -201,7 +203,7 @@ export const markNotificationsRead = createAsyncThunk(
         },
       });
 
-      if (res.status !== 200 || res.statusText !== "OK") {
+      if (res.status !== 200) {
         const error = new Error("Some error occured!");
         throw error;
       }
@@ -233,7 +235,7 @@ export const addUserDetails = createAsyncThunk(
         },
       });
 
-      if (res.status !== 200 || res.statusText !== "OK") {
+      if (res.status !== 200) {
         const error = new Error("Some error occured!");
         throw error;
       }
@@ -271,7 +273,7 @@ export const updateProfilePhoto = createAsyncThunk(
 
       const data = await result.json();
 
-      if (result.status !== 200 || !result.ok) {
+      if (result.status !== 200) {
         const error = new Error("Some error occured!");
         if (data.message) {
           error.message = data.message;
@@ -279,7 +281,6 @@ export const updateProfilePhoto = createAsyncThunk(
 
         throw error;
       }
-
       dispatch(userActions.setProfilePhoto(data));
       userData.setIsLoading(false);
       dispatch(
@@ -375,7 +376,7 @@ export const getConversations = createAsyncThunk(
         },
       });
 
-      if (res.status !== 200 || res.statusText !== "OK") {
+      if (res.status !== 200) {
         const error = new Error("Can't load conversations!");
         throw error;
       }
@@ -408,7 +409,7 @@ export const getMessages = createAsyncThunk(
         },
       });
 
-      if (res.status !== 200 || res.statusText !== "OK") {
+      if (res.status !== 200) {
         const error = new Error("Can't load messages!");
         throw error;
       }

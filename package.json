@@ -4,11 +4,12 @@
   "description": "A social media app that allows users to have conversations, share ideas and create web content.",
   "main": "index.js",
   "engines": {
-    "node": "16.13.0"
+    "node": "18.18.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "start": "node index.js",
+    "dev": "nodemon index.js"
   },
   "repository": {
     "type": "git",

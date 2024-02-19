@@ -6,34 +6,35 @@ import { userActions } from "./user";
 
 export const getScreams = createAsyncThunk(
   "data/getScreams",
-  (data, { dispatch }) => {
+  async (data, { dispatch }) => {
     const cookies = new Cookies();
     const token = cookies.get("upid");
 
     dispatch(uiActions.errorsNullify());
     dispatch(uiActions.setLoader());
 
-    axios
-      .get("/api/scream/screams", {
+    try {
+      const res = await axios({
+        method: "GET",
+        url: "/api/scream/screams",
         headers: {
           Authorization: "Bearer " + token,
         },
-      })
-      .then((res) => {
-        if (res.status !== 200 || res.statusText !== "OK") {
-          const error = new Error("Can't load screams!");
-          throw error;
-        }
-
-        dispatch(dataSlice.actions.setScreams(res.data));
-      })
-      .catch((error) => {
-        if (!error.response) {
-          dispatch(uiActions.errors(error.message));
-        } else {
-          dispatch(uiActions.errors(error.response.data));
-        }
       });
+
+      if (res.status !== 200) {
+        const error = new Error("Can't load screams!");
+        throw error;
+      }
+      console.log(res.data);
+      dispatch(dataSlice.actions.setScreams(res.data));
+    } catch (error) {
+      if (!error.response) {
+        dispatch(uiActions.errors(error.message));
+      } else {
+        dispatch(uiActions.errors(error.response.data));
+      }
+    }
 
     dispatch(uiActions.setLoader());
   }
@@ -60,7 +61,7 @@ export const postScream = createAsyncThunk(
         },
       });
 
-      if (res.status !== 201 || res.statusText !== "Created") {
+      if (res.status !== 201) {
         const error = new Error("Unauthorized!");
         throw error;
       }
@@ -97,7 +98,7 @@ export const deleteScream = createAsyncThunk(
         },
       });
 
-      if (res.status !== 200 || res.statusText !== "OK") {
+      if (res.status !== 200) {
         const error = new Error("Unauthorized!");
         throw error;
       }
@@ -131,7 +132,7 @@ export const getScream = createAsyncThunk(
         },
       });
 
-      if (res.status !== 200 || res.statusText !== "OK") {
+      if (res.status !== 200) {
         const error = new Error("Unauthorized!");
         throw error;
       }
@@ -180,7 +181,7 @@ export const addComment = createAsyncThunk(
         }
       );
 
-      if (res.status !== 201 || res.statusText !== "Created") {
+      if (res.status !== 201) {
         const error = new Error("Unauthorized!");
         throw error;
       }
@@ -231,7 +232,7 @@ export const deleteComment = createAsyncThunk(
         }
       );
 
-      if (res.status !== 200 || res.statusText !== "OK") {
+      if (res.status !== 200) {
         const error = new Error("Unauthorized!");
         throw error;
       }
@@ -269,7 +270,7 @@ export const getUser = createAsyncThunk(
         },
       });
 
-      if (res.status !== 200 || res.statusText !== "OK") {
+      if (res.status !== 200) {
         const error = new Error("Unauthorized!");
         throw error;
       }
@@ -330,7 +331,7 @@ const dataSlice = createSlice({
     },
 
     setScreams(state, action) {
-      state.screams = [...action.payload.screams];
+      state.screams = action.payload.screams;
     },
 
     increamentLike(state, action) {

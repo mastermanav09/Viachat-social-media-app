@@ -19,7 +19,6 @@ import {
 } from "../../utils/constants";
 import Chat from "../svg/Chat";
 import { addNewConversation } from "../../store/reducers/user";
-import linkValidation from "../../utils/linkValidation";
 
 const ProfileMain = (props) => {
   const dispatch = useDispatch();
@@ -32,7 +31,7 @@ const ProfileMain = (props) => {
     (state) => state.ui.showUpdateProfilePictureModal
   );
   const userState = useSelector((state) => state.user);
-  const currentUserDataState = useSelector((state) => state.data);
+  const currentUser = useSelector((state) => state.data.currentUser);
 
   const params = useParams();
   const userId = params.userId;
@@ -42,9 +41,9 @@ const ProfileMain = (props) => {
     if (props.myProfile) {
       setUserData(userState);
     } else {
-      setUserData(currentUserDataState.currentUser);
+      setUserData(currentUser);
     }
-  }, [currentUserDataState.currentUser, props.myProfile, userState, dispatch]);
+  }, [currentUser, props.myProfile, userState, dispatch]);
 
   useEffect(() => {
     if (!props.myProfile) {

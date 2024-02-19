@@ -10,7 +10,7 @@ import { HOME_SCREAM } from "../../utils/constants";
 const ScreamsList = (props) => {
   const dispatch = useDispatch();
   const uiState = useSelector((state) => state.ui);
-  const dataState = useSelector((state) => state.data);
+  const screams = useSelector((state) => state.data.screams);
   const userState = useSelector((state) => state.user);
   const [errors, setErrors] = useState(null);
   const navigate = useNavigate();
@@ -21,6 +21,7 @@ const ScreamsList = (props) => {
     }
   }, []);
 
+  console.log(screams);
   useEffect(() => {
     dispatch(getScreams());
 
@@ -29,9 +30,9 @@ const ScreamsList = (props) => {
         setErrors("Something went wrong.");
       }
     }
-  }, []);
+  }, [dispatch]);
 
-  if (!dataState.screams) {
+  if (!screams) {
     let content;
     content = [1, 2, 3, 4].map((n) => <SkeletonScream key={n} />);
     return content;
@@ -49,11 +50,11 @@ const ScreamsList = (props) => {
   };
 
   let content =
-    dataState.screams.length === 0 ? (
+    screams.length === 0 ? (
       <p className={classes.no_screams}>No screams found.</p>
     ) : (
       <>
-        {dataState.screams.map((scream) => {
+        {screams.map((scream) => {
           return (
             <Scream
               key={scream._id}
@@ -74,4 +75,4 @@ const ScreamsList = (props) => {
   return <>{content}</>;
 };
 
-export default React.memo(ScreamsList);
+export default ScreamsList;

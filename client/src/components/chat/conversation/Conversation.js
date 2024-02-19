@@ -5,6 +5,7 @@ import { useDispatch } from "react-redux";
 import { dataActions } from "../../../store/reducers/data";
 import { useParams } from "react-router-dom";
 import { userActions } from "../../../store/reducers/user";
+import linkValidation from "../../../utils/linkValidation";
 
 const Conversation = (props) => {
   const dispatch = useDispatch();
