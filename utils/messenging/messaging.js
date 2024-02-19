@@ -4,7 +4,7 @@ module.exports = function (socket) {
   let io = require("../../config/socket").getIO();
   socket.on("sendMessage", ({ receiverId, text, _id }) => {
     const receiver = getCurrentUser(receiverId);
-
+    console.log("send message", text);
     if (receiver && receiver.socketId) {
       io.to(receiver.socketId).emit("getMessage", {
         senderId: socket.decodedToken.userId,

@@ -24,6 +24,7 @@ import ChatMessagePanel from "../src/components/chat/ChatMessagePanel";
 
 function App() {
   const [socket, setSocket] = useState(null);
+  // const [isConnected, setIsConnected] = useState(socket.connected);
   const cookies = new Cookies();
   const token = cookies.get("upid");
   const navigate = useNavigate();
@@ -33,45 +34,56 @@ function App() {
   const location = useLocation();
   const errors = useSelector((state) => state.ui.errors);
 
-  useLayoutEffect(() => {
-    dispatch(auth({ navigate }));
-  }, [dispatch]);
+  useEffect(() => {
+    dispatch(auth({ navigate, socket }));
+  }, [dispatch, navigate, socket]);
 
   useEffect(() => {
-    async function initializeSocket() {
-      if (token) {
-        // const socket = io.connect("/", {
-        //   auth: { token: `Bearer ${token}` },
-        // });
-
-        const socket = io.connect();
-
-        socket.on("connect_error", (error) => {
-          console.log("Error socket");
-          dispatch(userActions.logout());
-          localStorage.clear("target");
-
-          if (!errors) {
-            dispatch(
-              uiActions.errors({
-                message: "Couldn't connect to the server!",
-              })
-            );
-          }
-        });
-
-        setSocket(socket);
-      }
+    if (token) {
+      const socket = io.connect("http://localhost:8800", {
+        auth: { token: `Bearer ${token}` },
+      });
+      // const socket = io.connect("/", {
+      // auth: { token: `Bearer ${token}` },
+      // });
+      setSocket(socket);
     }
+    // function onConnect() {
+    //   setIsConnected(true);
+    // }
+    // socket.connect("/");
+    // socket.on("connect", onConnect);
+    // if (token) {
+    //   const socket = io.connect("/", {
+    // auth: { token: `Bearer ${token}` },
+    // autoConnect: false,
+    //   });
+    //   // socket.connect();
+    //   // const socket = io.connect();
+    //   socket.on("connect_error", (error) => {
+    //     console.log("Error socket");
+    //     console.log(error);
+    //     dispatch(userActions.logout());
+    //     localStorage.clear("target");
+    //     if (!errors) {
+    //       dispatch(
+    //         uiActions.errors({
+    //           message: "Couldn't connect to the server!",
+    //         })
+    //       );
+    //     }
+    //   });
 
-    initializeSocket();
-  }, []);
+    // }
+  }, [token]);
 
   useEffect(() => {
     if (socket) {
-      socket.emit("newUser");
+      socket.emit("newUser", {
+        senderId: userId,
+      });
     }
-  }, [socket]);
+  }, [socket, userId]);
 
   useEffect(() => {
     if (socket) {
@@ -84,7 +96,7 @@ function App() {
         for (let user of users) {
           usersSet.add(user);
         }
-
+        console.log([...usersSet]);
         dispatch(dataActions.setOnlineUsers(usersSet));
       });
     }
@@ -150,13 +162,21 @@ function App() {
           <Route
             path="/signup"
             element={
-              isUserAuthenticated ? <Navigate replace to="/" /> : <Auth />
+              isUserAuthenticated ? (
+                <Navigate replace to="/" />
+              ) : (
+                <Auth socket={socket} />
+              )
             }
           />
           <Route
             path="/login"
             element={
-              isUserAuthenticated ? <Navigate replace to="/" /> : <Auth />
+              isUserAuthenticated ? (
+                <Navigate replace to="/" />
+              ) : (
+                <Auth socket={socket} />
+              )
             }
           />
 

@@ -11,8 +11,7 @@ export const auth = createAsyncThunk(
   "user/auth",
   async (userData, { dispatch }) => {
     const cookies = new Cookies();
-
-    console.log(process.env.REACT_APP_BASE_URL);
+    const { navigate, socket } = userData;
     dispatch(uiActions.errorsNullify());
     dispatch(uiActions.setLoader());
 
@@ -27,10 +26,11 @@ export const auth = createAsyncThunk(
         dispatch(getScreams());
         dispatch(getConversations());
       } else {
+        socket.emit("disconnectUserWhenLogout");
         dispatch(uiActions.setLoader());
         dispatch(userActions.logout());
         localStorage.clear("target");
-        userData.navigate("/login", { replace: true });
+        navigate("/login", { replace: true });
       }
 
       dispatch(uiActions.setLoader());

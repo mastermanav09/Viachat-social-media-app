@@ -48,6 +48,22 @@ const userSchema = new Schema(
       },
     },
 
+    conversations: [
+      {
+        members: [
+          {
+            userId: { type: Schema.Types.ObjectId },
+            userImageUrl: { type: String },
+            userName: { type: String },
+          },
+        ],
+
+        recentMessage: {
+          type: String,
+        },
+      },
+    ],
+
     provider: {
       type: String,
     },
