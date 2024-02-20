@@ -3,7 +3,8 @@ const screamsController = require("../controllers/screams");
 const bodyValidationArray = require("../utils/validators/others/bodyValidation");
 const isAuth = require("../middleware/is-auth");
 
-router.get("/screams", isAuth, screamsController.getAllScreams);
+router.get("/screams/:page", isAuth, screamsController.getAllScreams);
+router.get("/screams", isAuth, screamsController.getScreamsCount);
 router.post(
   "/create",
   isAuth,

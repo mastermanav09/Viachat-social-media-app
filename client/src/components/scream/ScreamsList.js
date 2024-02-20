@@ -1,36 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import classes from "./ScreamsList.module.scss";
 import SkeletonScream from "../UI/skeletons/SkeletonScream";
 import Scream from "./Scream";
 import { useSelector, useDispatch } from "react-redux";
-import { getScreams } from "../../store/reducers/data";
-import { useNavigate } from "react-router-dom";
 import { HOME_SCREAM } from "../../utils/constants";
 
 const ScreamsList = (props) => {
-  const dispatch = useDispatch();
-  const uiState = useSelector((state) => state.ui);
   const screams = useSelector((state) => state.data.screams);
   const userState = useSelector((state) => state.user);
   const [errors, setErrors] = useState(null);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (userState.tokenExpiryState * 1000 < Date.now()) {
-      navigate("/login", { replace: true });
-    }
-  }, []);
-
-  console.log(screams);
-  useEffect(() => {
-    dispatch(getScreams());
-
-    if (uiState.errors) {
-      if (!uiState.errors.errorData) {
-        setErrors("Something went wrong.");
-      }
-    }
-  }, [dispatch]);
 
   if (!screams) {
     let content;

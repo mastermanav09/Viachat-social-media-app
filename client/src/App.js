@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useLayoutEffect } from "react";
 import { io } from "socket.io-client";
-import Cookies from "universal-cookie";
+import Cookies from "js-cookie";
 import {
   useNavigate,
   Route,
@@ -12,27 +12,35 @@ import Layout from "./components/layout/Layout";
 import Auth from "./pages/Auth";
 import Home from "./pages/Home";
 import { useSelector, useDispatch } from "react-redux";
-import { auth, userActions } from "./store/reducers/user";
+import { auth } from "./store/reducers/user";
 import Profile from "./pages/Profile";
 import PostScream from "../src/components/scream/PostScream";
 import ScreamDisplay from "../src/components/scream/ScreamDisplay";
 import Error from "./pages/Error";
-import { dataActions } from "./store/reducers/data";
-import { uiActions } from "./store/reducers/ui";
+import { getScreams } from "./store/reducers/data";
 import ChatPanel from "../src/components/chat/ChatPanel";
 import ChatMessagePanel from "../src/components/chat/ChatMessagePanel";
 
 function App() {
   const [socket, setSocket] = useState(null);
-  // const [isConnected, setIsConnected] = useState(socket.connected);
-  const cookies = new Cookies();
-  const token = cookies.get("upid");
+  const token = Cookies.get("upid");
   const navigate = useNavigate();
   const isUserAuthenticated = useSelector((state) => state.user.authenticated);
   const userId = useSelector((state) => state.user.userId);
+  const tokenExpiryState = useSelector((state) => state.user.tokenExpiryState);
   const dispatch = useDispatch();
   const location = useLocation();
-  const errors = useSelector((state) => state.ui.errors);
+  const totalResults = useSelector((state) => state.data.totalScreamsCount);
+  const screams = useSelector((state) => state.data.screams || []);
+  const [screamsLoader, setScreamsLoader] = useState(true);
+  const [page, setPage] = useState(1);
+
+  useEffect(() => {
+    if (tokenExpiryState && tokenExpiryState * 1000 < Date.now()) {
+      Cookies.remove("upid");
+      navigate("/login", { replace: true });
+    }
+  }, [navigate, tokenExpiryState]);
 
   useEffect(() => {
     dispatch(auth({ navigate, socket }));
@@ -40,73 +48,49 @@ function App() {
 
   useEffect(() => {
     if (token) {
-      const socket = io.connect("http://localhost:8800", {
+      const socket = io.connect(process.env.REACT_APP_BASE_URL, {
         auth: { token: `Bearer ${token}` },
       });
-      // const socket = io.connect("/", {
-      // auth: { token: `Bearer ${token}` },
-      // });
+
       setSocket(socket);
     }
-    // function onConnect() {
-    //   setIsConnected(true);
-    // }
-    // socket.connect("/");
-    // socket.on("connect", onConnect);
-    // if (token) {
-    //   const socket = io.connect("/", {
-    // auth: { token: `Bearer ${token}` },
-    // autoConnect: false,
-    //   });
-    //   // socket.connect();
-    //   // const socket = io.connect();
-    //   socket.on("connect_error", (error) => {
-    //     console.log("Error socket");
-    //     console.log(error);
-    //     dispatch(userActions.logout());
-    //     localStorage.clear("target");
-    //     if (!errors) {
-    //       dispatch(
-    //         uiActions.errors({
-    //           message: "Couldn't connect to the server!",
-    //         })
-    //       );
-    //     }
-    //   });
-
-    // }
   }, [token]);
 
   useEffect(() => {
     if (socket) {
-      socket.emit("newUser", {
-        senderId: userId,
-      });
+      socket.emit("newUser");
     }
   }, [socket, userId]);
 
-  useEffect(() => {
-    if (socket) {
-      socket.on("getConversation", (data) => {
-        dispatch(userActions.addNewConversation(data.conversation));
-      });
-
-      socket.on("getOnlineUsers", ({ users }) => {
-        const usersSet = new Set();
-        for (let user of users) {
-          usersSet.add(user);
-        }
-        console.log([...usersSet]);
-        dispatch(dataActions.setOnlineUsers(usersSet));
-      });
+  function handleScreamsLoading() {
+    if (
+      Math.abs(
+        window.innerHeight +
+          document.documentElement.scrollTop -
+          document.documentElement.scrollHeight
+      ) <= 100
+    ) {
+      setScreamsLoader(true);
+      setPage((page) => page + 1);
     }
-  }, [socket, dispatch]);
+  }
+
+  useEffect(() => {
+    function getMoreScreams() {
+      if (screams.length >= totalResults) {
+        setScreamsLoader(false);
+        return;
+      }
+
+      dispatch(getScreams({ page, setScreamsLoader }));
+    }
+
+    getMoreScreams();
+  }, [dispatch, page, totalResults]);
 
   useEffect(() => {
     if (socket) {
-      socket.emit("getOnlineUsersEvent", {
-        senderId: userId,
-      });
+      socket.emit("getOnlineUsersEvent");
     }
   }, [socket, userId]);
 
@@ -121,7 +105,6 @@ function App() {
     }
   }, []);
 
-  console.log(isUserAuthenticated);
   return (
     <>
       <Layout socket={socket}>
@@ -130,7 +113,11 @@ function App() {
             path="/"
             element={
               isUserAuthenticated ? (
-                <Home socket={socket} />
+                <Home
+                  socket={socket}
+                  handleScreamsLoading={handleScreamsLoading}
+                  screamsLoader={screamsLoader}
+                />
               ) : (
                 <Navigate replace to="/login" />
               )

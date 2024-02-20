@@ -1,13 +1,16 @@
-const Conversation = require("../models/conversation");
 const User = require("../models/user");
+const mongoose = require("mongoose");
 
 exports.getConversations = async (req, res, next) => {
   const userId = req.user.userId;
 
   try {
-    const conversations = await Conversation.find({
-      "members.userId": userId,
-    }).sort({ updatedAt: -1 });
+    const conversationsDoc = await User.findById(userId).select(
+      "conversations -_id"
+    );
+
+    const { conversations } = conversationsDoc;
+    conversations.sort((a, b) => b.updatedAt - a.updatedAt);
 
     res.status(200).json(conversations);
   } catch (error) {
@@ -20,6 +23,12 @@ exports.addNewConversation = async (req, res, next) => {
   const receiverUserId = req.body.receiverId;
 
   try {
+    if (userId === receiverUserId) {
+      const error = new Error("Invalid user id.");
+      error.statusCode = 422;
+      throw error;
+    }
+
     const user = await User.findById(userId);
     if (!user) {
       const error = new Error("User not found!");
@@ -35,38 +44,73 @@ exports.addNewConversation = async (req, res, next) => {
       throw error;
     }
 
-    const existingConversation = await Conversation.find({
-      "members.userId": {
-        $all: [userId, receiverUserId],
-      },
-    });
+    const existingConversation = user.conversations.find(
+      (conversation) =>
+        conversation.members[0].userId.toString() === receiverUserId
+    );
 
-    if (existingConversation.length) {
+    if (existingConversation) {
       return res
         .status(200)
-        .json({ conversation: existingConversation[0], exists: true });
+        .json({ myConversation: existingConversation, exists: true });
     }
 
-    const newConversation = new Conversation({
-      members: [
-        {
-          userId: userId,
-          userImageUrl: user.credentials.imageUrl,
-          userName: user.credentials.username,
-        },
+    const conversationId = new mongoose.Types.ObjectId();
 
-        {
-          userId: receiverUserId,
-          userImageUrl: receiverUser.credentials.imageUrl,
-          userName: receiverUser.credentials.username,
-        },
-      ],
-
+    const newConversation = {
+      _id: conversationId,
       recentMessage: "",
-    });
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
 
-    const savedConversation = await newConversation.save();
-    res.status(201).json({ conversation: savedConversation, exists: false });
+    const userDoc1 = await User.findOneAndUpdate(
+      { _id: userId },
+      {
+        $push: {
+          conversations: {
+            ...newConversation,
+            members: [
+              {
+                userId: receiverUserId,
+                userImageUrl: receiverUser.credentials.imageUrl,
+                userName: receiverUser.credentials.username,
+              },
+            ],
+          },
+        },
+      },
+      {
+        new: true,
+      }
+    );
+
+    const userDoc2 = await User.findOneAndUpdate(
+      { _id: receiverUserId },
+      {
+        $push: {
+          conversations: {
+            ...newConversation,
+            members: [
+              {
+                userId: userId,
+                userImageUrl: user.credentials.imageUrl,
+                userName: user.credentials.username,
+              },
+            ],
+          },
+        },
+      },
+      {
+        new: true,
+      }
+    );
+
+    res.status(201).json({
+      myConversation: userDoc1.conversations[0],
+      friendConversation: userDoc2.conversations[0],
+      exists: false,
+    });
   } catch (error) {
     console.log(error);
     if (!error.statusCode) {

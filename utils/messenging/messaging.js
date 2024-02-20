@@ -1,10 +1,10 @@
-const { getCurrentUser } = require("../users/connectedUsers");
+const { getCurrentUser, users } = require("../users/connectedUsers");
 
 module.exports = function (socket) {
   let io = require("../../config/socket").getIO();
   socket.on("sendMessage", ({ receiverId, text, _id }) => {
     const receiver = getCurrentUser(receiverId);
-    console.log("send message", text);
+
     if (receiver && receiver.socketId) {
       io.to(receiver.socketId).emit("getMessage", {
         senderId: socket.decodedToken.userId,
@@ -20,15 +20,15 @@ module.exports = function (socket) {
       const receiver = getCurrentUser(receiverId);
       const sender = getCurrentUser(senderId);
 
-      if (receiver && receiver.socketId) {
-        io.to(receiver.socketId).emit("getRecentMessage", {
+      if (sender && sender.socketId) {
+        io.to(sender.socketId).emit("getRecentMessage", {
           text,
           conversationId,
         });
       }
 
-      if (sender && sender.socketId) {
-        io.to(sender.socketId).emit("getRecentMessage", {
+      if (receiver && receiver.socketId) {
+        io.to(receiver.socketId).emit("getRecentMessage", {
           text,
           conversationId,
         });
@@ -36,13 +36,16 @@ module.exports = function (socket) {
     }
   );
 
-  socket.on("addNewConversation", ({ receiverId, conversation }) => {
-    const receiver = getCurrentUser(receiverId);
-    console.log(receiverId, conversation);
-    if (receiver && receiver.socketId) {
-      io.to(receiver.socketId).emit("getConversation", {
-        conversation,
-      });
+  socket.on(
+    "addNewConversation",
+    ({ receiverId, friendConversation: conversation }) => {
+      const receiver = getCurrentUser(receiverId);
+
+      if (receiver && receiver.socketId) {
+        io.to(receiver.socketId).emit("getConversation", {
+          conversation,
+        });
+      }
     }
-  });
+  );
 };

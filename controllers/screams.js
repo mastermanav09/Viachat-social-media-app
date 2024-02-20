@@ -7,14 +7,36 @@ const Like = require("../models/like");
 const { Socket } = require("socket.io");
 const io = require("../config/socket");
 
+const limit = 10;
 exports.getAllScreams = async (req, res, next) => {
+  const page = parseInt(req.params.page) || 1;
+
   try {
     const screams = await Scream.find()
       .select(["-__v", "-updatedAt"])
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .skip((page - 1) * limit)
+      .limit(limit);
 
     res.status(200).json({
       screams: screams,
+    });
+  } catch (error) {
+    console.log(error);
+    if (!error.statusCode) {
+      error.statusCode = 500;
+    }
+
+    next(error);
+  }
+};
+
+exports.getScreamsCount = async (req, res, next) => {
+  try {
+    const totalScreamsCount = await Scream.countDocuments();
+
+    res.status(200).json({
+      totalCount: totalScreamsCount,
     });
   } catch (error) {
     console.log(error);

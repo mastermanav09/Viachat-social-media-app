@@ -14,27 +14,93 @@ import { markNotificationsRead } from "../../store/reducers/user";
 import HamburgerIcon from "../UI/Hamburger";
 import Message from "../svg/Message";
 import Chats from "../chat/Chats";
-import linkValidation from "../../utils/linkValidation";
+import { dataActions } from "../../store/reducers/data";
+import JumpingDot from "../svg/JumpingDot";
+import Cookies from "js-cookie";
 
 const MainNavigation = (props) => {
   const dispatch = useDispatch();
+  const onlineUsers = useSelector((state) => state.data.onlineUsers);
   const userState = useSelector((state) => state.user);
   const uiState = useSelector((state) => state.ui);
   const [unreadNotifications, setUnreadNotifications] = useState(null);
+  const showChats = useSelector((state) => state.ui.showChats);
+  const showChatPanel = useSelector((state) => state.ui.showChatPanel);
+  const [getNewMessage, setGetNewMessage] = useState(false);
+  const areUnreadMessages = useSelector((state) => state.ui.unreadMessages);
   const userCredentials = useSelector((state) => state.user.credentials);
   const { socket } = props;
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (userState.tokenExpiryState * 1000 < Date.now()) {
+    if (
+      userState.tokenExpiryState &&
+      userState.tokenExpiryState * 1000 < Date.now()
+    ) {
+      Cookies.remove("upid");
       navigate("/login", { replace: true });
     }
-  }, [userState.tokenExpiryState]);
+  }, [navigate, userState.tokenExpiryState]);
 
   const authHandler = () => {
     dispatch(uiActions.errorsNullify());
     dispatch(uiActions.switchAuth());
   };
+
+  useEffect(() => {
+    if (socket) {
+      socket.on("getConversation", (data) => {
+        dispatch(userActions.addNewConversation(data.conversation));
+      });
+
+      socket.on("getOnlineUsers", ({ users, type }) => {
+        let usersSet = new Set([...onlineUsers]);
+        if (type === "add_user") {
+          for (let user of users) {
+            usersSet.add(user);
+          }
+        } else if (type === "remove_user") {
+          for (let user of users) {
+            usersSet.delete(user);
+          }
+        }
+
+        dispatch(dataActions.setOnlineUsers(usersSet));
+      });
+    }
+  }, [socket, dispatch]);
+
+  useEffect(
+    function () {
+      if (getNewMessage) {
+        if (!showChats && !showChatPanel) {
+          dispatch(uiActions.toggleUnreadMessages(true));
+          setGetNewMessage(false);
+        }
+      }
+
+      if (showChatPanel || showChats) {
+        setGetNewMessage(false);
+        dispatch(uiActions.toggleUnreadMessages(false));
+      }
+    },
+    [getNewMessage, dispatch, showChats, showChatPanel]
+  );
+
+  useEffect(() => {
+    if (socket) {
+      socket.on("getRecentMessage", (data) => {
+        dispatch(
+          userActions.updateConversation({
+            conversationId: data.conversationId,
+            text: data.text,
+          })
+        );
+
+        setGetNewMessage(true);
+      });
+    }
+  }, [socket, dispatch, getNewMessage, showChats, showChatPanel]);
 
   useEffect(() => {
     if (userState.notifications) {
@@ -71,8 +137,9 @@ const MainNavigation = (props) => {
   };
 
   const logoutHandler = () => {
-    socket.emit("disconnectUserWhenLogout");
     dispatch(userActions.logout());
+    navigate("/login", { replace: true });
+    socket.disconnect();
   };
 
   let updatedUsername;
@@ -171,7 +238,6 @@ const MainNavigation = (props) => {
                     </div>
                   )}
                 </li>
-
                 <li>
                   <div
                     className={[
@@ -181,6 +247,11 @@ const MainNavigation = (props) => {
                     onClick={manageChats}
                   >
                     <Message />
+                    {areUnreadMessages && (
+                      <div className={classes["unread-messages-icon"]}>
+                        <JumpingDot />
+                      </div>
+                    )}
                   </div>
                 </li>
 

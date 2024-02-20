@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import classes from "./ConversationList.module.scss";
 import { useSelector } from "react-redux";
 import LoadingSpinner from "../../UI/LoadingSpinner";
@@ -7,7 +7,6 @@ import Conversation from "./Conversation";
 const ConversationsList = (props) => {
   const userConversations = useSelector((state) => state.user.conversations);
   const onlineUsers = useSelector((state) => state.data.onlineUsers);
-  const userId = useSelector((state) => state.user.userId);
   const { socket } = props;
 
   let content = (
@@ -29,37 +28,20 @@ const ConversationsList = (props) => {
         </div>
       );
     } else {
-      content = userConversations
-        .filter((conversation) => {
-          const receiverUser = conversation.members.find(
-            (obj) => obj.userId !== userId
-          );
+      content = userConversations.map((conversation) => {
+        const receiverUser = conversation.members[0];
+        const isOnline = onlineUsers.has(receiverUser.userId);
 
-          if (
-            conversation.recentMessage.length === 0 &&
-            receiverUser.userId === userId
-          ) {
-            return false;
-          }
-
-          return true;
-        })
-        .map((conversation) => {
-          const receiverUser = conversation.members.find(
-            (obj) => obj.userId !== userId
-          );
-          const isOnline = onlineUsers.has(receiverUser.userId);
-
-          return (
-            <Conversation
-              key={conversation._id}
-              isOnline={isOnline}
-              conversation={conversation}
-              user={receiverUser}
-              socket={socket}
-            />
-          );
-        });
+        return (
+          <Conversation
+            key={conversation._id}
+            isOnline={isOnline}
+            conversation={conversation}
+            user={receiverUser}
+            socket={socket}
+          />
+        );
+      });
     }
   }
 

@@ -1,7 +1,6 @@
 import React from "react";
 import classes from "./Chats.module.scss";
 import { useSelector } from "react-redux";
-
 import ConversationsList from "./conversation/ConversationsList";
 
 const Chats = (props) => {

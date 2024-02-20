@@ -21,20 +21,6 @@ const profileValidationArray = [
 
     return true;
   }),
-
-  // body("username")
-  //   .trim()
-  //   .isLength({ min: 3 })
-  //   .withMessage("Username should be of at least 3 characters.")
-  //   .matches(/^[A-Za-z0-9.]+$/)
-  //   .withMessage(
-  //     "Sorry, only letters (a-z/A-Z), numbers (0-9), and periods (.) are allowed."
-  //   ),
-
-  // body("name")
-  //   .trim()
-  //   .isLength({ min: 3 })
-  //   .withMessage("Are you sure you entered your name correctly?"),
 ];
 
 module.exports = profileValidationArray;

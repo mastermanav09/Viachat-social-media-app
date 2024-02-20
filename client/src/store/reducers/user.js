@@ -1,36 +1,45 @@
-import Cookies from "universal-cookie";
+import Cookies from "js-cookie";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { uiActions } from "./ui";
-import { dataActions, getScreams } from "./data";
+import { dataActions, getScreamsCount } from "./data";
 import jwtDecode from "jwt-decode";
 
 axios.defaults.baseURL = process.env.REACT_APP_BASE_URL;
 
 export const auth = createAsyncThunk(
   "user/auth",
-  async (userData, { dispatch }) => {
-    const cookies = new Cookies();
+  async (userData, { dispatch, getState }) => {
     const { navigate, socket } = userData;
     dispatch(uiActions.errorsNullify());
     dispatch(uiActions.setLoader());
 
-    let existingToken = cookies.get("upid");
+    const state = getState();
+    const credentials = state.user.credentials;
+    const totalScreamsCount = state.data.totalScreamsCount;
+
+    let existingToken = Cookies.get("upid");
     if (existingToken) {
       let decodedToken = jwtDecode(existingToken);
 
       if (decodedToken) {
         dispatch(userActions.authenticated(decodedToken.userId));
         dispatch(userActions.setTokenExpiryState(decodedToken.exp));
-        dispatch(getUser());
-        dispatch(getScreams());
+
+        if (Object.keys(credentials).length === 0) {
+          dispatch(getUser());
+        }
+
         dispatch(getConversations());
+
+        if (totalScreamsCount === null) {
+          dispatch(getScreamsCount());
+        }
       } else {
-        socket.emit("disconnectUserWhenLogout");
         dispatch(uiActions.setLoader());
         dispatch(userActions.logout());
-        localStorage.clear("target");
         navigate("/login", { replace: true });
+        socket.disconnect();
       }
 
       dispatch(uiActions.setLoader());
@@ -46,20 +55,19 @@ export const auth = createAsyncThunk(
 
       if (res.data.token) {
         const token = res.data.token;
-        cookies.set("upid", token);
+        Cookies.set("upid", token);
 
         let decodedToken = jwtDecode(token);
 
         dispatch(userActions.authenticated(decodedToken.userId));
         dispatch(userActions.setTokenExpiryState(decodedToken.exp));
         dispatch(getUser());
-        dispatch(getScreams());
         dispatch(getConversations());
 
         userData.navigate("/", { replace: true });
       }
     } catch (error) {
-      const token = cookies.get("upid");
+      const token = Cookies.get("upid");
       if (token) {
         userData.navigate("/error", { replace: true });
         dispatch(uiActions.setLoader());
@@ -80,8 +88,7 @@ export const auth = createAsyncThunk(
 export const getUser = createAsyncThunk(
   "user/getUser",
   async (data, { dispatch }) => {
-    const cookies = new Cookies();
-    const token = cookies.get("upid");
+    const token = Cookies.get("upid");
 
     try {
       const res = await axios({
@@ -92,7 +99,6 @@ export const getUser = createAsyncThunk(
         },
       });
 
-      console.log("USer", res);
       if (res.status !== 200) {
         const error = new Error("Can't load screams!");
         throw error;
@@ -111,8 +117,7 @@ export const getUser = createAsyncThunk(
 export const likeScream = createAsyncThunk(
   "user/likeScream",
   async (data, { dispatch }) => {
-    const cookies = new Cookies();
-    const token = cookies.get("upid");
+    const token = Cookies.get("upid");
     const { socket } = data;
 
     try {
@@ -151,8 +156,7 @@ export const likeScream = createAsyncThunk(
 export const unlikeScream = createAsyncThunk(
   "user/unlikeScream",
   async (data, { dispatch }) => {
-    const cookies = new Cookies();
-    const token = cookies.get("upid");
+    const token = Cookies.get("upid");
     const { socket } = data;
 
     try {
@@ -190,8 +194,7 @@ export const unlikeScream = createAsyncThunk(
 export const markNotificationsRead = createAsyncThunk(
   "user/markNotificationsRead",
   async () => {
-    const cookies = new Cookies();
-    const token = cookies.get("upid");
+    const token = Cookies.get("upid");
 
     try {
       const res = await axios({
@@ -216,8 +219,7 @@ export const markNotificationsRead = createAsyncThunk(
 export const addUserDetails = createAsyncThunk(
   "user/addUserDetails",
   async (userData, { dispatch }) => {
-    const cookies = new Cookies();
-    const token = cookies.get("upid");
+    const token = Cookies.get("upid");
 
     try {
       const res = await axios({
@@ -258,8 +260,7 @@ export const addUserDetails = createAsyncThunk(
 export const updateProfilePhoto = createAsyncThunk(
   "user/updateProfilePhoto",
   async (userData, { dispatch, getState }) => {
-    const cookies = new Cookies();
-    const token = cookies.get("upid");
+    const token = Cookies.get("upid");
     const state = getState();
 
     try {
@@ -305,25 +306,18 @@ export const updateProfilePhoto = createAsyncThunk(
 export const addNewConversation = createAsyncThunk(
   "user/addNewConversation",
   async (data, { dispatch, getState }) => {
-    const cookies = new Cookies();
-    const token = cookies.get("upid");
+    const token = Cookies.get("upid");
     const { navigate, socket } = data;
 
     const state = getState();
     const userState = state.user;
     const { userId, conversations } = userState;
 
-    let conversationIndex = conversations.findIndex((conversation) => {
-      return (
-        (conversation.members[0].userId === data.receiverId ||
-          conversation.members[1].userId === data.receiverId) &&
-        (conversation.members[0].userId === userId ||
-          conversation.members[1].userId === userId)
-      );
-    });
+    let conversationIndex = conversations.findIndex(
+      (conversation) => conversation.members[0].userId === data.receiverId
+    );
 
     let conversation = conversations[conversationIndex];
-
     if (conversation) {
       navigate(`/my-profile/chats/${conversation._id}`);
       return;
@@ -339,15 +333,14 @@ export const addNewConversation = createAsyncThunk(
         },
       });
 
-      conversation = res.data.conversation;
-      const exists = res.data.exists;
+      const { myConversation, friendConversation, exists } = res.data;
 
-      dispatch(userActions.addNewConversation(conversation));
-      navigate(`/my-profile/chats/${conversation._id}`);
+      dispatch(userActions.addNewConversation(myConversation));
+      navigate(`/my-profile/chats/${myConversation._id}`);
 
       if (!exists) {
         socket.emit("addNewConversation", {
-          conversation,
+          friendConversation,
           receiverId: data.receiverId,
         });
       }
@@ -364,8 +357,7 @@ export const addNewConversation = createAsyncThunk(
 export const getConversations = createAsyncThunk(
   "user/getConversations",
   async (data, { dispatch }) => {
-    const cookies = new Cookies();
-    const token = cookies.get("upid");
+    const token = Cookies.get("upid");
 
     try {
       const res = await axios({
@@ -395,15 +387,41 @@ export const getConversations = createAsyncThunk(
 export const getMessages = createAsyncThunk(
   "user/getMessages",
   async (data, { dispatch }) => {
-    const cookies = new Cookies();
-    const token = cookies.get("upid");
+    const token = Cookies.get("upid");
+    const {
+      conversationMessagePage,
+      setConversationMessagePage,
+      conversationId,
+      setIsLoading,
+      conversation,
+      setConversation,
+      messages,
+    } = data;
 
     try {
-      data.setIsLoading(true);
+      let pageParam = 1;
+      const _conversation = conversationMessagePage.find(
+        (conversation) => conversation.conversationId === conversationId
+      );
+
+      const currConversation = messages?.find(
+        (message) => message.conversationId === conversationId
+      );
+
+      if (currConversation) {
+        if (
+          currConversation.messages.length >= _conversation.totalMessagesLength
+        ) {
+          return;
+        }
+
+        const { page } = _conversation;
+        pageParam = page;
+      }
 
       const res = await axios({
         method: "GET",
-        url: `/api/message/${data.conversationId}`,
+        url: `/api/message/${conversationId}/${pageParam}`,
         headers: {
           Authorization: "Bearer " + token,
         },
@@ -415,7 +433,7 @@ export const getMessages = createAsyncThunk(
       }
 
       dispatch(userActions.setMessages(res.data));
-      data.setIsLoading(false);
+      setIsLoading(false);
     } catch (error) {
       if (!error.response) {
         dispatch(uiActions.errors(error.message));
@@ -429,8 +447,7 @@ export const getMessages = createAsyncThunk(
 export const addNewMessage = createAsyncThunk(
   "user/addNewMessage",
   async (data, { dispatch }) => {
-    const cookies = new Cookies();
-    const token = cookies.get("upid");
+    const token = Cookies.get("upid");
     const { socket } = data;
 
     let tempId = Math.random();
@@ -513,8 +530,7 @@ const userSlice = createSlice({
     },
 
     logout(state, action) {
-      const cookies = new Cookies();
-      cookies.remove("upid");
+      Cookies.remove("upid");
       localStorage.clear("target");
 
       state.userId = null;
@@ -612,7 +628,25 @@ const userSlice = createSlice({
     },
 
     setMessages(state, action) {
-      state.messages.push(action.payload);
+      const { conversationId, messages, totalMessagesLength } = action.payload;
+      const messageConversaion = state.messages.find(
+        (item) => item.conversationId === conversationId
+      );
+
+      messages.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+
+      if (messageConversaion) {
+        messageConversaion.messages = [
+          ...messages,
+          ...messageConversaion.messages,
+        ];
+      } else {
+        state.messages.push({
+          conversationId: conversationId,
+          messages: messages,
+          totalMessagesLength,
+        });
+      }
     },
 
     addNewMessage(state, action) {

@@ -1,6 +1,6 @@
 import React from "react";
 import classes from "./Sidebar.module.scss";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import Cross from "../svg/Cross";
 import { useDispatch, useSelector } from "react-redux";
 import { uiActions } from "../../store/reducers/ui";
@@ -9,14 +9,17 @@ import NotificationsBell from "../svg/NotificationsBell";
 import { userActions } from "../../store/reducers/user";
 import { SIDEBAR_MOBILE } from "../../utils/constants";
 import Message from "../svg/Message";
-import linkValidation from "../../utils/linkValidation";
 
 const Sidebar = (props) => {
   const uiState = useSelector((state) => state.ui);
   const dispatch = useDispatch();
   const userCredentials = useSelector((state) => state.user.credentials);
-  const userState = useSelector((state) => state.user);
+  const isUserAuthenticated = useSelector((state) => state.user.authenticated);
+  const decodedTokenState = useSelector(
+    (state) => state.user.decodedTokenState
+  );
   const { socket } = props;
+  const navigate = useNavigate();
 
   const navigateActionHandler = () => {
     dispatch(uiActions.setSideBar(false));
@@ -30,9 +33,10 @@ const Sidebar = (props) => {
   };
 
   const logoutHandler = () => {
-    socket.emit("disconnectUserWhenLogout");
-    navigateActionHandler();
     dispatch(userActions.logout());
+    navigate("/login", { replace: true });
+    navigateActionHandler();
+    socket.disconnect();
   };
 
   return (
@@ -54,7 +58,7 @@ const Sidebar = (props) => {
         </div>
 
         <div className={classes["mobile-main-navigation"]}>
-          {!userState.authenticated && !userState.decodedTokenState && (
+          {!isUserAuthenticated && !decodedTokenState && (
             <div className={classes["auth-handler-mob"]}>
               <ul>
                 <li onClick={authHandler}>
@@ -72,7 +76,7 @@ const Sidebar = (props) => {
             </div>
           )}
 
-          {userState.authenticated && (
+          {isUserAuthenticated && (
             <>
               <div className={classes["profile-block"]}>
                 <ul>
