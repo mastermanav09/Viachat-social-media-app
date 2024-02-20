@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import classes from "./ScreamsList.module.scss";
 import SkeletonScream from "../UI/skeletons/SkeletonScream";
 import Scream from "./Scream";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { HOME_SCREAM } from "../../utils/constants";
 
 const ScreamsList = (props) => {
   const screams = useSelector((state) => state.data.screams);
   const userState = useSelector((state) => state.user);
-  const [errors] = useState(null);
+  const [errors, setErrors] = useState(null);
 
   if (!screams) {
     let content;
