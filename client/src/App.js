@@ -48,7 +48,7 @@ function App() {
 
   useEffect(() => {
     if (token) {
-      const socket = io.connect("http://localhost:8800", {
+      const socket = io.connect(process.env.REACT_APP_BASE_URL, {
         auth: { token: `Bearer ${token}` },
       });
 
