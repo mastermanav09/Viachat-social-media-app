@@ -63,10 +63,6 @@ async function getOnlineUsers(socket, senderId) {
   }
 }
 
-// function getRoomUsers(room) {
-//   return users.filter((user) => user.room === room);
-// }
-
 module.exports = {
   userJoin,
   getCurrentUser,
@@ -74,5 +70,4 @@ module.exports = {
   getOnlineUsers,
   getConversationUsers,
   users,
-  //   getRoomUsers,
 };

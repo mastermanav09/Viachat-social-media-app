@@ -4,32 +4,17 @@ import { NavLink } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { dataActions } from "../../../store/reducers/data";
 import { useParams } from "react-router-dom";
-import { userActions } from "../../../store/reducers/user";
 
 const Conversation = (props) => {
   const dispatch = useDispatch();
   const { user, conversation } = props;
   const [isMounted, setIsMounted] = useState(false);
-  const { socket } = props;
   const params = useParams();
 
   useEffect(() => {
     setIsMounted(true);
     return () => setIsMounted(false);
   }, []);
-
-  // useEffect(() => {
-  //   if (socket) {
-  //     socket.on("getRecentMessage", (data) => {
-  //       dispatch(
-  //         userActions.updateConversation({
-  //           conversationId: data.conversationId,
-  //           text: data.text,
-  //         })
-  //       );
-  //     });
-  //   }
-  // }, [socket, dispatch, conversation._id]);
 
   useEffect(() => {
     if (conversation._id === params.conversationId) {

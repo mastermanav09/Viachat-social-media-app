@@ -12,19 +12,17 @@ import Layout from "./components/layout/Layout";
 import Auth from "./pages/Auth";
 import Home from "./pages/Home";
 import { useSelector, useDispatch } from "react-redux";
-import { auth, userActions } from "./store/reducers/user";
+import { auth } from "./store/reducers/user";
 import Profile from "./pages/Profile";
 import PostScream from "../src/components/scream/PostScream";
 import ScreamDisplay from "../src/components/scream/ScreamDisplay";
 import Error from "./pages/Error";
-import { dataActions, getScreams } from "./store/reducers/data";
-import { uiActions } from "./store/reducers/ui";
+import { getScreams } from "./store/reducers/data";
 import ChatPanel from "../src/components/chat/ChatPanel";
 import ChatMessagePanel from "../src/components/chat/ChatMessagePanel";
 
 function App() {
   const [socket, setSocket] = useState(null);
-  // const [isConnected, setIsConnected] = useState(socket.connected);
   const token = Cookies.get("upid");
   const navigate = useNavigate();
   const isUserAuthenticated = useSelector((state) => state.user.authenticated);
@@ -32,11 +30,8 @@ function App() {
   const tokenExpiryState = useSelector((state) => state.user.tokenExpiryState);
   const dispatch = useDispatch();
   const location = useLocation();
-  const errors = useSelector((state) => state.ui.errors);
   const totalResults = useSelector((state) => state.data.totalScreamsCount);
   const screams = useSelector((state) => state.data.screams || []);
-  const [hasMoreItems, setHasMoreItems] = useState(true);
-  const pageLimit = useSelector((state) => state.data.pageLimitScreams);
   const [screamsLoader, setScreamsLoader] = useState(true);
   const [page, setPage] = useState(1);
 
@@ -56,38 +51,9 @@ function App() {
       const socket = io.connect("http://localhost:8800", {
         auth: { token: `Bearer ${token}` },
       });
-      // const socket = io.connect("/", {
-      // auth: { token: `Bearer ${token}` },
-      // });
+
       setSocket(socket);
     }
-    // function onConnect() {
-    //   setIsConnected(true);
-    // }
-    // socket.connect("/");
-    // socket.on("connect", onConnect);
-    // if (token) {
-    //   const socket = io.connect("/", {
-    // auth: { token: `Bearer ${token}` },
-    // autoConnect: false,
-    //   });
-    //   // socket.connect();
-    //   // const socket = io.connect();
-    //   socket.on("connect_error", (error) => {
-    //     console.log("Error socket");
-    //     console.log(error);
-    //     dispatch(userActions.logout());
-    //     localStorage.clear("target");
-    //     if (!errors) {
-    //       dispatch(
-    //         uiActions.errors({
-    //           message: "Couldn't connect to the server!",
-    //         })
-    //       );
-    //     }
-    //   });
-
-    // }
   }, [token]);
 
   useEffect(() => {
@@ -106,13 +72,7 @@ function App() {
     ) {
       setScreamsLoader(true);
       setPage((page) => page + 1);
-      // setHasMoreItems(false);
-      // return;
     }
-
-    // dispatch(getScreams({ page }));
-    // console.log("Fetching more items");
-    // setPage((page) => page + 1);
   }
 
   useEffect(() => {
@@ -127,23 +87,6 @@ function App() {
 
     getMoreScreams();
   }, [dispatch, page, totalResults]);
-
-  // useEffect(() => {
-  //   if (socket) {
-  //     socket.on("getConversation", (data) => {
-  //       dispatch(userActions.addNewConversation(data.conversation));
-  //     });
-
-  //     socket.on("getOnlineUsers", ({ users, type }) => {
-  //       const usersSet = new Set();
-  //       for (let user of users) {
-  //         usersSet.add(user);
-  //       }
-
-  //       dispatch(dataActions.setOnlineUsers(usersSet));
-  //     });
-  //   }
-  // }, [socket, dispatch]);
 
   useEffect(() => {
     if (socket) {

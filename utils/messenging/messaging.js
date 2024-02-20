@@ -28,8 +28,6 @@ module.exports = function (socket) {
       }
 
       if (receiver && receiver.socketId) {
-        console.log("receiver ghuuss", receiver.socketId);
-        console.log(users);
         io.to(receiver.socketId).emit("getRecentMessage", {
           text,
           conversationId,

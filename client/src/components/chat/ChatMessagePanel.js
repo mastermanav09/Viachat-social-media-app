@@ -11,10 +11,8 @@ import MessageItem from "./message/MessageItem";
 import { useNavigate, useParams } from "react-router-dom";
 import LoadingSpinner from "../UI/LoadingSpinner";
 import MessageBox from "./message/MessageBox";
-import { uiActions } from "../../store/reducers/ui";
 import { debounce } from "../../utils/debounceFn";
 
-let onceScroll = 2;
 const ChatMessagePanel = (props) => {
   const dispatch = useDispatch();
   const messages = useSelector((state) => state.user.messages);
@@ -42,36 +40,6 @@ const ChatMessagePanel = (props) => {
   const navigate = useNavigate();
   const [conversationMessagePage, setConversationMessagePage] = useState([]);
   // this will hold the page value for each of the conversation messages.
-  const totalResults = useSelector((state) => state.data.totalScreamsCount);
-  const [mounted, setMounted] = useState(true);
-
-  function handleMessages() {
-    if (
-      Math.abs(
-        window.innerHeight +
-          document.documentElement.scrollTop -
-          document.documentElement.scrollHeight
-      ) <= 100
-    ) {
-      // setScreamsLoader(true);
-      // setPage((page) => page + 1);
-    }
-  }
-
-  // useEffect(() => {
-  // function getInfiniteScreams() {
-  //   if (messages.length >= totalMessages) {
-  //     setScreamsLoader(false);
-  //     return;
-  //   }
-  // dispatch(getMessages({ conversationId, setIsLoading }));
-  // }
-  // getInfiniteScreams();
-  // }, [dispatch, page]);
-
-  // console.log("conversation", conversation);
-  console.log("conversationMessagePage", conversationMessagePage);
-  console.log("messages", messages, conversationId);
 
   function handleMessagesLoading() {
     if (chatMainAreaRef?.current?.scrollTop <= 400) {
@@ -101,26 +69,13 @@ const ChatMessagePanel = (props) => {
         return updatedOutput;
       });
     }
-
-    // dispatch(
-    //   getMessages({
-    //     conversationId,
-    //     setIsLoading,
-    //     conversationMessagePage,
-    //     setConversationMessagePage,
-    //   })
-    // );
   }
-  // console.log("Fetching more items");
-  // setPage((page) => page + 1);
-  // }
 
   useEffect(() => {
     const toGetConversation = messages?.find(
       (message) => message.conversationId === conversationId
     );
     if (toGetConversation) {
-      // setIsLoading(true);
       setConversation(toGetConversation);
       setIsLoading(false);
     }
@@ -142,46 +97,8 @@ const ChatMessagePanel = (props) => {
       );
     }
 
-    // if (mounted) {
     getMoreMessages();
-    // }
   }, [conversationMessagePage, conversationId]);
-
-  const throttledHandleScreams = () => {
-    // cleint height === innerheight
-  };
-  // useEffect(() => {
-  //   const chatMainAreaElement = chatMainAreaRef?.current;
-  //   console.log(chatMainAreaElement);
-  //   chatMainAreaElement.addEventListener("scroll", throttledHandleScreams);
-
-  //   return () =>
-  //     chatMainAreaElement.removeEventListener("scroll", throttledHandleScreams);
-  // }, []);
-
-  // console.log("chatMainAreaRef", chatMainAreaRef?.current?.clientHeight);
-  // useEffect(() => {
-  //   async function getMessagesHandler() {
-  //     const conversation = messages.find(
-  //       (message) => message.conversationId === conversationId
-  //     );
-
-  //     if (conversation) {
-  //       setConversation(conversation);
-  //     } else {
-  //       dispatch(
-  //         getMessages({
-  //           conversationId,
-  //           setIsLoading,
-  //           conversationMessagePage,
-  //           setConversationMessagePage,
-  //         })
-  //       );
-  //     }
-  //   }
-
-  //   getMessagesHandler();
-  // }, [dispatch, conversationId, messages, conversation]);
 
   useEffect(() => {
     if (errors) {
@@ -240,15 +157,8 @@ const ChatMessagePanel = (props) => {
   };
 
   useEffect(() => {
-    // if (onceScroll) {
     scrollRef.current?.scrollIntoView({ block: "end" });
-    // onceScroll--;
-    // }
   }, [conversation]);
-
-  // useEffect(() => {
-  //   setMounted(false);
-  // }, []);
 
   return (
     <div

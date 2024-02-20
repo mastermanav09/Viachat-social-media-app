@@ -62,7 +62,6 @@ export const auth = createAsyncThunk(
         dispatch(userActions.authenticated(decodedToken.userId));
         dispatch(userActions.setTokenExpiryState(decodedToken.exp));
         dispatch(getUser());
-        // dispatch(getScreams());
         dispatch(getConversations());
 
         userData.navigate("/", { replace: true });
@@ -405,23 +404,11 @@ export const getMessages = createAsyncThunk(
         (conversation) => conversation.conversationId === conversationId
       );
 
-      // const conversation = messages.find(
-      //   (message) => message.conversationId === conversationId
-      // );
-
-      // if (conversation) {
-      //   setConversation(conversation);
-      // }
-
       const currConversation = messages?.find(
         (message) => message.conversationId === conversationId
       );
 
       if (currConversation) {
-        // if (conversation?.conversationId !== conversationId) {
-        //   setConversation(currConversation);
-        //   return;
-        // }
         if (
           currConversation.messages.length >= _conversation.totalMessagesLength
         ) {
@@ -431,15 +418,6 @@ export const getMessages = createAsyncThunk(
         const { page } = _conversation;
         pageParam = page;
       }
-
-      // if (_conversation) {
-      // const currConversation = messages?.find(
-      //   (message) => message.conversationId === conversationId
-      // );
-      //   if (currConversation) {
-      //     setConversation(currConversation);
-      // }
-      // }
 
       const res = await axios({
         method: "GET",
@@ -453,19 +431,6 @@ export const getMessages = createAsyncThunk(
         const error = new Error("Can't load messages!");
         throw error;
       }
-      console.log("reeeeeeeeeeeeeeeeeeeeeeeeeeeee", res.data);
-      // if (!_conversation) {
-      // console.log("pageparem", pageParam);
-      // setConversationMessagePage((prev) => {
-      //   prev.push({
-      //     conversationId,
-      //     page: pageParam,
-      //     totalMessagesLength: res.data.totalMessagesLength,
-      //   });
-
-      //   return prev;
-      // });
-      // }
 
       dispatch(userActions.setMessages(res.data));
       setIsLoading(false);

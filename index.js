@@ -26,8 +26,6 @@ const {
   getCurrentUser,
   getOnlineUsers,
   getConversationUsers,
-  users,
-  // getRoomUsers,
 } = require("./utils/users/connectedUsers");
 
 const PORT = process.env.PORT || 8800;
