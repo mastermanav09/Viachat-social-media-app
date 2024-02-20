@@ -4,10 +4,15 @@
   grid-template-rows: 1fr;
   grid-template-areas: "left-sub-container right-sub-container";
   margin: 0 auto 1rem;
-  max-width: 60rem;
+  max-width: 70rem;
   padding: 1.5rem 0;
   width: 88%;
   grid-column-gap: 2.5rem;
+
+  .no_screams {
+    text-align: center;
+    font-size: 1rem;
+  }
 
   @media screen and (max-width: 1024px) {
     width: 94%;
@@ -70,4 +75,9 @@
       }
     }
   }
+}
+
+.spinner {
+  text-align: center;
+  margin: 2rem auto 3rem;
 }

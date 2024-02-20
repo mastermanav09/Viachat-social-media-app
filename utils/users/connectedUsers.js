@@ -1,12 +1,9 @@
 const User = require("../../models/user");
-const Conversation = require("../../models/conversation");
-
 const users = [];
 
 function userJoin(userId, socketId) {
   const user = { userId, socketId };
   users.push(user);
-  console.log("userJoined", users);
   return user;
 }
 
@@ -22,31 +19,22 @@ function userLeave(socketId) {
   }
 }
 
-async function updateOnlineUsers(socket, senderId) {
+async function getConversationUsers(socket, senderId) {
   try {
-    const conversations = await Conversation.find({
-      "members.userId": senderId,
-    });
+    const conversationsDoc = await User.findById(senderId).select(
+      "conversations -_id"
+    );
 
-    let onlineUsers = [];
+    const { conversations } = conversationsDoc;
+    let conversationUsersSocketIds = [];
+
     for (let conversation of conversations) {
-      const user1 = conversation.members[0].userId;
-      const user2 = conversation.members[1].userId;
-
-      if (
-        user1.toString() !== senderId &&
-        users.find((user) => user.userId === user1.toString())
-      ) {
-        onlineUsers.push(user1.toString());
-      } else if (
-        user2.toString() !== senderId &&
-        users.find((user) => user.userId === user2.toString())
-      ) {
-        onlineUsers.push(user2.toString());
-      }
+      const convoUser = conversation.members[0].userId;
+      const user = users.find((user) => user.userId === convoUser.toString());
+      conversationUsersSocketIds.push(user?.socketId);
     }
 
-    return onlineUsers;
+    return conversationUsersSocketIds;
   } catch (error) {
     console.log(error);
   }
@@ -54,25 +42,18 @@ async function updateOnlineUsers(socket, senderId) {
 
 async function getOnlineUsers(socket, senderId) {
   try {
-    const conversations = await Conversation.find({
-      "members.userId": senderId,
-    });
+    const conversationsDoc = await User.findById(senderId).select(
+      "conversations -_id"
+    );
+
+    const { conversations } = conversationsDoc;
 
     let onlineUsers = [];
     for (let conversation of conversations) {
-      const user1 = conversation.members[0].userId;
-      const user2 = conversation.members[1].userId;
+      const convoUser = conversation.members[0].userId;
 
-      if (
-        user1.toString() !== senderId &&
-        users.find((user) => user.userId === user1.toString())
-      ) {
-        onlineUsers.push(user1.toString());
-      } else if (
-        user2.toString() !== senderId &&
-        users.find((user) => user.userId === user2.toString())
-      ) {
-        onlineUsers.push(user2.toString());
+      if (users.find((user) => user.userId === convoUser.toString())) {
+        onlineUsers.push(convoUser.toString());
       }
     }
 
@@ -91,5 +72,7 @@ module.exports = {
   getCurrentUser,
   userLeave,
   getOnlineUsers,
+  getConversationUsers,
+  users,
   //   getRoomUsers,
 };

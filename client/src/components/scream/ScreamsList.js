@@ -15,22 +15,15 @@ const ScreamsList = (props) => {
   const [errors, setErrors] = useState(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (userState.tokenExpiryState * 1000 < Date.now()) {
-      navigate("/login", { replace: true });
-    }
-  }, []);
+  // useEffect(() => {
+  //   dispatch(getScreams());
 
-  console.log(screams);
-  useEffect(() => {
-    dispatch(getScreams());
-
-    if (uiState.errors) {
-      if (!uiState.errors.errorData) {
-        setErrors("Something went wrong.");
-      }
-    }
-  }, [dispatch]);
+  //   if (uiState.errors) {
+  //     if (!uiState.errors.errorData) {
+  //       setErrors("Something went wrong.");
+  //     }
+  //   }
+  // }, [dispatch]);
 
   if (!screams) {
     let content;

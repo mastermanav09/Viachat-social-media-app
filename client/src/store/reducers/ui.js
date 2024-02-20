@@ -14,6 +14,7 @@ const uiSlice = createSlice({
     showProfileEditModal: false,
     showUpdateProfilePictureModal: false,
     showSideBar: false,
+    unreadMessages: false,
     showMessagePanelMob: false,
   },
 
@@ -57,6 +58,10 @@ const uiSlice = createSlice({
       state.showChats = false;
       state.showNavbarOptions = false;
       state.showNotifications = false;
+    },
+
+    toggleUnreadMessages(state, action) {
+      state.unreadMessages = action.payload;
     },
 
     clearBars(state, action) {

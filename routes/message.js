@@ -1,7 +1,8 @@
 const router = require("express").Router();
 const messageControllers = require("../controllers/message");
+const isAuth = require("../middleware/is-auth");
 
-router.post("/addMessage", messageControllers.addMessage);
-router.get("/:conversationId", messageControllers.getMessages);
+router.post("/addMessage", isAuth, messageControllers.addMessage);
+router.get("/:conversationId/:page", isAuth, messageControllers.getMessages);
 
 module.exports = router;

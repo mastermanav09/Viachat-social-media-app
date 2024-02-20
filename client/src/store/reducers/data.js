@@ -1,22 +1,20 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import Cookies from "universal-cookie";
+import Cookies from "js-cookie";
 import { uiActions } from "./ui";
 import axios from "axios";
 import { userActions } from "./user";
 
-export const getScreams = createAsyncThunk(
+axios.defaults.baseURL = process.env.REACT_APP_BASE_URL;
+
+export const getScreamsCount = createAsyncThunk(
   "data/getScreams",
   async (data, { dispatch }) => {
-    const cookies = new Cookies();
-    const token = cookies.get("upid");
-
-    dispatch(uiActions.errorsNullify());
-    dispatch(uiActions.setLoader());
+    const token = Cookies.get("upid");
 
     try {
       const res = await axios({
         method: "GET",
-        url: "/api/scream/screams",
+        url: `/api/scream/screams`,
         headers: {
           Authorization: "Bearer " + token,
         },
@@ -26,8 +24,8 @@ export const getScreams = createAsyncThunk(
         const error = new Error("Can't load screams!");
         throw error;
       }
-      console.log(res.data);
-      dispatch(dataSlice.actions.setScreams(res.data));
+
+      dispatch(dataSlice.actions.setScreamsCount(res.data.totalCount));
     } catch (error) {
       if (!error.response) {
         dispatch(uiActions.errors(error.message));
@@ -40,11 +38,49 @@ export const getScreams = createAsyncThunk(
   }
 );
 
+export const getScreams = createAsyncThunk(
+  "data/getScreams",
+  async (data, { dispatch }) => {
+    const token = Cookies.get("upid");
+    const { page, setScreamsLoader } = data;
+
+    dispatch(uiActions.errorsNullify());
+    dispatch(uiActions.setLoader());
+
+    try {
+      const res = await axios({
+        method: "GET",
+        url: `/api/scream/screams/${page}`,
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      });
+
+      if (res.status !== 200) {
+        const error = new Error("Can't load screams!");
+        throw error;
+      }
+
+      if (res.data.screams.length > 0) {
+        dispatch(dataSlice.actions.setScreams(res.data));
+      }
+    } catch (error) {
+      if (!error.response) {
+        dispatch(uiActions.errors(error.message));
+      } else {
+        dispatch(uiActions.errors(error.response.data));
+      }
+    }
+
+    setScreamsLoader(false);
+    dispatch(uiActions.setLoader());
+  }
+);
+
 export const postScream = createAsyncThunk(
   "data/postScream",
   async (body, { dispatch }) => {
-    const cookies = new Cookies();
-    const token = cookies.get("upid");
+    const token = Cookies.get("upid");
 
     dispatch(uiActions.errorsNullify());
     dispatch(uiActions.setLoader());
@@ -84,8 +120,7 @@ export const postScream = createAsyncThunk(
 export const deleteScream = createAsyncThunk(
   "data/deleteScream",
   async (data, { dispatch }) => {
-    const cookies = new Cookies();
-    const token = cookies.get("upid");
+    const token = Cookies.get("upid");
 
     const { socket } = data;
 
@@ -119,8 +154,7 @@ export const deleteScream = createAsyncThunk(
 export const getScream = createAsyncThunk(
   "data/getScream",
   async (data, { dispatch }) => {
-    const cookies = new Cookies();
-    const token = cookies.get("upid");
+    const token = Cookies.get("upid");
 
     dispatch(uiActions.setLoader());
     dispatch(dataSlice.actions.nullifyCurrentScreamData());
@@ -162,8 +196,7 @@ export const getScream = createAsyncThunk(
 export const addComment = createAsyncThunk(
   "data/addComment",
   async (data, { dispatch }) => {
-    const cookies = new Cookies();
-    const token = cookies.get("upid");
+    const token = Cookies.get("upid");
     const { socket } = data;
 
     dispatch(uiActions.setLoader());
@@ -209,8 +242,7 @@ export const addComment = createAsyncThunk(
 export const deleteComment = createAsyncThunk(
   "data/deleteComment",
   async (data, { dispatch }) => {
-    const cookies = new Cookies();
-    const token = cookies.get("upid");
+    const token = Cookies.get("upid");
     const { socket } = data;
 
     dispatch(uiActions.setLoader());
@@ -257,8 +289,7 @@ export const deleteComment = createAsyncThunk(
 export const getUser = createAsyncThunk(
   "data/getUser",
   async (data, { getState, dispatch }) => {
-    const cookies = new Cookies();
-    const token = cookies.get("upid");
+    const token = Cookies.get("upid");
 
     dispatch(dataSlice.actions.nullifyCurrentUserData());
     dispatch(uiActions.setLoader());
@@ -291,6 +322,7 @@ export const getUser = createAsyncThunk(
 const dataSlice = createSlice({
   name: "data",
   initialState: {
+    totalScreamsCount: null,
     screams: null,
     currentScreamData: null,
     currentUser: null,
@@ -331,7 +363,15 @@ const dataSlice = createSlice({
     },
 
     setScreams(state, action) {
-      state.screams = action.payload.screams;
+      if (state.screams) {
+        state.screams = [...state.screams, ...action.payload.screams];
+      } else {
+        state.screams = action.payload.screams;
+      }
+    },
+
+    setScreamsCount(state, action) {
+      state.totalScreamsCount = action.payload;
     },
 
     increamentLike(state, action) {

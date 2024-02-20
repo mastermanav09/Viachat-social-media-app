@@ -11,7 +11,10 @@ import MessageItem from "./message/MessageItem";
 import { useNavigate, useParams } from "react-router-dom";
 import LoadingSpinner from "../UI/LoadingSpinner";
 import MessageBox from "./message/MessageBox";
+import { uiActions } from "../../store/reducers/ui";
+import { debounce } from "../../utils/debounceFn";
 
+let onceScroll = 2;
 const ChatMessagePanel = (props) => {
   const dispatch = useDispatch();
   const messages = useSelector((state) => state.user.messages);
@@ -28,47 +31,164 @@ const ChatMessagePanel = (props) => {
   const errors = useSelector((state) => state.ui.errors);
   const scrollRef = useRef();
   const { socket } = props;
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [messageNotSendError, setMessageNotSendError] = useState(null);
   const [bodyWidth, setBodyWidth] = useState(
     window.innerWidth ||
       document.documentElement.clientWidth ||
       document.body.clientWidth
   );
-
+  const chatMainAreaRef = useRef();
   const navigate = useNavigate();
+  const [conversationMessagePage, setConversationMessagePage] = useState([]);
+  // this will hold the page value for each of the conversation messages.
+  const totalResults = useSelector((state) => state.data.totalScreamsCount);
+  const [mounted, setMounted] = useState(true);
 
-  useEffect(() => {
-    async function getMessagesHandler() {
-      setError(null);
+  function handleMessages() {
+    if (
+      Math.abs(
+        window.innerHeight +
+          document.documentElement.scrollTop -
+          document.documentElement.scrollHeight
+      ) <= 100
+    ) {
+      // setScreamsLoader(true);
+      // setPage((page) => page + 1);
+    }
+  }
 
-      const conversation = messages.find(
-        (message) => message.conversationId === conversationId
-      );
+  // useEffect(() => {
+  // function getInfiniteScreams() {
+  //   if (messages.length >= totalMessages) {
+  //     setScreamsLoader(false);
+  //     return;
+  //   }
+  // dispatch(getMessages({ conversationId, setIsLoading }));
+  // }
+  // getInfiniteScreams();
+  // }, [dispatch, page]);
 
-      if (conversation) {
-        setConversation(conversation);
-      } else {
-        dispatch(getMessages({ conversationId, setIsLoading }));
-      }
+  // console.log("conversation", conversation);
+  console.log("conversationMessagePage", conversationMessagePage);
+  console.log("messages", messages, conversationId);
+
+  function handleMessagesLoading() {
+    if (chatMainAreaRef?.current?.scrollTop <= 400) {
+      setConversationMessagePage((prev) => {
+        const updatedOutput = [...prev];
+        const _conversationIndex = updatedOutput.findIndex(
+          (item) => item.conversationId === conversationId
+        );
+
+        const conversationFromMessages = messages.find(
+          (message) => message.conversationId === conversationId
+        );
+
+        if (_conversationIndex === -1) {
+          updatedOutput.push({
+            conversationId,
+            page: 2,
+            totalMessagesLength: conversationFromMessages.totalMessagesLength,
+          });
+        } else {
+          updatedOutput[_conversationIndex] = {
+            ...updatedOutput[_conversationIndex],
+            page: updatedOutput[_conversationIndex].page + 1,
+          };
+        }
+
+        return updatedOutput;
+      });
     }
 
-    getMessagesHandler();
-  }, [dispatch, conversationId, messages, conversation]);
+    // dispatch(
+    //   getMessages({
+    //     conversationId,
+    //     setIsLoading,
+    //     conversationMessagePage,
+    //     setConversationMessagePage,
+    //   })
+    // );
+  }
+  // console.log("Fetching more items");
+  // setPage((page) => page + 1);
+  // }
+
+  useEffect(() => {
+    const toGetConversation = messages?.find(
+      (message) => message.conversationId === conversationId
+    );
+    if (toGetConversation) {
+      // setIsLoading(true);
+      setConversation(toGetConversation);
+      setIsLoading(false);
+    }
+  }, [conversationId, messages]);
+
+  useEffect(() => {
+    setError(null);
+    function getMoreMessages() {
+      dispatch(
+        getMessages({
+          conversationId,
+          conversationMessagePage,
+          setConversationMessagePage,
+          conversation,
+          setIsLoading,
+          setConversation,
+          messages,
+        })
+      );
+    }
+
+    // if (mounted) {
+    getMoreMessages();
+    // }
+  }, [conversationMessagePage, conversationId]);
+
+  const throttledHandleScreams = () => {
+    // cleint height === innerheight
+  };
+  // useEffect(() => {
+  //   const chatMainAreaElement = chatMainAreaRef?.current;
+  //   console.log(chatMainAreaElement);
+  //   chatMainAreaElement.addEventListener("scroll", throttledHandleScreams);
+
+  //   return () =>
+  //     chatMainAreaElement.removeEventListener("scroll", throttledHandleScreams);
+  // }, []);
+
+  // console.log("chatMainAreaRef", chatMainAreaRef?.current?.clientHeight);
+  // useEffect(() => {
+  //   async function getMessagesHandler() {
+  //     const conversation = messages.find(
+  //       (message) => message.conversationId === conversationId
+  //     );
+
+  //     if (conversation) {
+  //       setConversation(conversation);
+  //     } else {
+  //       dispatch(
+  //         getMessages({
+  //           conversationId,
+  //           setIsLoading,
+  //           conversationMessagePage,
+  //           setConversationMessagePage,
+  //         })
+  //       );
+  //     }
+  //   }
+
+  //   getMessagesHandler();
+  // }, [dispatch, conversationId, messages, conversation]);
 
   useEffect(() => {
     if (errors) {
       setError("Conversation not found!");
     }
 
-    let username = "";
-
-    if (currentConversation?.members[0].userId === userId) {
-      username = currentConversation?.members[1].username;
-    } else {
-      username = currentConversation?.members[0].username;
-    }
-
+    const username = currentConversation?.members[0].username;
     setUsername(username);
   }, [errors, userId, currentConversation]);
 
@@ -83,20 +203,17 @@ const ChatMessagePanel = (props) => {
         });
       });
     }
-  }, [socket]);
+  }, [dispatch, socket]);
 
   useEffect(() => {
     if (arrivalMessage && currentConversation?.members) {
-      for (let obj of currentConversation.members) {
-        if (obj.userId === arrivalMessage.sender) {
-          dispatch(
-            userActions.addNewMessage({
-              conversationId: currentConversation._id,
-              message: arrivalMessage,
-            })
-          );
-          return;
-        }
+      if (currentConversation.members[0].userId === arrivalMessage.sender) {
+        dispatch(
+          userActions.addNewMessage({
+            conversationId: currentConversation._id,
+            message: arrivalMessage,
+          })
+        );
       }
     }
   }, [arrivalMessage, dispatch]);
@@ -104,13 +221,7 @@ const ChatMessagePanel = (props) => {
   const addNewMessageHandler = async (data, setInputText) => {
     let text = data;
 
-    let receiverUserId;
-
-    if (currentConversation?.members[0].userId === userId) {
-      receiverUserId = currentConversation?.members[1].userId;
-    } else {
-      receiverUserId = currentConversation?.members[0].userId;
-    }
+    const receiverUserId = currentConversation?.members[0].userId;
 
     const newMessage = {
       conversationId: conversationId,
@@ -120,14 +231,24 @@ const ChatMessagePanel = (props) => {
     };
 
     setInputText("");
-    dispatch(
-      addNewMessage({ newMessage, socket: socket, setMessageNotSendError })
-    );
+    scrollRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "end",
+      inline: "nearest",
+    });
+    dispatch(addNewMessage({ newMessage, socket, setMessageNotSendError }));
   };
 
   useEffect(() => {
-    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
+    // if (onceScroll) {
+    scrollRef.current?.scrollIntoView({ block: "end" });
+    // onceScroll--;
+    // }
   }, [conversation]);
+
+  // useEffect(() => {
+  //   setMounted(false);
+  // }, []);
 
   return (
     <div
@@ -158,7 +279,11 @@ const ChatMessagePanel = (props) => {
         <div className={classes["chat-username"]}>{username}</div>
       </div>
       <div className={classes["chat-main-area"]}>
-        <div className={classes["chat-area"]}>
+        <div
+          onScroll={debounce(handleMessagesLoading, 100)}
+          ref={chatMainAreaRef}
+          className={classes["chat-area"]}
+        >
           {isLoading && !error && (
             <div className={classes["loader"]}>
               <LoadingSpinner />
@@ -184,17 +309,19 @@ const ChatMessagePanel = (props) => {
 
           {!isLoading &&
             conversation &&
-            conversation.messages.map((message) => (
-              <div key={message._id} ref={scrollRef}>
-                <MessageItem
-                  _id={message._id}
-                  type={message.sender === userId ? SENDER : RECEIVER}
-                  text={message.text}
-                  timeAgo={message.createdAt}
-                  messageNotSendError={messageNotSendError}
-                />
-              </div>
-            ))}
+            conversation.messages.map((message) => {
+              return (
+                <div key={message._id} ref={scrollRef}>
+                  <MessageItem
+                    _id={message._id}
+                    type={message.sender === userId ? SENDER : RECEIVER}
+                    text={message.text}
+                    timeAgo={message.createdAt}
+                    messageNotSendError={messageNotSendError}
+                  />
+                </div>
+              );
+            })}
         </div>
         {!error && <MessageBox addNewMessageHandler={addNewMessageHandler} />}
       </div>

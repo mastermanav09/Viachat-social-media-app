@@ -1,10 +1,11 @@
 require("dotenv").config();
+const passport = require("passport");
+const passportSetup = require("./config/passport");
 const express = require("express");
+const session = require("express-session");
 const app = express();
 const path = require("path");
-const passport = require("passport");
 const mongoose = require("mongoose");
-const passportSetup = require("./config/passport");
 const { v4: uuidv4 } = require("uuid");
 const multer = require("multer");
 const screamRoutes = require("./routes/screams");
@@ -24,7 +25,8 @@ const {
   userLeave,
   getCurrentUser,
   getOnlineUsers,
-  updateOnlineUsers,
+  getConversationUsers,
+  users,
   // getRoomUsers,
 } = require("./utils/users/connectedUsers");
 
@@ -50,6 +52,7 @@ app.use((req, res, next) => {
 
 app.use(express.json());
 app.use(passport.initialize());
+app.use(session({ secret: process.env.SESSION_SECRET }));
 
 const fileFilter = (req, file, cb) => {
   if (
@@ -129,36 +132,57 @@ mongoose
     );
 
     io.on("connection", async (socket) => {
-      socket.on("newUser", async ({ senderId }) => {
-        userJoin(socket.decodedToken.userId, socket.id);
-        const sender = getCurrentUser(senderId);
+      socket.on("newUser", async () => {
+        const userId = socket.decodedToken.userId;
+        userJoin(userId, socket.id);
+        const sender = getCurrentUser(userId);
 
-        // if (sender && sender.socketId) {
-        //   const onlineUsers = await updateOnlineUsers(socket, senderId);
-        //   io.to(sender.socketId).emit("updateOnlineUser", {
-        //     users: onlineUsers,
-        //   });
-        // }
+        if (sender && sender.socketId) {
+          const conversationUsers = await getConversationUsers(socket, userId);
+
+          if (conversationUsers?.length > 0) {
+            for (const userSocketId of conversationUsers) {
+              io.to(userSocketId).emit("getOnlineUsers", {
+                users: [userId],
+                type: "add_user",
+              });
+            }
+          }
+        }
       });
 
       initializeMessenger(socket);
       initializeNotifications(socket);
 
-      socket.on("getOnlineUsersEvent", async ({ senderId }) => {
-        const sender = getCurrentUser(senderId);
+      socket.on("getOnlineUsersEvent", async () => {
+        const userId = socket.decodedToken.userId;
+        const sender = getCurrentUser(userId);
+
         if (sender && sender.socketId) {
-          const onlineUsers = await getOnlineUsers(socket, senderId);
+          const onlineUsers = await getOnlineUsers(socket, userId);
           io.to(sender.socketId).emit("getOnlineUsers", {
             users: onlineUsers,
+            type: "add_user",
           });
         }
       });
 
-      socket.on("disconnect", () => {
-        userLeave(socket.id);
-      });
+      socket.on("disconnect", async () => {
+        const userId = socket.decodedToken.userId;
+        const sender = getCurrentUser(userId);
 
-      socket.on("disconnectUserWhenLogout", () => {
+        if (sender && sender.socketId) {
+          const conversationUsers = await getConversationUsers(socket, userId);
+
+          if (conversationUsers?.length > 0) {
+            for (const userSocketId of conversationUsers) {
+              io.to(userSocketId).emit("getOnlineUsers", {
+                users: [userId],
+                type: "remove_user",
+              });
+            }
+          }
+        }
         userLeave(socket.id);
       });
     });

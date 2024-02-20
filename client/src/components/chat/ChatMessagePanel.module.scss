@@ -63,10 +63,11 @@
 
 .chat-area {
   height: 100%;
-  border-bottom: 1px solid rgba(128, 128, 128, 0.508);
   overflow-y: scroll;
   padding: 0.5rem 0.8rem;
   position: relative;
+  margin-left: 10%;
+  margin-right: 10%;
 
   @media screen and (max-width: 480px) {
     border-top: 0;
