@@ -264,12 +264,13 @@ export const updateProfilePhoto = createAsyncThunk(
     const state = getState();
 
     try {
-      const result = await fetch("/api/user/updateProfilePhoto", {
+      const result = await axios({
+        url: "/api/user/updateProfilePhoto",
         method: "PUT",
         headers: {
           Authorization: "Bearer " + token,
         },
-        body: userData.formData,
+        data: userData.formData,
       });
 
       const data = await result.json();
@@ -334,8 +335,9 @@ export const addNewConversation = createAsyncThunk(
       });
 
       const { myConversation, friendConversation, exists } = res.data;
-
+      console.log(myConversation, friendConversation);
       dispatch(userActions.addNewConversation(myConversation));
+      console.log(`/my-profile/chats/${myConversation._id}`);
       navigate(`/my-profile/chats/${myConversation._id}`);
 
       if (!exists) {

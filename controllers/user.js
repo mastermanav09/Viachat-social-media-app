@@ -191,7 +191,9 @@ exports.getUserData = async (req, res, next) => {
   const userId = req.params.userId;
 
   try {
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).select(
+      "credentials.imageUrl credentials.username credentials.name _id"
+    );
 
     if (!user) {
       const error = new Error("User not found.");
@@ -203,6 +205,40 @@ exports.getUserData = async (req, res, next) => {
 
     res.status(200).json({ ...user, screams: userScreams });
   } catch (error) {
+    if (!error.statusCode) {
+      error.statusCode = 500;
+    }
+
+    next(error);
+  }
+};
+
+exports.getUserSearchResults = async (req, res, next) => {
+  const limit = 10;
+  const searchText = req.body.text;
+  const page = req.body.page;
+
+  if (!searchText || searchText.trim().length === 0) {
+    return res.status(200).json({ results: [], totalResults: 0 });
+  }
+
+  const searchRegex = new RegExp(searchText, "gi");
+
+  try {
+    const totalResults = await User.countDocuments({
+      "credentials.username": { $regex: searchRegex },
+    });
+
+    const results = await User.find({
+      "credentials.username": { $regex: searchRegex },
+    })
+      .select("credentials.username credentials.imageUrl _id")
+      .skip((page - 1) * limit)
+      .limit(limit);
+
+    res.status(200).json({ results, totalResults });
+  } catch (error) {
+    console.log(error);
     if (!error.statusCode) {
       error.statusCode = 500;
     }

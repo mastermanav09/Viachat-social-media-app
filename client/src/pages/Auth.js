@@ -279,17 +279,6 @@ const Auth = (props) => {
               >
                 <Google />
                 <span>Sign in with Google</span>
-                {/* {uiState.loader && (
-                  <span
-                    className={`${classes["dual-ring"]}`}
-                    style={{
-                      position: "absolute",
-                      right: "25px",
-                      width: "initial",
-                      height: "initial",
-                    }}
-                  ></span>
-                )} */}
               </button>
             </div>
           </div>

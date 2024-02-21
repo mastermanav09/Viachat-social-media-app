@@ -20,7 +20,7 @@ const Conversation = (props) => {
     if (conversation._id === params.conversationId) {
       dispatch(dataActions.setcurrentConversation(conversation));
     }
-  }, [params.conversationId, dispatch]);
+  }, [params.conversationId, dispatch, conversation]);
 
   if (!isMounted) {
     return <></>;

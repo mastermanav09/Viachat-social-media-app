@@ -1,0 +1,31 @@
+.searchBox {
+  position: absolute;
+  right: 1rem;
+  height: 50vh;
+  z-index: 990;
+  top: 3.05rem;
+  border-radius: 10px;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  background-color: #fcfcfc;
+  width: 31vw;
+  max-width: 330px;
+  padding: 1rem 0.5rem;
+
+  @media screen and (max-width: 700px) {
+    display: none;
+  }
+}
+
+.inputBox input {
+  background: rgba(255, 255, 255, 0.4);
+  border: none;
+  display: block;
+  outline: none;
+  width: 100%;
+  margin: 0 auto;
+  padding: 10px;
+  border-radius: 10px;
+  color: #333;
+  font-size: 0.9rem;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}

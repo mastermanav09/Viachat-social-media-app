@@ -159,14 +159,15 @@ const ProfileMain = (props) => {
             </div>
 
             <div className={classes["profile-username"]}>
-              {userData.credentials.name}
+              {userData.credentials.username}
             </div>
 
             <div className={classes["profile-main"]}>
               <div className={classes["my-screams-block"]}>
                 {props.myProfile
                   ? "My"
-                  : userData.credentials.name.split(" ").shift() + "'s"}{" "}
+                  : userData.credentials.username.split(" ").shift() +
+                    "'s"}{" "}
                 Screams
                 <div className={classes["divider"]} />
                 <div className={classes["screams"]}>

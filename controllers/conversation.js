@@ -55,10 +55,10 @@ exports.addNewConversation = async (req, res, next) => {
         .json({ myConversation: existingConversation, exists: true });
     }
 
-    const conversationId = new mongoose.Types.ObjectId();
+    const newConversationId = new mongoose.Types.ObjectId();
 
     const newConversation = {
-      _id: conversationId,
+      _id: newConversationId,
       recentMessage: "",
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -106,9 +106,19 @@ exports.addNewConversation = async (req, res, next) => {
       }
     );
 
+    const myConversation = userDoc1.conversations.find(
+      (conversation) =>
+        conversation._id.toString() === newConversationId.toString()
+    );
+
+    const friendConversation = userDoc2.conversations.find(
+      (conversation) =>
+        conversation._id.toString() === newConversationId.toString()
+    );
+
     res.status(201).json({
-      myConversation: userDoc1.conversations[0],
-      friendConversation: userDoc2.conversations[0],
+      myConversation,
+      friendConversation,
       exists: false,
     });
   } catch (error) {
