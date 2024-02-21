@@ -7,8 +7,15 @@ function userJoin(userId, socketId) {
   return user;
 }
 
-function getCurrentUser(userId) {
-  return users.find((user) => user.userId === userId);
+async function getCurrentUser(userId, redisClient) {
+  const socketId = await redisClient.get(userId);
+  // console.log(socketId);
+  return {
+    userId,
+    socketId,
+  };
+
+  // return users.find((user) => user.userId === userId);
 }
 
 function userLeave(socketId) {
@@ -19,7 +26,7 @@ function userLeave(socketId) {
   }
 }
 
-async function getConversationUsers(socket, senderId) {
+async function getConversationUsers(socket, senderId, redisClient) {
   try {
     const conversationsDoc = await User.findById(senderId).select(
       "conversations -_id"
@@ -29,9 +36,13 @@ async function getConversationUsers(socket, senderId) {
     let conversationUsersSocketIds = [];
 
     for (let conversation of conversations) {
-      const convoUser = conversation.members[0].userId;
-      const user = users.find((user) => user.userId === convoUser.toString());
-      conversationUsersSocketIds.push(user?.socketId);
+      const convoUserId = conversation.members[0].userId.toString();
+      const userSocketId = await redisClient.get(convoUserId);
+      // const user = users.find((user) => user.userId === convoUserId);
+      // conversationUsersSocketIds.push(user?.socketId);
+      if (userSocketId) {
+        conversationUsersSocketIds.push(userSocketId);
+      }
     }
 
     return conversationUsersSocketIds;
@@ -40,7 +51,7 @@ async function getConversationUsers(socket, senderId) {
   }
 }
 
-async function getOnlineUsers(socket, senderId) {
+async function getOnlineUsers(socket, senderId, redisClient) {
   try {
     const conversationsDoc = await User.findById(senderId).select(
       "conversations -_id"
@@ -50,11 +61,15 @@ async function getOnlineUsers(socket, senderId) {
 
     let onlineUsers = [];
     for (let conversation of conversations) {
-      const convoUser = conversation.members[0].userId;
+      const convoUserId = conversation.members[0].userId.toString();
+      const userSocketId = await redisClient.get(convoUserId);
 
-      if (users.find((user) => user.userId === convoUser.toString())) {
-        onlineUsers.push(convoUser.toString());
+      if (userSocketId) {
+        onlineUsers.push(convoUserId);
       }
+      // if (users.find((user) => user.userId === convoUserId)) {
+      //   onlineUsers.push(convoUser.toString());
+      // }
     }
 
     return onlineUsers;
