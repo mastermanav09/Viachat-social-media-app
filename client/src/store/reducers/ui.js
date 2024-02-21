@@ -28,7 +28,7 @@ const uiSlice = createSlice({
     },
 
     setLoader(state, action) {
-      state.loader = !state.loader;
+      state.loader = action.payload || !state.loader;
     },
 
     switchAuth(state, action) {

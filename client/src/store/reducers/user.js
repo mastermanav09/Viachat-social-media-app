@@ -12,7 +12,7 @@ export const auth = createAsyncThunk(
   async (userData, { dispatch, getState }) => {
     const { navigate, socket } = userData;
     dispatch(uiActions.errorsNullify());
-    dispatch(uiActions.setLoader());
+    dispatch(uiActions.setLoader(true));
 
     const state = getState();
     const credentials = state.user.credentials;
@@ -36,13 +36,13 @@ export const auth = createAsyncThunk(
           dispatch(getScreamsCount());
         }
       } else {
-        dispatch(uiActions.setLoader());
+        dispatch(uiActions.setLoader(false));
         dispatch(userActions.logout());
         navigate("/login", { replace: true });
         socket.disconnect();
       }
 
-      dispatch(uiActions.setLoader());
+      dispatch(uiActions.setLoader(false));
       return;
     }
 
@@ -70,7 +70,7 @@ export const auth = createAsyncThunk(
       const token = Cookies.get("upid");
       if (token) {
         userData.navigate("/error", { replace: true });
-        dispatch(uiActions.setLoader());
+        dispatch(uiActions.setLoader(false));
         return;
       }
 
@@ -81,7 +81,7 @@ export const auth = createAsyncThunk(
       }
     }
 
-    dispatch(uiActions.setLoader());
+    dispatch(uiActions.setLoader(false));
   }
 );
 
