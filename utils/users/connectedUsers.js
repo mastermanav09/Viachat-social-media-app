@@ -9,13 +9,11 @@ function userJoin(userId, socketId) {
 
 async function getCurrentUser(userId, redisClient) {
   const socketId = await redisClient.get(userId);
-  // console.log(socketId);
+
   return {
     userId,
     socketId,
   };
-
-  // return users.find((user) => user.userId === userId);
 }
 
 function userLeave(socketId) {
@@ -38,8 +36,7 @@ async function getConversationUsers(socket, senderId, redisClient) {
     for (let conversation of conversations) {
       const convoUserId = conversation.members[0].userId.toString();
       const userSocketId = await redisClient.get(convoUserId);
-      // const user = users.find((user) => user.userId === convoUserId);
-      // conversationUsersSocketIds.push(user?.socketId);
+
       if (userSocketId) {
         conversationUsersSocketIds.push(userSocketId);
       }
@@ -67,9 +64,6 @@ async function getOnlineUsers(socket, senderId, redisClient) {
       if (userSocketId) {
         onlineUsers.push(convoUserId);
       }
-      // if (users.find((user) => user.userId === convoUserId)) {
-      //   onlineUsers.push(convoUser.toString());
-      // }
     }
 
     return onlineUsers;
