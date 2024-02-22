@@ -170,6 +170,7 @@ img {
         box-shadow: $shadow-medium;
         text-transform: capitalize;
         text-rendering: optimizeLegibility;
+        margin: auto;
 
         &:hover {
           background-color: #3d88eb;
@@ -212,6 +213,7 @@ img {
       }
 
       &-action {
+        position: relative;
         font-family: inherit;
         font-size: clamp(14px, 2.5vw, 16px);
         font-weight: 500;
@@ -230,6 +232,12 @@ img {
         text-transform: capitalize;
         text-rendering: optimizeLegibility;
         transition: all 0.35s ease;
+        cursor: pointer;
+
+        .dual-ring::after {
+          border: 3.5px solid #fff;
+          border-color: #336fa7 transparent #336fa7 transparent;
+        }
 
         @media screen and (max-width: 700px) {
           padding: 0.3rem 0.7rem;
@@ -239,9 +247,9 @@ img {
           margin: 0 0.4rem;
         }
 
-        &:hover {
-          background: $color-light;
-        }
+        // &:hover {
+        //   background: $color-light;
+        // }
 
         svg {
           @media screen and (max-width: 700px) {

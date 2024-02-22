@@ -6,12 +6,15 @@ const Scream = require("../../models/scream");
 const Like = require("../../models/like");
 const mongoose = require("mongoose");
 
-module.exports = function (socket) {
+module.exports = function (socket, redisClient) {
   let io = require("../../config/socket").getIO();
 
   socket.on("sendLikeNotification", async ({ receiverId, screamId }) => {
-    const receiver = getCurrentUser(receiverId);
-    const sender = getCurrentUser(socket.decodedToken.userId);
+    const receiver = await getCurrentUser(receiverId, redisClient);
+    const sender = await getCurrentUser(
+      socket.decodedToken.userId,
+      redisClient
+    );
     try {
       if (!sender) {
         const error = new Error("Something went wrong!");
@@ -87,8 +90,11 @@ module.exports = function (socket) {
   });
 
   socket.on("sendRemoveLikeNotification", async ({ screamId, receiverId }) => {
-    const receiver = getCurrentUser(receiverId);
-    const sender = getCurrentUser(socket.decodedToken.userId);
+    const receiver = await getCurrentUser(receiverId, redisClient);
+    const sender = await getCurrentUser(
+      socket.decodedToken.userId,
+      redisClient
+    );
 
     try {
       if (!sender) {
@@ -140,8 +146,11 @@ module.exports = function (socket) {
   socket.on(
     "sendCommentNotification",
     async ({ commentId, receiverId, message, screamId }) => {
-      const receiver = getCurrentUser(receiverId);
-      const sender = getCurrentUser(socket.decodedToken.userId);
+      const receiver = await getCurrentUser(receiverId, redisClient);
+      const sender = await getCurrentUser(
+        socket.decodedToken.userId,
+        redisClient
+      );
 
       try {
         if (!sender) {
@@ -228,8 +237,11 @@ module.exports = function (socket) {
   socket.on(
     "sendRemoveCommentNotification",
     async ({ commentId, screamId, receiverId }) => {
-      const receiver = getCurrentUser(receiverId);
-      const sender = getCurrentUser(socket.decodedToken.userId);
+      const receiver = await getCurrentUser(receiverId, redisClient);
+      const sender = await getCurrentUser(
+        socket.decodedToken.userId,
+        redisClient
+      );
 
       try {
         if (!sender) {
@@ -285,7 +297,10 @@ module.exports = function (socket) {
   );
 
   socket.on("sendDeleteScreamNotification", async ({ screamId }) => {
-    const receiver = getCurrentUser(socket.decodedToken.userId);
+    const receiver = await getCurrentUser(
+      socket.decodedToken.userId,
+      redisClient
+    );
 
     try {
       const scream = await Scream.findById(screamId);

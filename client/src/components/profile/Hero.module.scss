@@ -50,7 +50,7 @@ $blue: #2666cf;
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 100%;
+  // height: 100%;
 
   * {
     margin: 0.3rem 0;
@@ -90,7 +90,6 @@ $blue: #2666cf;
   .location {
     display: flex;
     align-items: center;
-
     word-wrap: normal;
 
     svg {
@@ -99,6 +98,15 @@ $blue: #2666cf;
       fill: #2666cf;
       margin: 0 0.2rem;
     }
+  }
+
+  .bio {
+    text-align: center;
+    word-wrap: break-word;
+    overflow-y: auto;
+    max-height: 4rem;
+    width: 15rem;
+    padding-right: 5px;
   }
 
   .bio,

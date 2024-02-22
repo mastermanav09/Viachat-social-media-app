@@ -1,0 +1,70 @@
+.user-item {
+  padding: 0.5rem;
+  display: flex;
+  cursor: pointer;
+  width: 100%;
+  border-radius: 8px;
+  gap: 0.4rem;
+
+  .image-container {
+    width: 4vw;
+    height: 4vw;
+    height: 50px;
+    width: 60px;
+    max-height: 60px;
+    min-width: 50px;
+    position: relative;
+
+    img {
+      width: 4vw;
+      height: 4vw;
+      width: 50px;
+      height: 50px;
+      max-width: 60px;
+      max-height: 60px;
+      border-radius: 50%;
+    }
+
+    .online-badge {
+      border-radius: 50%;
+      background-color: rgb(7, 171, 7);
+      height: 0.6rem;
+      width: 0.6rem;
+      display: inline-flex;
+      position: absolute;
+      right: 4.5px;
+      bottom: 0px;
+
+      @media screen and (max-width: 480px) {
+        height: 0.5rem;
+        width: 0.5rem;
+      }
+    }
+  }
+
+  @media screen and (max-width: 1280px) {
+    padding: 0.3rem;
+  }
+}
+.lower-container {
+  display: flex;
+  flex-direction: column;
+  font-size: clamp(14px, 1.2vw, 16px);
+  width: 100%;
+  word-wrap: break-word;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 0.2rem;
+}
+
+.user-name {
+  color: rgb(0, 0, 0);
+  font-size: 0.9rem;
+}
+
+.user-item {
+  &:hover {
+    border-radius: 10px;
+    background-color: rgba(178, 206, 253, 0.7);
+  }
+}

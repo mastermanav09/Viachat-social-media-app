@@ -13,6 +13,7 @@ router.put(
 
 router.get("/getUserDetails", isAuth, userControllers.getUserDetails);
 router.get("/:userId", isAuth, userControllers.getUserData);
+router.put("/search", isAuth, userControllers.getUserSearchResults);
 router.get("/getNotifications", isAuth, userControllers.getNotifications);
 router.post(
   "/markNotificationRead",

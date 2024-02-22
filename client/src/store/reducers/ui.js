@@ -10,6 +10,7 @@ const uiSlice = createSlice({
     showNotifications: false,
     showChats: false,
     showChatPanel: false,
+    showUserSearchBox: false,
     showPostScreamModal: false,
     showProfileEditModal: false,
     showUpdateProfilePictureModal: false,
@@ -28,7 +29,7 @@ const uiSlice = createSlice({
     },
 
     setLoader(state, action) {
-      state.loader = !state.loader;
+      state.loader = action.payload || !state.loader;
     },
 
     switchAuth(state, action) {
@@ -38,19 +39,29 @@ const uiSlice = createSlice({
     showNavbarOptions(state, action) {
       state.showNavbarOptions = !state.showNavbarOptions;
       state.showNotifications = false;
+      state.showUserSearchBox = false;
       state.showChats = false;
+    },
+
+    showUserSearchBox(state, action) {
+      state.showUserSearchBox = action.payload || !state.showUserSearchBox;
+      state.showNavbarOptions = false;
+      state.showChats = false;
+      state.showNotifications = false;
     },
 
     showNotifications(state, action) {
       state.showNotifications = action.payload || !state.showNotifications;
       state.showNavbarOptions = false;
       state.showChats = false;
+      state.showUserSearchBox = false;
     },
 
     showChats(state, action) {
       state.showChats = !state.showChats;
       state.showNavbarOptions = false;
       state.showNotifications = false;
+      state.showUserSearchBox = false;
     },
 
     showChatPanel(state, action) {
@@ -58,6 +69,7 @@ const uiSlice = createSlice({
       state.showChats = false;
       state.showNavbarOptions = false;
       state.showNotifications = false;
+      state.showUserSearchBox = false;
     },
 
     toggleUnreadMessages(state, action) {
@@ -68,6 +80,7 @@ const uiSlice = createSlice({
       state.showNotifications = false;
       state.showNavbarOptions = false;
       state.showChats = false;
+      state.showUserSearchBox = false;
     },
 
     showPostScreamModal(state, action) {

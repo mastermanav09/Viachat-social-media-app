@@ -120,6 +120,8 @@ const ChatMessagePanel = (props) => {
         });
       });
     }
+
+    return () => {};
   }, [dispatch, socket]);
 
   useEffect(() => {

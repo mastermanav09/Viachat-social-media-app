@@ -16,12 +16,23 @@ const Auth = (props) => {
   const nameInputRef = useRef();
   const dispatch = useDispatch();
   const uiState = useSelector((state) => state.ui);
+  const googleBtnRef = useRef(null);
   const navigate = useNavigate();
   const [validationData, setValidationData] = useState(null);
   const { socket } = props;
 
   const googleAuthHandler = () => {
-    window.open(`${process.env.REACT_APP_BASE_URL}/api/auth/google`, "_self");
+    if (googleBtnRef?.current) {
+      googleBtnRef.current.style.backgroundColor = "#b2d7fb";
+      googleBtnRef.current.style.outline = "none";
+    }
+
+    const newWin = window.open(
+      `${process.env.REACT_APP_BASE_URL}/api/auth/google`,
+      "_self"
+    );
+
+    newWin.document.write = "Logging in...";
   };
 
   const switchAuthHandler = () => {
@@ -227,15 +238,6 @@ const Auth = (props) => {
             )}
 
             <div className={`${classes["input-control"]}`}>
-              {uiState.isAuthLogin && (
-                <Link
-                  to="#"
-                  className={`${classes.text} ${classes["text-links"]}`}
-                >
-                  Forgot Password
-                </Link>
-              )}
-
               {uiState.isAuthLogin ? (
                 <button
                   type="submit"
@@ -271,6 +273,7 @@ const Auth = (props) => {
           <div className={classes.method}>
             <div className={`${classes["method-control"]}`}>
               <button
+                ref={googleBtnRef}
                 onClick={googleAuthHandler}
                 className={`${classes["method-action"]}`}
               >
