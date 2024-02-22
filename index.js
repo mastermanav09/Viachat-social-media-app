@@ -32,6 +32,7 @@ const {
 const PORT = process.env.PORT || 8800;
 
 const redisClient = createClient({
+  username: "default",
   password: process.env.REDIS_PASSWORD,
   socket: {
     host: process.env.REDIS_HOST,
