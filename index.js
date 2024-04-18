@@ -20,6 +20,7 @@ const jwt = require("jsonwebtoken");
 const jwtSecret = require("./config/jwt.config");
 const { authorize } = require("@thream/socketio-jwt");
 const notificationDeletionJob = require("./utils/schedulers/notificationDelete");
+const messageDeleteJob = require("./utils/schedulers/messageDelete");
 const {
   userJoin,
   userLeave,
@@ -91,6 +92,7 @@ app.use(
   }).single("image")
 );
 
+messageDeleteJob();
 notificationDeletionJob();
 
 app.use("/", require("./routes/root"));
