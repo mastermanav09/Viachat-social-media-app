@@ -12,19 +12,20 @@ import { useNavigate, useParams } from "react-router-dom";
 import LoadingSpinner from "../UI/LoadingSpinner";
 import MessageBox from "./message/MessageBox";
 import { debounce } from "../../utils/debounceFn";
+import { dataActions } from "../../store/reducers/data";
 
 const ChatMessagePanel = (props) => {
   const dispatch = useDispatch();
   const messages = useSelector((state) => state.user.messages);
   const params = useParams();
   const userId = useSelector((state) => state.user.userId);
+  const arrivalMessage = useSelector((state) => state.data.arrivalMessage);
   const conversationId = params.conversationId;
   const [conversation, setConversation] = useState(null);
   const currentConversation = useSelector(
     (state) => state.data.currentConversation
   );
   const [username, setUsername] = useState(null);
-  const [arrivalMessage, setArrivalMessage] = useState(null);
   const [error, setError] = useState(null);
   const errors = useSelector((state) => state.ui.errors);
   const scrollRef = useRef();
@@ -112,16 +113,16 @@ const ChatMessagePanel = (props) => {
   useEffect(() => {
     if (socket) {
       socket.on("getMessage", (data) => {
-        setArrivalMessage({
-          _id: data._id,
-          sender: data.senderId,
-          text: data.text,
-          createdAt: Date.now(),
-        });
+        dispatch(
+          dataActions.setConversationArrivalMessage({
+            _id: data._id,
+            sender: data.senderId,
+            text: data.text,
+            createdAt: Date.now(),
+          })
+        );
       });
     }
-
-    return () => {};
   }, [dispatch, socket]);
 
   useEffect(() => {
@@ -133,6 +134,8 @@ const ChatMessagePanel = (props) => {
             message: arrivalMessage,
           })
         );
+
+        dispatch(dataActions.setConversationArrivalMessage(null));
       }
     }
   }, [arrivalMessage, dispatch]);

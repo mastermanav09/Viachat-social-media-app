@@ -184,14 +184,23 @@ body .toggle.section {
   overflow: auto;
 
   .image-container {
-    width: 13vw;
-    max-width: 55px;
-    min-width: 40px;
-    min-height: 40px;
-    max-height: 55px;
+    width: 60px;
+    height: 60px;
 
     img {
+      width: 60px;
+      height: 60px;
       border-radius: 50%;
+
+      @media screen and (max-width: 424px) {
+        width: 45px;
+        height: 45px;
+      }
+    }
+
+    @media screen and (max-width: 424px) {
+      width: 45px;
+      height: 45px;
     }
   }
 

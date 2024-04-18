@@ -328,6 +328,7 @@ const dataSlice = createSlice({
     currentUser: null,
     currentConversation: null,
     onlineUsers: new Set(),
+    arrivalMessage: null,
   },
 
   reducers: {
@@ -463,6 +464,10 @@ const dataSlice = createSlice({
 
     setcurrentConversation(state, action) {
       state.currentConversation = action.payload;
+    },
+
+    setConversationArrivalMessage(state, action) {
+      state.arrivalMessage = action.payload;
     },
   },
 });
