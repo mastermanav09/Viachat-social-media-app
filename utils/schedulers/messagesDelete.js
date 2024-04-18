@@ -1,7 +1,7 @@
 const schedule = require("node-schedule");
 const Message = require("../../models/message");
 
-module.exports = function notificationDeletionJob() {
+module.exports = function messageDeletionJob() {
   schedule.scheduleJob("0 0 * * *", async () => {
     var date = new Date();
     var daysToDeletion = 180;
