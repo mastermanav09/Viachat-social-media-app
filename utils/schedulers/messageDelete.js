@@ -1,7 +1,7 @@
 const schedule = require("node-schedule");
 const Message = require("../../models/message");
 
-module.exports = function messageDeleteJob() {
+module.exports = function messageDeletionJob() {
   schedule.scheduleJob("0 0 * * *", async () => {
     var date = new Date();
     var daysToDeletion = 180;
@@ -9,7 +9,7 @@ module.exports = function messageDeleteJob() {
 
     try {
       await Message.deleteMany({ createdAt: { $lt: deletionDate } });
-      console.log("Job executed successfully.");
+      console.log("Message Deletion Job executed successfully.");
     } catch (error) {
       console.log("Job execution failed!", error);
     }
