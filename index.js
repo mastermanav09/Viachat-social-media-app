@@ -8,6 +8,7 @@ const path = require("path");
 const mongoose = require("mongoose");
 const { v4: uuidv4 } = require("uuid");
 const multer = require("multer");
+const { createClient } = require("redis");
 const screamRoutes = require("./routes/screams");
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/user");
@@ -30,6 +31,22 @@ const {
 } = require("./utils/users/connectedUsers");
 
 const PORT = process.env.PORT || 8800;
+
+const redisClient = createClient({
+  username: "default",
+  password: process.env.REDIS_PASSWORD,
+  socket: {
+    host: process.env.REDIS_HOST,
+    port: process.env.REDIS_PORT,
+  },
+});
+
+(async () => {
+  await redisClient.connect();
+})();
+redisClient.on("connect", function () {
+  console.log("Connected redis");
+});
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -94,6 +111,7 @@ app.use(
 
 messageDeletionJob();
 notificationDeletionJob();
+messageDeletionJob();
 
 app.use("/", require("./routes/root"));
 app.use("/api/auth", authRoutes);
@@ -134,12 +152,21 @@ mongoose
     io.on("connection", async (socket) => {
       socket.on("newUser", async () => {
         const userId = socket.decodedToken.userId;
-        userJoin(userId, socket.id);
-        const sender = getCurrentUser(userId);
+        // userJoin(userId, socket.id);
+
+        redisClient.set(userId, socket.id);
+        redisClient.set(socket.id, userId);
+
+        const sender = await getCurrentUser(userId, redisClient);
 
         if (sender && sender.socketId) {
-          const conversationUsers = await getConversationUsers(socket, userId);
+          const conversationUsers = await getConversationUsers(
+            socket,
+            userId,
+            redisClient
+          );
 
+          // this is for showing online status of newly joined user to its friends
           if (conversationUsers?.length > 0) {
             for (const userSocketId of conversationUsers) {
               io.to(userSocketId).emit("getOnlineUsers", {
@@ -151,15 +178,17 @@ mongoose
         }
       });
 
-      initializeMessenger(socket);
-      initializeNotifications(socket);
+      initializeMessenger(socket, redisClient);
+      initializeNotifications(socket, redisClient);
 
       socket.on("getOnlineUsersEvent", async () => {
         const userId = socket.decodedToken.userId;
-        const sender = getCurrentUser(userId);
+        const sender = await getCurrentUser(userId, redisClient);
+
+        // this is for fetching already online users
 
         if (sender && sender.socketId) {
-          const onlineUsers = await getOnlineUsers(socket, userId);
+          const onlineUsers = await getOnlineUsers(socket, userId, redisClient);
           io.to(sender.socketId).emit("getOnlineUsers", {
             users: onlineUsers,
             type: "add_user",
@@ -169,10 +198,14 @@ mongoose
 
       socket.on("disconnect", async () => {
         const userId = socket.decodedToken.userId;
-        const sender = getCurrentUser(userId);
+        const sender = await getCurrentUser(userId, redisClient);
 
         if (sender && sender.socketId) {
-          const conversationUsers = await getConversationUsers(socket, userId);
+          const conversationUsers = await getConversationUsers(
+            socket,
+            userId,
+            redisClient
+          );
 
           if (conversationUsers?.length > 0) {
             for (const userSocketId of conversationUsers) {
@@ -183,7 +216,10 @@ mongoose
             }
           }
         }
-        userLeave(socket.id);
+
+        redisClient.del(userId);
+        redisClient.del(socket.id);
+        // userLeave(socket.id);
       });
     });
   })

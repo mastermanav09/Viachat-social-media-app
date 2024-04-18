@@ -17,6 +17,8 @@ import Chats from "../chat/Chats";
 import { dataActions } from "../../store/reducers/data";
 import JumpingDot from "../svg/JumpingDot";
 import Cookies from "js-cookie";
+import SearchIcon from "../svg/SearchIcon";
+import UserSearchBox from "../user/UserSearchBox";
 
 const MainNavigation = (props) => {
   const dispatch = useDispatch();
@@ -136,6 +138,10 @@ const MainNavigation = (props) => {
     dispatch(uiActions.showChats());
   };
 
+  const manageUserSearch = () => {
+    dispatch(uiActions.showUserSearchBox());
+  };
+
   const logoutHandler = () => {
     dispatch(userActions.logout());
     navigate("/login", { replace: true });
@@ -238,6 +244,19 @@ const MainNavigation = (props) => {
                     </div>
                   )}
                 </li>
+
+                <li>
+                  <div
+                    className={[
+                      classes["navbar-actions-icon"],
+                      uiState.showUserSearchBox ? classes.active : "",
+                    ].join(" ")}
+                    onClick={manageUserSearch}
+                  >
+                    <SearchIcon />
+                  </div>
+                </li>
+
                 <li>
                   <div
                     className={[
@@ -314,6 +333,10 @@ const MainNavigation = (props) => {
 
       {uiState.showChats && userState.authenticated && (
         <Chats socket={props.socket} />
+      )}
+
+      {uiState.showUserSearchBox && userState.authenticated && (
+        <UserSearchBox socket={props.socket} />
       )}
 
       {uiState.showNavbarOptions && userState.authenticated && (

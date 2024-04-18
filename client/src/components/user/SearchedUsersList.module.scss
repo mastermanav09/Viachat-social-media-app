@@ -1,0 +1,9 @@
+.userSearch-results {
+  margin: 1rem auto;
+  height: 85%;
+  overflow-y: auto;
+}
+
+.userSearch-results::-webkit-scrollbar-track {
+  border-radius: 5px;
+}

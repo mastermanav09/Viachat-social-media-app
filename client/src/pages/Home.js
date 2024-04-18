@@ -14,13 +14,13 @@ const Home = (props) => {
   const { handleScreamsLoading, screamsLoader } = props;
   const dispatch = useDispatch();
   const [errors, setErrors] = useState(null);
-  const throttledHandleScreams = debounce(handleScreamsLoading, 200);
+  const debouncedHandleScreams = debounce(handleScreamsLoading, 200);
 
   useEffect(() => {
     localStorage.setItem("target", "/");
-    window.addEventListener("scroll", throttledHandleScreams);
+    window.addEventListener("scroll", debouncedHandleScreams);
 
-    return () => window.removeEventListener("scroll", throttledHandleScreams);
+    return () => window.removeEventListener("scroll", debouncedHandleScreams);
   }, []);
 
   return (

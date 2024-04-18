@@ -1,9 +1,9 @@
-$pressed-color: rgb(92, 235, 130);
-$rest-color: #0944a3;
+$pressed-color: rgb(63, 225, 106);
+// $rest-color: #0944a3;
 
 .single-dot-container {
   position: absolute;
-  right: 8rem;
+  right: 8.1rem;
   top: 2px;
 }
 
@@ -32,7 +32,7 @@ $rest-color: #0944a3;
   right: 0;
   height: 20px;
   width: 20px;
-  background: $rest-color;
+  background: $pressed-color;
   border-radius: 100px;
 }
 

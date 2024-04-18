@@ -1,9 +1,10 @@
-const { getCurrentUser, users } = require("../users/connectedUsers");
+const { getCurrentUser } = require("../users/connectedUsers");
 
-module.exports = function (socket) {
+module.exports = function (socket, redisClient) {
   let io = require("../../config/socket").getIO();
-  socket.on("sendMessage", ({ receiverId, text, _id }) => {
-    const receiver = getCurrentUser(receiverId);
+
+  socket.on("sendMessage", async ({ receiverId, text, _id }) => {
+    const receiver = await getCurrentUser(receiverId, redisClient);
 
     if (receiver && receiver.socketId) {
       io.to(receiver.socketId).emit("getMessage", {
@@ -16,9 +17,9 @@ module.exports = function (socket) {
 
   socket.on(
     "receiveRecentMessage",
-    ({ receiverId, text, senderId, conversationId }) => {
-      const receiver = getCurrentUser(receiverId);
-      const sender = getCurrentUser(senderId);
+    async ({ receiverId, text, senderId, conversationId }) => {
+      const receiver = await getCurrentUser(receiverId, redisClient);
+      const sender = await getCurrentUser(senderId, redisClient);
 
       if (sender && sender.socketId) {
         io.to(sender.socketId).emit("getRecentMessage", {
@@ -38,8 +39,8 @@ module.exports = function (socket) {
 
   socket.on(
     "addNewConversation",
-    ({ receiverId, friendConversation: conversation }) => {
-      const receiver = getCurrentUser(receiverId);
+    async ({ receiverId, friendConversation: conversation }) => {
+      const receiver = await getCurrentUser(receiverId, redisClient);
 
       if (receiver && receiver.socketId) {
         io.to(receiver.socketId).emit("getConversation", {

@@ -32,12 +32,12 @@ const Hero = () => {
     address = userCredentials.address;
   }
 
-  let bio;
-  if (userCredentials.bio && userCredentials.bio.length > 30) {
-    bio = userCredentials.bio.slice(0, 25) + "...";
-  } else {
-    bio = userCredentials.bio;
-  }
+  // let bio;
+  // if (userCredentials.bio && userCredentials.bio.length > 30) {
+  //   bio = userCredentials.bio.slice(0, 25) + "...";
+  // } else {
+  //   bio = userCredentials.bio;
+  // }
 
   return (
     <Card type={PROFILE}>
@@ -61,7 +61,7 @@ const Hero = () => {
           </div>
           <div className={classes.name}>{userCredentials.name}</div>
           {userCredentials.bio ? (
-            <div className={classes.bio}>{bio}</div>
+            <div className={classes.bio}>{userCredentials.bio}</div>
           ) : (
             <div className={classes.bio}>Hello, I'm user</div>
           )}
