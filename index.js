@@ -140,8 +140,8 @@ mongoose
       console.log(`Listening on ${PORT}`);
     });
 
-    notificationDeletionJob();
     messageDeletionJob();
+    notificationDeletionJob();
 
     io.use(
       authorize({

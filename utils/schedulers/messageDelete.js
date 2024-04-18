@@ -9,7 +9,7 @@ module.exports = function messageDeletionJob() {
 
     try {
       await Message.deleteMany({ createdAt: { $lt: deletionDate } });
-      console.log("Job executed successfully.");
+      console.log("Message Deletion Job executed successfully.");
     } catch (error) {
       console.log("Job execution failed!", error);
     }

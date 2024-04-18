@@ -9,7 +9,7 @@ module.exports = function notificationDeletionJob() {
 
     try {
       await Notification.deleteMany({ createdAt: { $lt: deletionDate } });
-      console.log("Job executed successfully.");
+      console.log("Notification Deletion Job executed successfully.");
     } catch (error) {
       console.log("Job execution failed!", error);
     }
