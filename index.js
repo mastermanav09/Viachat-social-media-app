@@ -109,9 +109,6 @@ app.use(
   }).single("image")
 );
 
-notificationDeletionJob();
-messageDeletionJob();
-
 app.use("/", require("./routes/root"));
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
@@ -142,6 +139,10 @@ mongoose
     server.listen(PORT, () => {
       console.log(`Listening on ${PORT}`);
     });
+
+    notificationDeletionJob();
+    messageDeletionJob();
+
     io.use(
       authorize({
         secret: jwtSecret.secret,
