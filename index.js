@@ -21,7 +21,7 @@ const jwt = require("jsonwebtoken");
 const jwtSecret = require("./config/jwt.config");
 const { authorize } = require("@thream/socketio-jwt");
 const notificationDeletionJob = require("./utils/schedulers/notificationDelete");
-const messageDeletionJob = require("./utils/schedulers/messagesDelete");
+const messageDeletionJob = require("./utils/schedulers/messageDelete");
 const {
   userJoin,
   userLeave,
